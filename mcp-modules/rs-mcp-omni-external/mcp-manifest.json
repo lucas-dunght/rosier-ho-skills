@@ -1,0 +1,113 @@
+{
+  "module_id": "rs-mcp-omni-external",
+  "title": "Mô-đun MCP 09: Cổng Đối Ngoại Đa Kênh Nhắn Tin OTT, Chủ Quán & Bản Đồ Số (PUBLIC_DMZ_SAFE)",
+  "version": "6.2.0",
+  "security_zone": "PUBLIC_DMZ_SAFE",
+  "tool_count": 3,
+  "tools": [
+    {
+      "index": 196,
+      "name": "rs-mcp-omni-messaging-dispatch",
+      "module_id": "rs-mcp-omni-external",
+      "security_zone": "PUBLIC_DMZ_SAFE",
+      "description": "Gửi tin nhắn mẫu OTT chăm sóc khách hàng, xác nhận đơn B2B và thông báo điểm thưởng.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 197,
+      "name": "rs-mcp-omni-owner-group-care",
+      "module_id": "rs-mcp-omni-external",
+      "security_zone": "PUBLIC_DMZ_SAFE",
+      "description": "Tiếp nhận câu hỏi và gửi thông báo vận hành đã chuẩn hóa vào nhóm trao đổi của 22 Chủ cửa hàng nhượng quyền.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 198,
+      "name": "rs-mcp-omni-map-review-sync",
+      "module_id": "rs-mcp-omni-external",
+      "security_zone": "PUBLIC_DMZ_SAFE",
+      "description": "Thu thập và đăng phản hồi đánh giá của khách hàng trên Bản đồ số và Fanpage của 25 điểm bán.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

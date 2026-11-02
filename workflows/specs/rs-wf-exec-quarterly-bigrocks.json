@@ -1,0 +1,18 @@
+{
+  "index": 145,
+  "workflow_id": "rs-wf-exec-quarterly-bigrocks",
+  "group": "WF-01",
+  "title": "Chu trình Đầu Quý: Thiết lập OKR × Big Rocks 90 Ngày × KPR 25 Cửa hàng",
+  "skills_chain": [
+    "rs-exec-okr-bigrocks",
+    "rs-exec-10star-work-planner",
+    "rs-exec-memo-scqa",
+    "rs-persona-inversion-premortem"
+  ],
+  "mcp_tools": [
+    "rs-mcp-hub-business-query",
+    "rs-mcp-work-plan-audit"
+  ],
+  "definition_of_done": "Cây mục tiêu Quý đồng bộ từ Ban Điều Hành xuống các Trưởng Bộ Phận HO và 25 CHT.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

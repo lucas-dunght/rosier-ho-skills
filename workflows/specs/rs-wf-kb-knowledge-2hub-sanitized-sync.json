@@ -1,0 +1,18 @@
+{
+  "index": 161,
+  "workflow_id": "rs-wf-kb-knowledge-2hub-sanitized-sync",
+  "group": "WF-04",
+  "title": "Chu trình Phê Duyệt SOP Tại ROSIER BUSINESS & Đẩy Bản Đã Lọc Giá Vốn Sang ROSIER STORE HUB",
+  "skills_chain": [
+    "rs-kb-knowledge-2hub-router",
+    "rs-kb-sop-iso-author",
+    "rs-kb-wiki-auditor"
+  ],
+  "mcp_tools": [
+    "rs-mcp-hub-business-query",
+    "rs-mcp-hub-2way-sanitize-sync",
+    "rs-mcp-hub-store-publish"
+  ],
+  "definition_of_done": "0% trường nhạy cảm (COGS/3P/P&L) lọt sang Store Hub; mã băm SHA-256 khớp 100%.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

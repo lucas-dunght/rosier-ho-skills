@@ -1,0 +1,10 @@
+{
+  "name": "rs-legal-premises-lease-review",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-legal-premises-lease-review",
+  "version": "6.2.0",
+  "commit": "b7d9e4b1012bda8c",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

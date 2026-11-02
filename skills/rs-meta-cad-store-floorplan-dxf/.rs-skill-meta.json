@@ -1,0 +1,10 @@
+{
+  "name": "rs-meta-cad-store-floorplan-dxf",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-meta-cad-store-floorplan-dxf",
+  "version": "6.2.0",
+  "commit": "5ac3890ca8c0b618",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

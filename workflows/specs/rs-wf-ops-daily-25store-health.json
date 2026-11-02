@@ -1,0 +1,18 @@
+{
+  "index": 147,
+  "workflow_id": "rs-wf-ops-daily-25store-health",
+  "group": "WF-02",
+  "title": "Chu trình Chấm Điểm Sức Khỏe 25 Điểm Bán & Phát Lệnh Kiểm Tra Thực Địa Cho Giám Sát Vận Hành",
+  "skills_chain": [
+    "rs-ops-store-risk-scorer",
+    "rs-ops-field-audit-10star",
+    "rs-ops-sla-speed-tracker",
+    "rs-persona-field-commander"
+  ],
+  "mcp_tools": [
+    "rs-mcp-pos-sales-sync",
+    "rs-mcp-work-task-dispatch"
+  ],
+  "definition_of_done": "Bảng xếp hạng sức khỏe 25 quán cập nhật hàng sáng; quán < 65 điểm tự động nhận lịch Audit.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

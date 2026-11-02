@@ -1,0 +1,17 @@
+{
+  "index": 149,
+  "workflow_id": "rs-wf-ops-blindcount-blitz",
+  "group": "WF-02",
+  "title": "Chu trình Kiểm Kê Mù Đột Xuất & Đối Chiếu Chéo Định Mức Hệ Thống POS × ERP Cung Ứng Trung Tâm",
+  "skills_chain": [
+    "rs-supply-pos-erp-blindcount",
+    "rs-ops-pos-hidden-code",
+    "rs-ops-waste-spoilage-control"
+  ],
+  "mcp_tools": [
+    "rs-mcp-pos-recipe-consumption",
+    "rs-mcp-supply-blindcount-diff"
+  ],
+  "definition_of_done": "Chênh lệch kiểm kê mù < 2%; các mã nguyên liệu lệch > 2% có biên bản giải trình của CHT.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

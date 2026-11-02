@@ -1,0 +1,18 @@
+{
+  "index": 148,
+  "workflow_id": "rs-wf-ops-focus12-weekly-sprint",
+  "group": "WF-02",
+  "title": "Chu trình Vực Dậy 12 Cửa Hàng Trọng Điểm (Focus 12) Hàng Tuần",
+  "skills_chain": [
+    "rs-ops-focus12-turnaround",
+    "rs-ops-waste-spoilage-control",
+    "rs-mkt-local-store-lsm",
+    "rs-persona-store-owner-hkd"
+  ],
+  "mcp_tools": [
+    "rs-mcp-pos-sales-sync",
+    "rs-mcp-hub-business-query"
+  ],
+  "definition_of_done": "12 quán trọng điểm có biên bản chẩn đoán nguyên nhân gốc và kế hoạch tăng trưởng tuần.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

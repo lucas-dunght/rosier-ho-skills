@@ -1,0 +1,10 @@
+{
+  "name": "rs-ops-incident-postmortem",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-ops-incident-postmortem",
+  "version": "6.2.0",
+  "commit": "82b6b93c6b22d5ee",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

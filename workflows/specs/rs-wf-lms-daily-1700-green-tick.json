@@ -1,0 +1,16 @@
+{
+  "index": 160,
+  "workflow_id": "rs-wf-lms-daily-1700-green-tick",
+  "group": "WF-04",
+  "title": "Chu trình Điểm Danh Học Tập Tự Động Lúc 15:00 & Chốt Tích Xanh 17:00 Hàng Ngày Toàn Chuỗi",
+  "skills_chain": [
+    "rs-lms-1700-tracker",
+    "rs-hr-3p-payroll-engine"
+  ],
+  "mcp_tools": [
+    "rs-mcp-lms-progress-1700-audit",
+    "rs-mcp-work-task-dispatch"
+  ],
+  "definition_of_done": "100% nhân sự trong ca hoàn thành bài học có tích xanh trước 17:00; đồng bộ sang bảng lương P2.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

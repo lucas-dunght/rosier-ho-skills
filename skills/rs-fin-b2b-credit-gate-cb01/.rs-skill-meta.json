@@ -1,0 +1,10 @@
+{
+  "name": "rs-fin-b2b-credit-gate-cb01",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-fin-b2b-credit-gate-cb01",
+  "version": "6.2.0",
+  "commit": "734be88d8ac20e76",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

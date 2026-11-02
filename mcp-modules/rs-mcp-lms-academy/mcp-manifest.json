@@ -1,0 +1,113 @@
+{
+  "module_id": "rs-mcp-lms-academy",
+  "title": "Mô-đun MCP 05: Cổng Học Viện Đào Tạo Nội Bộ Rosier LMS (app.rosier.com.vn)",
+  "version": "6.2.0",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "tool_count": 3,
+  "tools": [
+    {
+      "index": 185,
+      "name": "rs-mcp-lms-course-publish",
+      "module_id": "rs-mcp-lms-academy",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Tạo hoặc cập nhật cây chương trình học, bài giảng video 1080p và sổ tay Wiki trên Rosier LMS.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 186,
+      "name": "rs-mcp-lms-quiz-bloom-upsert",
+      "module_id": "rs-mcp-lms-academy",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Đẩy bộ đề trắc nghiệm chuẩn 4 cấp độ Bloom và cấu hình điểm đạt tối thiểu lên bài học LMS.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 187,
+      "name": "rs-mcp-lms-progress-1700-audit",
+      "module_id": "rs-mcp-lms-academy",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Truy xuất danh sách nhân sự toàn chuỗi đã/chưa đạt tích xanh hoàn thành bài học trước 17:00 hàng ngày.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

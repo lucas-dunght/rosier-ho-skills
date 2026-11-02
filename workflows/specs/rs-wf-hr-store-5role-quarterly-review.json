@@ -1,0 +1,18 @@
+{
+  "index": 164,
+  "workflow_id": "rs-wf-hr-store-5role-quarterly-review",
+  "group": "WF-04",
+  "title": "Chu trình Đánh Giá Năng Lực & Xét Bậc Định Kỳ Cho 5 Vị Trí Tại Cửa Hàng",
+  "skills_chain": [
+    "rs-hr-barista-competency-eval",
+    "rs-hr-cashier-service-eval",
+    "rs-hr-shift-leader-eval",
+    "rs-hr-store-manager-eval"
+  ],
+  "mcp_tools": [
+    "rs-mcp-lms-progress-1700-audit",
+    "rs-mcp-hub-business-query"
+  ],
+  "definition_of_done": "100% nhân sự cửa hàng có phiếu đánh giá năng lực và lộ trình nâng bậc lương P2.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

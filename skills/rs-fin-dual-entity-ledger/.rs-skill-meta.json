@@ -1,0 +1,10 @@
+{
+  "name": "rs-fin-dual-entity-ledger",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-fin-dual-entity-ledger",
+  "version": "6.2.0",
+  "commit": "49347544ec248ca8",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

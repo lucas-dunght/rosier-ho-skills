@@ -1,0 +1,10 @@
+{
+  "name": "rs-fin-budget-variance-audit",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-fin-budget-variance-audit",
+  "version": "6.2.0",
+  "commit": "1b05f201bd7e03b3",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

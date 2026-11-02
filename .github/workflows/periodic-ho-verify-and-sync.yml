@@ -1,0 +1,42 @@
+name: RS-OS HO Periodic Verify & Auto-Sync
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-sync-ho-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Rosier HO Skills Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify Core Engine Self-Test
+        run: python3 core/rs_core_engine.py --self-test
+
+      - name: Verify Periodic Auto-Updater Self-Test
+        run: python3 scripts/rs_ho_auto_updater.py --self-test --json
+
+      - name: Verify HO Compiler Self-Test
+        run: python3 scripts/build_and_sync_ho_repo.py --self-test --json
+
+      - name: Verify Full RS-OS HO Ecosystem & Security Gates
+        run: python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
+
+      - name: Verify RS-Control Doctor & Feature Map Integrity
+        run: ./bin/rs-control doctor --json

@@ -1,0 +1,18 @@
+{
+  "index": 143,
+  "workflow_id": "rs-wf-exec-monday-l10-ids",
+  "group": "WF-01",
+  "title": "Chu trình Sáng Thứ Hai 08:30: Họp Giao Ban Tuần Level 10, Chấm Scorecard & Giải quyết IDS",
+  "skills_chain": [
+    "rs-exec-weekly-l10",
+    "rs-exec-meeting-minutes",
+    "rs-exec-10star-work-planner",
+    "rs-persona-first-principles-truth"
+  ],
+  "mcp_tools": [
+    "rs-mcp-work-task-dispatch",
+    "rs-mcp-hub-business-query"
+  ],
+  "definition_of_done": "Biên bản L10 + Quyết định mới ghi vào DECISIONS.md + Task tuần mới có đủ DoD 100%.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

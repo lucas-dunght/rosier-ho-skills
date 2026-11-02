@@ -1,0 +1,147 @@
+{
+  "module_id": "rs-mcp-central-supply",
+  "title": "Mô-đun MCP 03: Cổng Chuỗi Cung Ứng Trung Tâm, Cổng Đặt Hàng B2B, Khóa Nợ CB-01 & Kho Tổng Trung Tâm",
+  "version": "6.2.0",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "tool_count": 4,
+  "tools": [
+    {
+      "index": 178,
+      "name": "rs-mcp-supply-order-sync",
+      "module_id": "rs-mcp-central-supply",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Đồng bộ đơn đặt hàng nguyên vật liệu của 25 quán trên Cổng Đặt Hàng B2B Nội Bộ.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 179,
+      "name": "rs-mcp-supply-credit-gate-cb01",
+      "module_id": "rs-mcp-central-supply",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Kiểm tra tuổi nợ và hạn mức tín dụng; tự động kích hoạt CB-01 (HOLD_ORDER) nếu quá hạn > 3 ngày.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 180,
+      "name": "rs-mcp-supply-warehouse-fifo",
+      "module_id": "rs-mcp-central-supply",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Tra cứu tồn kho theo lô hạn dùng (FIFO/FEFO) và vị trí kệ 5S tại Kho Tổng Trung Tâm.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 181,
+      "name": "rs-mcp-supply-blindcount-diff",
+      "module_id": "rs-mcp-central-supply",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Tính chênh lệch giữa tồn kho sổ sách hệ thống ERP cung ứng và kết quả kiểm kê mù thực tế tại quán.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

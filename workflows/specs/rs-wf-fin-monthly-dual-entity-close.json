@@ -1,0 +1,17 @@
+{
+  "index": 157,
+  "workflow_id": "rs-wf-fin-monthly-dual-entity-close",
+  "group": "WF-03",
+  "title": "Chu trình Khóa Sổ Kế Toán Tháng (Trước Ngày 05) Tách Bạch Đa Mô Hình Pháp Nhân (CTCP · Cty TNHH · HKD)",
+  "skills_chain": [
+    "rs-fin-dual-entity-ledger",
+    "rs-fin-store-pnl-analyzer",
+    "rs-fin-budget-variance-audit"
+  ],
+  "mcp_tools": [
+    "rs-mcp-finance-dual-pnl",
+    "rs-mcp-finance-bank-reconcile"
+  ],
+  "definition_of_done": "Báo cáo P&L tách bạch các mô hình pháp nhân hoàn tất trước 17:00 ngày 05 hàng tháng.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

@@ -1,0 +1,553 @@
+#!/usr/bin/env python3
+"""
+RS-OS HO Edition · CLI Điều Khiển Trung Tâm Dành Cho Nhân Sự Khối HO (./bin/rs-control & ./bin/control-app)
+Đặc tính bảo mật Khối HO:
+  1. Cấm tuyệt đối các lệnh sửa/xóa Database (0 reset-db, 0 seed ghi đè DB).
+  2. Hỗ trợ định tuyến tự động kèm cổng hỏi lại 3 trục (/rs-auto, advise, auto) cho 6 Khối Phòng Ban HO.
+  3. Tích hợp kiểm tra & tự động cập nhật định kỳ 24h (update / auto-update) từ kho GitHub Khối HO.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import subprocess
+import sys
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+SUITE_ROOT = Path(__file__).resolve().parent.parent
+if str(SUITE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SUITE_ROOT))
+
+from core.rs_core_engine import (  # noqa: E402
+    CLOSED_STORES,
+    COMPANY_STORES,
+    LEGAL_ENTITIES,
+    NOTION_HUBS,
+    route_rosier_intent,
+    self_test_all_divisions,
+)
+from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
+
+VALID_HO_ROLES = {
+    "ho_ops_supply": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-ops-supply",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "ho_fin_accounting": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-fin-hr",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "ho_hr_legal": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-fin-hr",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "ho_academy_rnd": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-academy-kb",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "ho_mkt_media": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-growth-media",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "ho_cskh_omni": {
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "allowed_hubs": ["ROSIER_STORE_HUB"],
+        "default_profile": "ho-omni-dmz",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "internal_staff": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-core-35",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "store_owner_company": {
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "allowed_hubs": ["ROSIER_BUSINESS", "ROSIER_STORE_HUB"],
+        "default_profile": "ho-core-35",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "store_owner_hkd": {
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "allowed_hubs": ["ROSIER_STORE_HUB"],
+        "default_profile": "ho-ops-supply",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "store_manager": {
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "allowed_hubs": ["ROSIER_STORE_HUB"],
+        "default_profile": "ho-ops-supply",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+    "dmz_rosie": {
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "allowed_hubs": ["ROSIER_STORE_HUB"],
+        "default_profile": "ho-omni-dmz",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+    },
+}
+
+PROTO_VARIANTS = {
+    "A": "1. Quiet Luxury Modern Zen (#FFFCF7 Sour Cream + #497A49 Artisan Green)",
+    "B": "2. Editorial Tea Magazine (#F4EFE6 Alabaster + #111111 Obsidian Serif)",
+    "C": "3. Fresh Tea-Commerce Gen Z (#FFFCF7 + #2E522E Deep Forest + #C0E9A3 Matcha Bloom)",
+}
+
+
+def emit(payload: Dict[str, Any], as_json: bool = True, exit_code: int = 0) -> int:
+    if as_json:
+        sys.stdout.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+    else:
+        status = "OK" if payload.get("ok", True) else "ERROR"
+        sys.stdout.write(f"[rs-control-ho] {status} ({payload.get('subcommand')}): {payload.get('summary', '')}\n")
+    return exit_code
+
+
+def emit_error(
+    subcommand: str,
+    dry_run: bool,
+    code: str,
+    root_cause: str,
+    next_command: str,
+    as_json: bool = True,
+) -> int:
+    payload = {
+        "ok": False,
+        "status": "ERROR",
+        "claim_label": "[OBSERVED: bin/control-app]",
+        "subcommand": subcommand,
+        "dry_run": dry_run,
+        "error": {
+            "code": code,
+            "root_cause": root_cause,
+            "next_command": next_command,
+        },
+    }
+    return emit(payload, as_json=as_json, exit_code=1)
+
+
+def handle_auth(role: str, dry_run: bool, as_json: bool) -> int:
+    if role in ("chain_ceo", "ceo"):
+        return emit_error(
+            "auth",
+            dry_run,
+            "HO_CEO_ROLE_FORBIDDEN",
+            "Vai trò CEO Toàn Chuỗi (chain_ceo) đã bị cắt khỏi bộ kỹ năng Khối HO. Nhân sự HO vui lòng chọn vai trò phòng ban tương ứng.",
+            "./bin/rs-control auth --role ho_ops_supply --dry-run --json",
+            as_json=as_json,
+        )
+    if role not in VALID_HO_ROLES:
+        return emit_error(
+            "auth",
+            dry_run,
+            "INVALID_HO_ROLE",
+            f"Role '{role}' is not recognized. Valid HO roles: {list(VALID_HO_ROLES.keys())}",
+            "./bin/rs-control auth --role ho_ops_supply --dry-run --json",
+            as_json=as_json,
+        )
+    r_meta = VALID_HO_ROLES[role]
+    hub_ids = [NOTION_HUBS[h]["hub_id"] for h in r_meta["allowed_hubs"]]
+    return emit(
+        {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "OK",
+            "claim_label": "[DERIVED]",
+            "subcommand": "auth",
+            "dry_run": dry_run,
+            "role": role,
+            "execution_mode": r_meta["execution_mode"],
+            "allow_db_mutation": False,
+            "security_zone": r_meta["security_zone"],
+            "allowed_hub_ids": hub_ids,
+            "recommended_profile": r_meta["default_profile"],
+            "next_command": f"python3 scripts/rs_profile_loader.py activate {r_meta['default_profile']}",
+        },
+        as_json=as_json,
+    )
+
+
+def handle_flag(kv: str, dry_run: bool, as_json: bool) -> int:
+    if not kv or "=" not in kv:
+        return emit_error(
+            "flag",
+            dry_run,
+            "MISSING_FLAG_KV",
+            "Flag argument must be formatted as key=value (e.g. proto_variant=A)",
+            "./bin/rs-control flag --set proto_variant=A --dry-run --json",
+            as_json=as_json,
+        )
+    key, val = kv.split("=", 1)
+    key = key.strip()
+    val = val.strip()
+    if key == "proto_variant" and val not in PROTO_VARIANTS:
+        return emit_error(
+            "flag",
+            dry_run,
+            "INVALID_PROTO_VARIANT",
+            f"Prototype variant '{val}' invalid. Choose from {list(PROTO_VARIANTS.keys())}",
+            "./bin/rs-control flag --set proto_variant=A --dry-run --json",
+            as_json=as_json,
+        )
+    return emit(
+        {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "OK",
+            "claim_label": "[DERIVED]",
+            "subcommand": "flag",
+            "dry_run": dry_run,
+            "flag_key": key,
+            "flag_value": val,
+            "resolved_direction": PROTO_VARIANTS.get(val, val),
+            "next_command": "./bin/rs-control dom --route /control-center --json",
+        },
+        as_json=as_json,
+    )
+
+
+def handle_dom_screenshot_perf(subcommand: str, route: str, dry_run: bool, as_json: bool) -> int:
+    html_path = SUITE_ROOT / "RS-OS-180-CONTROL-CENTER.html"
+    if not html_path.exists():
+        return emit_error(
+            subcommand,
+            dry_run,
+            "CONTROL_CENTER_MISSING",
+            f"HTML Control Center not found at {html_path}",
+            "python3 scripts/build_and_sync_ho_repo.py",
+            as_json=as_json,
+        )
+    t0 = time.perf_counter()
+    html_text = html_path.read_text(encoding="utf-8")
+    core_res = self_test_all_divisions()
+    elapsed_ms = round((time.perf_counter() - t0) * 1000.0, 2)
+    has_switcher = "setProtoVariant(" in html_text
+    kpi_cards = len(re.findall(r'class="kpi-card"', html_text))
+    html_sha = hashlib.sha256(html_text.encode("utf-8")).hexdigest()[:16]
+
+    return emit(
+        {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "OK",
+            "claim_label": "[OBSERVED: RS-OS-180-CONTROL-CENTER.html]",
+            "subcommand": subcommand,
+            "route": route,
+            "dry_run": dry_run,
+            "dom_metrics": {
+                "html_bytes": len(html_text.encode("utf-8")),
+                "html_sha256_16": html_sha,
+                "kpi_cards_count": kpi_cards,
+                "live_prototype_switcher_mounted": has_switcher,
+                "prototype_variants": list(PROTO_VARIANTS.values()),
+            },
+            "perf_metrics": {
+                "dom_and_12div_engine_latency_ms": elapsed_ms,
+                "divisions_verified": core_res["divisions_tested"],
+            },
+            "next_command": "./bin/rs-control doctor --json",
+        },
+        as_json=as_json,
+    )
+
+
+def handle_verify(scenario: str, dry_run: bool, as_json: bool) -> int:
+    if dry_run:
+        return emit(
+            {
+                "ok": True,
+                "status": "DRY_RUN_OK",
+                "claim_label": "[DERIVED]",
+                "subcommand": "verify",
+                "dry_run": True,
+                "scenario": scenario,
+                "planned_action": "Run HO core engine self-test and verify target scenario assertions",
+                "next_command": f"./bin/rs-control verify --scenario {scenario} --json",
+            },
+            as_json=as_json,
+        )
+    core_res = self_test_all_divisions()
+    return emit(
+        {
+            "ok": core_res["status"] == "PASS",
+            "status": core_res["status"],
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "subcommand": "verify",
+            "scenario": scenario,
+            "edition": "HO_STAFF_SAFE_EDITION",
+            "allow_db_mutation": False,
+            "engine_version": core_res["engine_version"],
+            "divisions_tested": core_res["divisions_tested"],
+            "closed_store_guard_verified": core_res["closed_store_guard_verified"],
+            "rosier_3pass_de_ai_scanner_verified": core_res["rosier_3pass_de_ai_scanner_verified"],
+            "rosier_text_constraints_verified": core_res["rosier_text_constraints_verified"],
+            "next_command": "./bin/rs-control doctor --json",
+        },
+        as_json=as_json,
+        exit_code=0 if core_res["status"] == "PASS" else 1,
+    )
+
+
+def handle_doctor(dry_run: bool, as_json: bool) -> int:
+    feat_readme = SUITE_ROOT / "references" / "features" / "README.md"
+    if not feat_readme.exists():
+        return emit_error(
+            "doctor",
+            dry_run,
+            "FEATURE_MAP_MISSING",
+            "File references/features/README.md does not exist yet",
+            "python3 scripts/build_and_sync_ho_repo.py",
+            as_json=as_json,
+        )
+    ctrl_script = SUITE_ROOT / "scripts" / "rs_os_control_tool.py"
+    mf_proc = subprocess.run(
+        [
+            sys.executable,
+            str(ctrl_script),
+            "maintain-features",
+            "--features-dir",
+            str(SUITE_ROOT / "references" / "features"),
+            "--repo-root",
+            str(SUITE_ROOT),
+            "--json",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    mf_data = json.loads(mf_proc.stdout) if mf_proc.stdout.strip() else {"status": "ERROR"}
+
+    cc_proc = subprocess.run(
+        [
+            sys.executable,
+            str(ctrl_script),
+            "constraint-check",
+            "--paths",
+            str(SUITE_ROOT),
+            "--json",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    cc_data = json.loads(cc_proc.stdout) if cc_proc.stdout.strip() else {"status": "ERROR"}
+
+    wt_proc = subprocess.run(
+        [
+            sys.executable,
+            str(ctrl_script),
+            "wtree-fingerprint",
+            "--dir",
+            str(SUITE_ROOT),
+            "--json",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    wt_data = json.loads(wt_proc.stdout) if wt_proc.stdout.strip() else {"wtree_fingerprint": "unknown"}
+
+    core_res = self_test_all_divisions()
+    drift_detected = mf_data.get("status") != "OK"
+    constraint_ok = cc_data.get("status") == "PASS"
+    all_ok = (not drift_detected) and constraint_ok and (core_res["status"] == "PASS")
+
+    return emit(
+        {
+            "ok": all_ok,
+            "status": "PASS" if all_ok else "FAIL",
+            "claim_label": "[OBSERVED: bin/control-app doctor]",
+            "subcommand": "doctor",
+            "edition": "HO_STAFF_SAFE_EDITION",
+            "allow_db_mutation": False,
+            "dry_run": dry_run,
+            "feature_map": "references/features/README.md",
+            "drift_detected": drift_detected,
+            "features_scanned": mf_data.get("metrics", {}).get("features_scanned", 0),
+            "stale_features": mf_data.get("stale_features", []),
+            "constraint_loop_status": cc_data.get("status"),
+            "constraint_violations_count": cc_data.get("metrics", {}).get("violations_count", -1),
+            "wtree_fingerprint": wt_data.get("wtree_fingerprint"),
+            "files_hashed": wt_data.get("metrics", {}).get("files_hashed", 0),
+            "next_command": "python3 scripts/verify_rs_ho_ecosystem.py --self-test --json",
+        },
+        as_json=as_json,
+        exit_code=0 if all_ok else 1,
+    )
+
+
+def handle_update(dry_run: bool, as_json: bool) -> int:
+    updater = RosierHOAutoUpdater(repo_root=SUITE_ROOT)
+    res = updater.perform_pull(dry_run=dry_run)
+    res["subcommand"] = "update"
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
+def handle_intent_route(
+    mode: str,
+    query: str,
+    store_code: str,
+    role: str,
+    domain: str,
+    deliverable: str,
+    confirmed: bool,
+    interactive: bool,
+    dry_run: bool,
+    as_json: bool,
+) -> int:
+    # Opportunistic 24h update check metadata (non-blocking)
+    updater = RosierHOAutoUpdater(repo_root=SUITE_ROOT)
+    update_status = updater.check_for_updates(force=False, dry_run=True)
+
+    res = route_rosier_intent(
+        {
+            "mode": mode,
+            "query": query,
+            "store_code": store_code,
+            "role": role,
+            "domain": domain,
+            "deliverable": deliverable,
+            "confirmed": confirmed,
+            "interactive": interactive or (mode == "rs-auto"),
+        },
+        dry_run=dry_run,
+    )
+    is_blocked = bool(res.get("route_blocked", False))
+    res["ok"] = not is_blocked
+    res["subcommand"] = mode
+    res["edition"] = "HO_STAFF_SAFE_EDITION"
+    res["execution_mode"] = "HO_SAFE_READ_AND_DRAFT"
+    res["allow_db_mutation"] = False
+    res["periodic_update_check"] = {
+        "local_version": update_status["local_version"],
+        "remote_version": update_status["remote_version"],
+        "update_available": update_status["update_available"],
+        "from_24h_cache": update_status["from_24h_cache"],
+    }
+    return emit(res, as_json=as_json, exit_code=1 if is_blocked else 0)
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    raw_args = list(argv if argv is not None else sys.argv[1:])
+    if len(raw_args) >= 2:
+        if raw_args[0] == "auth" and raw_args[1] == "impersonate":
+            raw_args = ["auth"] + raw_args[2:]
+        elif raw_args[0] == "ui" and raw_args[1] == "snapshot":
+            raw_args = ["dom"] + raw_args[2:]
+        elif raw_args[0] == "skill" and raw_args[1] in ("advise", "auto", "rs-auto", "route"):
+            raw_args = [raw_args[1]] + raw_args[2:]
+
+    parser = argparse.ArgumentParser(
+        prog="rs-control",
+        description="RS-OS HO Edition · Công cụ CLI Điều khiển, Định tuyến Auto & Tự cập nhật cho Nhân sự Khối HO",
+    )
+    parser.add_argument(
+        "subcommand",
+        nargs="?",
+        default="help",
+        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | update | help",
+    )
+    parser.add_argument("positional_query", nargs="?", default="", help="Optional positional query for rs-auto/advise/auto")
+    parser.add_argument("--scenario", default="happy_path", help="Scenario name for verify")
+    parser.add_argument("--role", default="", help="HO Department or Store role (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, store_owner_company, store_owner_hkd)")
+    parser.add_argument("--domain", default="", help="Optional locked division code (01..12) after clarification")
+    parser.add_argument("--deliverable", default="", help="Optional locked deliverable format (report, sop, media, advise_only)")
+    parser.add_argument("--confirmed", action="store_true", help="Confirm user answered clarification questions to execute combo immediately")
+    parser.add_argument("--interactive", action="store_true", help="Enable 3-axis ambiguity check and clarification questions")
+    parser.add_argument("--set", dest="flag_kv", default="", help="key=value pair for flag subcommand")
+    parser.add_argument("--route", default="/control-center", help="Route for dom/screenshot/perf")
+    parser.add_argument("--query", "-q", default="", help="Natural language task/question for rs-auto/advise/auto router")
+    parser.add_argument("--store-code", default="", help="Optional store code for rs-auto/advise/auto router")
+    parser.add_argument("--dry-run", action="store_true", help="Preview side effects without mutating state")
+    parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON output")
+    args = parser.parse_args(raw_args)
+
+    sub = args.subcommand
+    as_json = bool(args.json or True)
+    resolved_query = args.query or args.positional_query
+
+    if sub in ("help", "--help", "-h"):
+        parser.print_help()
+        return 0
+    if sub in ("reset-db", "seed", "db-write", "mutate-db"):
+        return emit_error(
+            sub,
+            bool(args.dry_run),
+            "HO_DB_MUTATION_FORBIDDEN",
+            f"Lệnh '{sub}' đã bị khóa và gỡ bỏ hoàn toàn trong Bộ Kỹ Năng Khối HO để bảo vệ an toàn Database gốc.",
+            "./bin/rs-control doctor --json",
+            as_json=as_json,
+        )
+    if sub == "auth":
+        return handle_auth(args.role or "ho_ops_supply", bool(args.dry_run), as_json)
+    if sub == "flag":
+        return handle_flag(args.flag_kv, bool(args.dry_run), as_json)
+    if sub in ("dom", "screenshot", "perf"):
+        return handle_dom_screenshot_perf(sub, args.route, bool(args.dry_run), as_json)
+    if sub == "verify":
+        return handle_verify(args.scenario, bool(args.dry_run), as_json)
+    if sub == "doctor":
+        return handle_doctor(bool(args.dry_run), as_json)
+    if sub in ("update", "auto-update"):
+        return handle_update(bool(args.dry_run), as_json)
+    if sub in ("advise", "route"):
+        return handle_intent_route(
+            "advise",
+            resolved_query,
+            args.store_code,
+            args.role,
+            args.domain,
+            args.deliverable,
+            bool(args.confirmed),
+            bool(args.interactive),
+            bool(args.dry_run),
+            as_json,
+        )
+    if sub == "auto":
+        return handle_intent_route(
+            "auto",
+            resolved_query,
+            args.store_code,
+            args.role,
+            args.domain,
+            args.deliverable,
+            bool(args.confirmed),
+            bool(args.interactive),
+            bool(args.dry_run),
+            as_json,
+        )
+    if sub == "rs-auto":
+        return handle_intent_route(
+            "rs-auto",
+            resolved_query,
+            args.store_code,
+            args.role,
+            args.domain,
+            args.deliverable,
+            bool(args.confirmed),
+            True,
+            bool(args.dry_run),
+            as_json,
+        )
+
+    return emit_error(
+        sub,
+        bool(args.dry_run),
+        "UNKNOWN_SUBCOMMAND",
+        f"Subcommand '{sub}' is not supported by ./bin/rs-control",
+        "./bin/rs-control --help",
+        as_json=as_json,
+    )
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,16 @@
+{
+  "index": 152,
+  "workflow_id": "rs-wf-ops-equipment-preventive-care",
+  "group": "WF-02",
+  "title": "Chu trình Bảo Trì Định Kỳ & Xử Lý Sự Cố Thiết Bị Quầy Bar 25 Quán",
+  "skills_chain": [
+    "rs-ops-equipment-maintenance",
+    "rs-ops-shift-handover-log"
+  ],
+  "mcp_tools": [
+    "rs-mcp-work-task-dispatch",
+    "rs-mcp-hub-business-query"
+  ],
+  "definition_of_done": "0 giờ chết thiết bị trong khung cao điểm; 100% máy pha/máy đóng lon được bảo dưỡng đúng kỳ.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

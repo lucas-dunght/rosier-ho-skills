@@ -1,0 +1,17 @@
+{
+  "index": 166,
+  "workflow_id": "rs-wf-mkt-group-can-sticker-b2b",
+  "group": "WF-05",
+  "title": "Chu trình Chốt Đơn Nhóm Văn Phòng (>= 10 Lon) -> In Tem Lon Cá Nhân Hóa -> Giao Hàng Đúng Giờ",
+  "skills_chain": [
+    "rs-mkt-group-can-sticker",
+    "rs-omni-b2b-corporate-quote",
+    "rs-brand-packaging-label-spec"
+  ],
+  "mcp_tools": [
+    "rs-mcp-omni-messaging-dispatch",
+    "rs-mcp-pos-sales-sync"
+  ],
+  "definition_of_done": "Đơn nhóm >= 10 lon được duyệt mẫu tem trong 15 phút và giao đúng khung giờ cam kết.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

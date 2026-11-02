@@ -1,0 +1,18 @@
+{
+  "index": 156,
+  "workflow_id": "rs-wf-fin-daily-3way-reconciliation",
+  "group": "WF-03",
+  "title": "Chu trình Đối Soát 3 Chiều Hàng Ngày: Sao Kê Ngân Hàng Giao Dịch × Doanh Thu POS × Công Nợ Cung Ứng B2B",
+  "skills_chain": [
+    "rs-fin-bank-statement-reconciler",
+    "rs-fin-franchise-royalty-billing",
+    "rs-media-omni-ocr-invoice"
+  ],
+  "mcp_tools": [
+    "rs-mcp-finance-bank-reconcile",
+    "rs-mcp-pos-sales-sync",
+    "rs-mcp-supply-order-sync"
+  ],
+  "definition_of_done": "Chênh lệch đối soát ngân hàng <= 5 VND; báo cáo công nợ cập nhật trước 10:00 sáng.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

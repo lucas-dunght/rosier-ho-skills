@@ -1,0 +1,19 @@
+{
+  "index": 159,
+  "workflow_id": "rs-wf-lms-slide-to-published-course",
+  "group": "WF-04",
+  "title": "Chu trình Chuyển Hóa Slide/SOP Đào Tạo Nội Bộ Thành Video 1080p + Wiki + Quiz Bloom Trên LMS",
+  "skills_chain": [
+    "rs-lms-slide-to-course",
+    "rs-lms-video-studio",
+    "rs-lms-bloom-quiz-engine",
+    "rs-lms-course-factory"
+  ],
+  "mcp_tools": [
+    "rs-mcp-studio-video-render",
+    "rs-mcp-lms-course-publish",
+    "rs-mcp-lms-quiz-bloom-upsert"
+  ],
+  "definition_of_done": "Khóa học mới có đủ Video 1080p, bài đọc Wiki và bộ câu hỏi Bloom 4 cấp ở trạng thái DRAFT/PUBLISHED.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

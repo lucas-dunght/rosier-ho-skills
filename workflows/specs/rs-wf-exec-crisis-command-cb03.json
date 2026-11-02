@@ -1,0 +1,17 @@
+{
+  "index": 146,
+  "workflow_id": "rs-wf-exec-crisis-command-cb03",
+  "group": "WF-01",
+  "title": "Chu trình Khẩn cấp (<60s): Xử lý Khủng hoảng Khiếu nại/ATTP từ ROSIE bắn về HERMES",
+  "skills_chain": [
+    "rs-omni-crisis-alert-bridge",
+    "rs-omni-cskh-4step-deescalate",
+    "rs-ops-incident-postmortem"
+  ],
+  "mcp_tools": [
+    "rs-mcp-omni-messaging-dispatch",
+    "rs-mcp-work-task-dispatch"
+  ],
+  "definition_of_done": "Khóa phản hồi tự động, cô lập lô hàng/quán liên quan và cử Giám Sát Vận Hành xử lý trong < 15 phút.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

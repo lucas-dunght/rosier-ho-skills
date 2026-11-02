@@ -1,0 +1,10 @@
+{
+  "name": "rs-lms-bloom-quiz-engine",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-lms-bloom-quiz-engine",
+  "version": "6.2.0",
+  "commit": "00a5d3a9272f7ad5",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

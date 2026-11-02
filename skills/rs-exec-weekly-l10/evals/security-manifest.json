@@ -1,0 +1,25 @@
+{
+  "skill_id": "rs-exec-weekly-l10",
+  "index": 4,
+  "layer": "flagship",
+  "division": "01-rs-exec",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "rosier_cli_standard": "rs-os-200",
+  "bundled_engine_files_count": 0,
+  "agents_rule_of_two": {
+    "processes_untrusted_external_input": false,
+    "accesses_private_internal_secrets": true,
+    "performs_unrestricted_external_writes": false,
+    "compliant": true
+  },
+  "allowed_notion_hubs": [
+    "15e4ffbe44fc8390be0601a8074420d9",
+    "4004ffbe44fc80c1b400cd2a5a0c876d"
+  ],
+  "blocked_closed_stores": [
+    "115953",
+    "106192"
+  ],
+  "cli_entrypoint": "scripts/rs_exec_weekly_l10_tool.py",
+  "self_test_command": "python3 scripts/rs_exec_weekly_l10_tool.py --self-test --json"
+}

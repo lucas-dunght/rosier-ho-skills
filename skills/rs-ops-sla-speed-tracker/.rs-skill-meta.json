@@ -1,0 +1,10 @@
+{
+  "name": "rs-ops-sla-speed-tracker",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-ops-sla-speed-tracker",
+  "version": "6.2.0",
+  "commit": "463d34a05d0ba231",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

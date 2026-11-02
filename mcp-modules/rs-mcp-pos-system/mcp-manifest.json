@@ -1,0 +1,113 @@
+{
+  "module_id": "rs-mcp-pos-system",
+  "title": "Mô-đun MCP 04: Cổng Hệ Thống Máy Tính Tiền POS 25 Cửa Hàng",
+  "version": "6.2.0",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "tool_count": 3,
+  "tools": [
+    {
+      "index": 182,
+      "name": "rs-mcp-pos-sales-sync",
+      "module_id": "rs-mcp-pos-system",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Lấy dữ liệu doanh thu theo giờ, cơ cấu món bán, đơn kênh sàn và hóa đơn hủy của 25 điểm bán.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 183,
+      "name": "rs-mcp-pos-recipe-consumption",
+      "module_id": "rs-mcp-pos-system",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Quy đổi số lượng ly bán ra trên Hệ thống POS thành lượng nguyên liệu tiêu hao lý thuyết (kèm kiểm tra Hidden Code).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 184,
+      "name": "rs-mcp-pos-staff-shift-sync",
+      "module_id": "rs-mcp-pos-system",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Trích xuất dữ liệu chấm công và năng suất phục vụ theo ca của nhân sự cửa hàng.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

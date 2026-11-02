@@ -1,0 +1,17 @@
+{
+  "index": 158,
+  "workflow_id": "rs-wf-fin-tax-audit-shield",
+  "group": "WF-03",
+  "title": "Chu trình Rà Soát Hóa Đơn Điện Tử, Thuế HKD & Hồ Sơ Quyết Toán Thuế Cùng Đơn Vị Tư Vấn Thuế Độc Lập",
+  "skills_chain": [
+    "rs-fin-tax-vat-cit-compliance",
+    "rs-fin-dual-entity-ledger",
+    "rs-persona-tax-shield-ledger"
+  ],
+  "mcp_tools": [
+    "rs-mcp-finance-dual-pnl",
+    "rs-mcp-studio-ocr-extract"
+  ],
+  "definition_of_done": "100% chứng từ chi phí và hóa đơn đầu vào/đầu ra hợp lệ trước kỳ kê khai và quyết toán thuế.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

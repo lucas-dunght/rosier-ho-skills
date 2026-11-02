@@ -1,0 +1,10 @@
+{
+  "name": "rs-fin-tax-vat-cit-compliance",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-fin-tax-vat-cit-compliance",
+  "version": "6.2.0",
+  "commit": "aca737fa280f9b85",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

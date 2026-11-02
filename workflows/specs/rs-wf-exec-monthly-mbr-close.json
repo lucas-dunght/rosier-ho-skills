@@ -1,0 +1,17 @@
+{
+  "index": 144,
+  "workflow_id": "rs-wf-exec-monthly-mbr-close",
+  "group": "WF-01",
+  "title": "Chu trình Ngày 28-30 Cuối Tháng: Họp Nghiệm Thu MBR, Đánh giá DoD & Chốt Kế Hoạch Tháng Mới",
+  "skills_chain": [
+    "rs-exec-monthly-mbr",
+    "rs-fin-store-pnl-analyzer",
+    "rs-office-data-kpi-storyteller"
+  ],
+  "mcp_tools": [
+    "rs-mcp-finance-dual-pnl",
+    "rs-mcp-work-plan-audit"
+  ],
+  "definition_of_done": "Báo cáo nghiệm thu tháng cũ và Kế hoạch 10-Sao tháng mới được Ban Điều Hành phê duyệt.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

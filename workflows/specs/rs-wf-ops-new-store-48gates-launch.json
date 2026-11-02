@@ -1,0 +1,18 @@
+{
+  "index": 151,
+  "workflow_id": "rs-wf-ops-new-store-48gates-launch",
+  "group": "WF-02",
+  "title": "Chu trình Khai Trương Quán Mới Qua 48 Cổng Kiểm Duyệt Kỹ Thuật – Mặt Bằng CAD – Pháp Lý",
+  "skills_chain": [
+    "rs-ops-new-store-48gates",
+    "rs-meta-cad-store-floorplan-dxf",
+    "rs-legal-premises-lease-review",
+    "rs-fin-capex-store-roi"
+  ],
+  "mcp_tools": [
+    "rs-mcp-work-dod-gate",
+    "rs-mcp-hub-store-publish"
+  ],
+  "definition_of_done": "48/48 cổng đạt tích xanh trước giờ cắt băng khai trương.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

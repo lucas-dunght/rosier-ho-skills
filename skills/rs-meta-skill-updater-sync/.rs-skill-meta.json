@@ -1,0 +1,10 @@
+{
+  "name": "rs-meta-skill-updater-sync",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-meta-skill-updater-sync",
+  "version": "6.2.0",
+  "commit": "68069d102936bf19",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}
