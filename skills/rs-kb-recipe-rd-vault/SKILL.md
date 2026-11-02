@@ -1,13 +1,13 @@
 ---
 name: rs-kb-recipe-rd-vault
-description: "Chuẩn Hóa Công Thức Đồ Uống R&D, Định Mức Nguyên Liệu & Costing (Phân khu 02: Quản Trị Kho Tri Thức 2-Hub, SOP, R&D & Học Viện LMS (rs-kb-* & rs-lms-*)). Kỹ năng độc quyền chuẩn 5 Lớp Kép thuộc hệ sinh thái nội bộ RS-OS 200 của Rosier Fresh Tea & Coffee. Hỗ trợ song song Nhân sự HO/Cửa hàng (Mode A: Human Co-Pilot) và Hệ thống AI Agent 4 Tầng (Mode B: Autonomous Agent). Tích hợp công cụ CLI tất định scripts/rs_kb_recipe_rd_vault_tool.py (--dry-run, --json, Actionable Error), Kỷ luật Kiểm chứng 4 Nhãn ([OBSERVED]/[DERIVED]/[PRIOR]/[ASSUMED]), bộ lọc khử mùi AI 3 vòng nội bộ và khóa ngữ cảnh sống 25 điểm bán / 3 mô hình chủ thể pháp nhân / 2 Kho Tri Thức Nội Bộ của Rosier Fresh Tea & Coffee."
-version: "6.4.0"
+description: "Chuẩn Hóa Công Thức Đồ Uống R&D, Sổ Cái BOM Bất Biến Theo Ngày Tháng & Phê Duyệt 3 Chốt (R&D -> Cung Ứng -> CEO Toàn Chuỗi). Kỹ năng độc quyền chuẩn 5 Lớp Kép thuộc hệ sinh thái nội bộ RS-OS 200 của Rosier Fresh Tea & Coffee. Hỗ trợ song song Nhân sự HO/Cửa hàng (Mode A: Human Co-Pilot) và Hệ thống AI Agent 4 Tầng (Mode B: Autonomous Agent). Tích hợp công cụ CLI tất định scripts/rs_kb_recipe_rd_vault_tool.py (--dry-run, --json, Actionable Error, Sổ cái BOM bất biến theo ngày effective_from -> effective_to, khóa cứng xóa BOM cũ), Kỷ luật Kiểm chứng 4 Nhãn ([OBSERVED]/[DERIVED]/[PRIOR]/[ASSUMED]), bộ lọc khử mùi AI 3 vòng nội bộ và khóa ngữ cảnh sống 25 điểm bán / 3 mô hình chủ thể pháp nhân / 2 Kho Tri Thức Nội Bộ của Rosier Fresh Tea & Coffee."
+version: "6.5.0"
 layer: "flagship"
 division: "02-rs-kb-lms"
 security_zone: "INTERNAL_PRIVILEGED"
 ---
 
-# 🏛️ `rs-kb-recipe-rd-vault` · Chuẩn Hóa Công Thức Đồ Uống R&D, Định Mức Nguyên Liệu & Costing
+# 🏛️ `rs-kb-recipe-rd-vault` · Chuẩn Hóa Công Thức Đồ Uống R&D, Sổ Cái BOM Bất Biến Theo Ngày Tháng & Phê Duyệt 3 Chốt
 
 > **Ecosystem ID:** `RS-OS-200 #015` · **Layer:** `flagship` · **Division:** `Phân khu 02: Quản Trị Kho Tri Thức 2-Hub, SOP, R&D & Học Viện LMS (rs-kb-* & rs-lms-*)`
 > **Security Zone:** `INTERNAL_PRIVILEGED` · **Allowed Knowledge Hub:** `ROSIER_BUSINESS (15e4...) -> One-Way Sanitized Sync -> ROSIER_STORE_HUB (4004...)`
@@ -27,23 +27,45 @@ security_zone: "INTERNAL_PRIVILEGED"
 
 ---
 
-## 2. Dual-Use Execution Protocol (`Mode A: Human Co-Pilot` × `Mode B: Autonomous Agent`)
+## 2. Cơ Chế Phê Duyệt BOM 3 Chốt & Sổ Cái Bất Biến Theo Ngày (`Append-Only Temporal BOM Ledger`)
 
-### 👤 Mode A: Human Co-Pilot (For Rosier Roles: Trưởng Bộ Phận Đào Tạo & LMS, Trưởng Bộ Phận R&D & Quản Lý Vận Hành, CEO Toàn Chuỗi)
+1. **Nguyên Tắc Bất Biến · Tuyệt Đối Không Xóa Hoặc Ghi Đè BOM Cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`):**
+   - Mọi thao tác xóa (`bom-delete`) hoặc ghi đè trực tiếp (`bom-overwrite`) lên phiên bản BOM đã ban hành đều bị khóa cứng trong [`core/rs_core_engine.py`](../../core/rs_core_engine.py) và [`core/bom_temporal_ledger.json`](../../core/bom_temporal_ledger.json).
+   - Mỗi lần tạo mới hoặc cập nhật định mức chỉ được phép thêm một phiên bản mới (`version_seq = N + 1`) gắn mốc ngày hiệu lực `effective_from` (`YYYY-MM-DD`) và liên kết `parent_version_id` về phiên bản liền trước.
+   - Khi phiên bản mới có hiệu lực từ ngày `D` được phê duyệt chốt, phiên bản cũ cùng phạm vi điểm bán (`store_scope`) tự động đóng `effective_to = D - 1 ngày` và chuyển sang trạng thái `SUPERSEDED_ARCHIVED` để phục vụ đối soát Kiểm kê mù (`rs-supply-pos-erp-blindcount`), Cảnh báo biến động giá nhập (`rs-supply-cost-variance-alert`) và Tính giá vốn kỳ quá khứ (`rs-fin-drink-unit-economics`).
+2. **Luồng Phê Duyệt 3 Chốt Tuần Tự (`R&D` -> `Cung Ứng` -> `CEO Toàn Chuỗi`):**
+   - **Chốt 1 · Bộ Phận R&D (`role=rnd_lead` · `rs-persona-master-rnd`):** Chạy `bom-create` hoặc `bom-update` để thiết lập công thức (`ml/gram`, tỷ lệ hao hụt `wastage_pct`), chọn ngày dự kiến áp dụng `effective_from` và phạm vi điểm bán (`PILOT_COMPANY_3` cho cụm 3 quán công ty `38197, 46880, 87024` hoặc `CHAIN_25_STORES` cho toàn mạng lưới 25 điểm bán). Trạng thái khởi tạo: `DRAFT_RND`.
+   - **Chốt 2 · Bộ Phận Cung Ứng (`role=supply_chain` · `rs-persona-antifragile-supply`):** Chạy `bom-verify-supply` để khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi đơn vị nhập sang đơn vị pha chế, đơn giá vốn (`unit_cost_vnd`) và kiểm tra tỷ lệ biến động giá vốn (`cost_variance_vs_prev_pct`). Trạng thái sau xác nhận: `SUPPLY_VERIFIED` (chặn R&D tự xác nhận chéo với mã lỗi `SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`).
+   - **Chốt 3 · CEO Toàn Chuỗi (`role=chain_ceo` · `rs-persona-first-principles-truth`):** Chạy `bom-approve` để phê duyệt hiệu lực chính thức (`APPROVED_ACTIVE` hoặc `APPROVED_SCHEDULED` nếu ngày hiệu lực ở tương lai), cấp mã biên nhận `approval_receipt_sha256` và tự động đóng `effective_to` của phiên bản cũ. Tại kho Nhân sự Khối HO (`rosier-ho-skills`), lệnh `bom-approve` bị chặn cứng (`HO_CEO_APPROVAL_REQUIRED`) nếu không có mã chữ ký phê duyệt hợp lệ từ kho CEO.
+
+---
+
+## 3. Dual-Use Execution Protocol (`Mode A: Human Co-Pilot` × `Mode B: Autonomous Agent`)
+
+### 👤 Mode A: Human Co-Pilot (For Rosier Roles: Trưởng Bộ Phận R&D & Quản Lý Vận Hành, Kế Toán Cung Ứng & Quản Lý Kho Tổng, CEO Toàn Chuỗi)
 1. **Step 1 · Context & Gate Verification:**
    - Read [`references/rosier-context-lock.md`](references/rosier-context-lock.md) and [`references/domain-canon.md`](references/domain-canon.md).
-   - If the task produces visual/creative/strategic options, enforce the **Rosier 3-Direction Mandatory Gate** (present 3 distinct options · *1. Quiet Luxury Modern Zen*, *2. Editorial Tea Magazine*, *3. Fresh Tea-Commerce Gen Z* · and record the choice in `direction-approved.md` before full build).
-2. **Step 2 · Deterministic CLI Calculation (`--dry-run` & `--json`):**
+2. **Step 2 · Deterministic CLI Calculation & BOM Lifecycle Operations (`--dry-run` & `--json`):**
    - Never perform mental math in the LLM. Run the bundled Rosier CLI tool:
      ```bash
-     python3 scripts/rs_kb_recipe_rd_vault_tool.py calc --input payload.json --dry-run --json
-     python3 scripts/rs_kb_recipe_rd_vault_tool.py calc --input payload.json --json
-     python3 scripts/rs_kb_recipe_rd_vault_tool.py audit --text "Draft Vietnamese text..." --json
+     # 1. Chốt 1 (R&D): Tạo mới hoặc cập nhật phiên bản BOM theo ngày (DRAFT_RND)
+     python3 scripts/rs_kb_recipe_rd_vault_tool.py bom-update --bom-id BOM-DRK-OLNS-500 --effective-from 2026-11-20 --store-scope PILOT_COMPANY_3 --role rnd_lead --change-reason "Tối ưu định mức kem sữa mùa Đông tại 3 quán công ty" --dry-run --json
+
+     # 2. Chốt 2 (Cung ứng): Xác nhận mã SKU Kho Tổng, hệ số quy đổi & đơn giá vốn (SUPPLY_VERIFIED)
+     python3 scripts/rs_kb_recipe_rd_vault_tool.py bom-verify-supply --bom-id BOM-DRK-OLNS-500 --version-id BOM-DRK-OLNS-500@2026-12-01.v5 --role supply_chain --dry-run --json
+
+     # 3. Chốt 3 (CEO Toàn Chuỗi): Phê duyệt hiệu lực & tự động đóng effective_to bản cũ (APPROVED_ACTIVE / APPROVED_SCHEDULED)
+     python3 scripts/rs_kb_recipe_rd_vault_tool.py bom-approve --bom-id BOM-DRK-OLNS-500 --version-id BOM-DRK-OLNS-500@2026-11-15.v4 --role chain_ceo --dry-run --json
+
+     # 4. Tra cứu BOM có hiệu lực tại một ngày bất kỳ (bom-as-of), xem lịch sử (bom-history) & so sánh chênh lệch (bom-diff)
+     python3 scripts/rs_kb_recipe_rd_vault_tool.py bom-as-of --bom-id BOM-DRK-OLNS-500 --as-of-date 2026-08-15 --store-code 38197 --json
+     python3 scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json
+     python3 scripts/rs_kb_recipe_rd_vault_tool.py bom-diff --bom-id BOM-DRK-OLNS-500 --from-version-id BOM-DRK-OLNS-500@2026-06-01.v1 --to-version-id BOM-DRK-OLNS-500@2026-10-01.v2 --json
      ```
 3. **Step 3 · Deliverable Packaging:**
    - Format the output using [`assets/templates/output-template.md`](assets/templates/output-template.md) and verify `< 30%` AI footprint score via `audit`.
 
-### 🤖 Mode B: Autonomous Agent (For 4. Core-Academy, 0. Core-Eng)
+### 🤖 Mode B: Autonomous Agent (For 4. Core-Academy, 2. Core-Supply, 0. Core-Eng)
 1. **Zero-Turn Deterministic Invocation & Live Control Lever:**
    ```bash
    python3 scripts/rs_kb_recipe_rd_vault_tool.py --self-test --json
@@ -54,5 +76,6 @@ security_zone: "INTERNAL_PRIVILEGED"
 
 ---
 
-## 3. Bundled Reference Playbooks & Internal Engines
+## 4. Bundled Reference Playbooks & Internal Engines
   - `references/domain-canon.md` & `references/rosier-context-lock.md`
+  - `core/bom_temporal_ledger.json` (Sổ cái BOM bất biến theo ngày hiệu lực `effective_from -> effective_to`)

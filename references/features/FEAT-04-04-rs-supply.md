@@ -6,8 +6,8 @@ source_files:
   - skills/rs-supply-pos-erp-blindcount/SKILL.md
   - skills/rs-supply-pos-erp-blindcount/scripts/rs_supply_pos_erp_blindcount_tool.py
 source_hashes:
-  core/rs_core_engine.py: sha256:81c4d2add16abcf8
-  skills/rs-supply-pos-erp-blindcount/SKILL.md: sha256:c34af5b05cc27159
+  core/rs_core_engine.py: sha256:6f6990ce27a418da
+  skills/rs-supply-pos-erp-blindcount/SKILL.md: sha256:efb058a3be16522e
   skills/rs-supply-pos-erp-blindcount/scripts/rs_supply_pos_erp_blindcount_tool.py: sha256:a94c928f32c6cf64
 ---
 

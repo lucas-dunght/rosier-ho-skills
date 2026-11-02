@@ -1,0 +1,619 @@
+{
+  "schema_version": "1.0.0-rosier-bitemporal-bom",
+  "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+  "allow_bom_deletion": false,
+  "allow_in_place_overwrite": false,
+  "approval_pipeline_stages": [
+    {
+      "stage": 1,
+      "status": "DRAFT_RND",
+      "owner_role": "rnd_lead",
+      "persona_skill": "rs-persona-master-rnd",
+      "description": "Bộ phận R&D khởi tạo mới hoặc cập nhật định mức công thức (ml/gram, hao hụt, phạm vi điểm bán và ngày dự kiến áp dụng)."
+    },
+    {
+      "stage": 2,
+      "status": "SUPPLY_VERIFIED",
+      "owner_role": "supply_chain",
+      "persona_skill": "rs-persona-antifragile-supply",
+      "description": "Bộ phận Cung ứng khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi đơn vị nhập sang đơn vị pha chế, đơn giá vốn và tỷ lệ biến động giá vốn."
+    },
+    {
+      "stage": 3,
+      "status": "APPROVED_ACTIVE_OR_SCHEDULED",
+      "owner_role": "chain_ceo",
+      "persona_skill": "rs-persona-first-principles-truth",
+      "description": "CEO Toàn Chuỗi phê duyệt hiệu lực chính thức, cấp mã biên nhận SHA-256 và tự động đóng ngày hiệu lực (effective_to = effective_from - 1 ngày) của phiên bản liền trước cùng phạm vi."
+    }
+  ],
+  "store_scopes": {
+    "PILOT_COMPANY_3": {
+      "stores": ["38197", "46880", "87024"],
+      "description": "Cụm 03 Cửa hàng Mô hình Công ty (Pilot Lab) thử nghiệm món mới và định mức mới trước khi nhân rộng."
+    },
+    "CHAIN_25_STORES": {
+      "stores": "ALL_25_ACTIVE_STORES",
+      "blocked_closed_stores": ["115953", "106192"],
+      "description": "Toàn mạng lưới 25 điểm bán đang hoạt động (03 cửa hàng công ty CHH và 22 điểm bán nhượng quyền CHNQ)."
+    }
+  },
+  "boms": {
+    "BOM-DRK-OLNS-500": {
+      "bom_id": "BOM-DRK-OLNS-500",
+      "product_code": "DRK-OLNS-500",
+      "product_name": "Trà Ô Long Nhài Sữa Rosier 500ml",
+      "category": "MILK_TEA_SIGNATURE",
+      "cup_size_ml": 500,
+      "selling_price_vnd": 39000,
+      "versions": [
+        {
+          "version_id": "BOM-DRK-OLNS-500@2026-06-01.v1",
+          "version_seq": 1,
+          "parent_version_id": null,
+          "effective_from": "2026-06-01",
+          "effective_to": "2026-09-30",
+          "store_scope": "CHAIN_25_STORES",
+          "applicable_stores": ["ALL_25_ACTIVE_STORES"],
+          "approval_status": "SUPERSEDED_ARCHIVED",
+          "superseded_by_version_id": "BOM-DRK-OLNS-500@2026-10-01.v2",
+          "change_reason": "Ban hành định mức gốc mùa Hè 2026 cho toàn chuỗi 25 điểm bán",
+          "governance_trail": {
+            "stage_1_rnd": {
+              "role": "rnd_lead",
+              "persona": "rs-persona-master-rnd",
+              "status": "COMPLETED",
+              "timestamp": "2026-05-25T09:00:00Z",
+              "note": "Chuẩn hóa nền cốt trà Ô Long Nhài 150ml kết hợp sữa tươi thanh trùng 45ml và syrup đường mía 20ml"
+            },
+            "stage_2_supply": {
+              "role": "supply_chain",
+              "persona": "rs-persona-antifragile-supply",
+              "status": "COMPLETED",
+              "timestamp": "2026-05-27T14:00:00Z",
+              "cost_variance_vs_prev_pct": 0.0,
+              "note": "Khớp 100% mã SKU Kho Tổng Trung Tâm và đơn giá nhập bình quân gia quyền Q2/2026"
+            },
+            "stage_3_ceo": {
+              "role": "chain_ceo",
+              "persona": "rs-persona-first-principles-truth",
+              "status": "APPROVED",
+              "timestamp": "2026-05-29T10:30:00Z",
+              "approval_receipt_sha256": "a1c9084e7b2d19f0"
+            }
+          },
+          "ingredients": [
+            {
+              "sku_code": "NVL-TEA-OLN-01",
+              "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+              "rnd_qty": 150.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+              "conversion_factor": 25000.0,
+              "unit_cost_vnd": 22.0,
+              "line_cogs_vnd": 3366.0
+            },
+            {
+              "sku_code": "NVL-MLK-TT-01",
+              "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+              "rnd_qty": 45.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.5,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 88.0,
+              "line_cogs_vnd": 4019.4
+            },
+            {
+              "sku_code": "NVL-SYR-CANE-01",
+              "ingredient_name": "Syrup Đường Mía Nguyên Bản",
+              "rnd_qty": 20.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.0,
+              "supply_pack_unit": "Can 5000ml",
+              "conversion_factor": 5000.0,
+              "unit_cost_vnd": 45.0,
+              "line_cogs_vnd": 909.0
+            },
+            {
+              "sku_code": "PKG-CAN-PET500",
+              "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+              "rnd_qty": 1.0,
+              "rnd_unit": "bộ",
+              "wastage_pct": 0.5,
+              "supply_pack_unit": "Thùng 500 bộ",
+              "conversion_factor": 500.0,
+              "unit_cost_vnd": 2891.0,
+              "line_cogs_vnd": 2905.5
+            }
+          ],
+          "unit_economics": {
+            "total_recipe_cogs_vnd": 8294.4,
+            "packaging_cogs_vnd": 2905.5,
+            "total_bom_cogs_vnd": 11199.9,
+            "selling_price_vnd": 39000.0,
+            "cogs_pct": 28.72,
+            "gross_margin_pct": 71.28,
+            "cost_variance_vs_prev_pct": 0.0
+          }
+        },
+        {
+          "version_id": "BOM-DRK-OLNS-500@2026-10-01.v2",
+          "version_seq": 2,
+          "parent_version_id": "BOM-DRK-OLNS-500@2026-06-01.v1",
+          "effective_from": "2026-10-01",
+          "effective_to": null,
+          "store_scope": "CHAIN_25_STORES",
+          "applicable_stores": ["ALL_25_ACTIVE_STORES"],
+          "approval_status": "APPROVED_ACTIVE",
+          "superseded_by_version_id": null,
+          "change_reason": "Cập nhật định mức mùa Thu Đông (tăng nền trà lên 155ml, giảm syrup xuống 18ml) và cập nhật đơn giá bộ vỏ lon PET kỳ Q4/2026",
+          "governance_trail": {
+            "stage_1_rnd": {
+              "role": "rnd_lead",
+              "persona": "rs-persona-master-rnd",
+              "status": "COMPLETED",
+              "timestamp": "2026-09-24T10:15:00Z",
+              "note": "Tăng 5ml cốt trà Ô Long Nhài để giữ hậu vị đậm đà khi thời tiết chuyển lạnh, giảm 2ml syrup đường mía"
+            },
+            "stage_2_supply": {
+              "role": "supply_chain",
+              "persona": "rs-persona-antifragile-supply",
+              "status": "COMPLETED",
+              "timestamp": "2026-09-26T15:20:00Z",
+              "cost_variance_vs_prev_pct": 2.68,
+              "note": "Đã kiểm tra đơn giá lô vỏ lon PET Q4/2026 và xác nhận biến động giá vốn +2.68% nằm trong biên an toàn"
+            },
+            "stage_3_ceo": {
+              "role": "chain_ceo",
+              "persona": "rs-persona-first-principles-truth",
+              "status": "APPROVED",
+              "timestamp": "2026-09-28T11:00:00Z",
+              "approval_receipt_sha256": "d48f29e019bc73a2"
+            }
+          },
+          "ingredients": [
+            {
+              "sku_code": "NVL-TEA-OLN-01",
+              "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+              "rnd_qty": 155.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+              "conversion_factor": 25000.0,
+              "unit_cost_vnd": 22.0,
+              "line_cogs_vnd": 3478.2
+            },
+            {
+              "sku_code": "NVL-MLK-TT-01",
+              "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+              "rnd_qty": 45.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.5,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 90.0,
+              "line_cogs_vnd": 4110.8
+            },
+            {
+              "sku_code": "NVL-SYR-CANE-01",
+              "ingredient_name": "Syrup Đường Mía Nguyên Bản",
+              "rnd_qty": 18.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.0,
+              "supply_pack_unit": "Can 5000ml",
+              "conversion_factor": 5000.0,
+              "unit_cost_vnd": 45.0,
+              "line_cogs_vnd": 818.1
+            },
+            {
+              "sku_code": "PKG-CAN-PET500",
+              "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+              "rnd_qty": 1.0,
+              "rnd_unit": "bộ",
+              "wastage_pct": 0.5,
+              "supply_pack_unit": "Thùng 500 bộ",
+              "conversion_factor": 500.0,
+              "unit_cost_vnd": 3077.5,
+              "line_cogs_vnd": 3092.9
+            }
+          ],
+          "unit_economics": {
+            "total_recipe_cogs_vnd": 8407.1,
+            "packaging_cogs_vnd": 3092.9,
+            "total_bom_cogs_vnd": 11500.0,
+            "selling_price_vnd": 39000.0,
+            "cogs_pct": 29.49,
+            "gross_margin_pct": 70.51,
+            "cost_variance_vs_prev_pct": 2.68
+          }
+        },
+        {
+          "version_id": "BOM-DRK-OLNS-500@2026-10-20.v3",
+          "version_seq": 3,
+          "parent_version_id": "BOM-DRK-OLNS-500@2026-10-01.v2",
+          "effective_from": "2026-10-20",
+          "effective_to": null,
+          "store_scope": "PILOT_COMPANY_3",
+          "applicable_stores": ["38197", "46880", "87024"],
+          "approval_status": "APPROVED_ACTIVE",
+          "superseded_by_version_id": null,
+          "change_reason": "Thử nghiệm công thức bổ sung lớp kem sữa thanh nhẹ tại cụm 03 cửa hàng công ty (38197, 46880, 87024)",
+          "governance_trail": {
+            "stage_1_rnd": {
+              "role": "rnd_lead",
+              "persona": "rs-persona-master-rnd",
+              "status": "COMPLETED",
+              "timestamp": "2026-10-16T09:30:00Z",
+              "note": "Thử nghiệm bổ sung 15ml kem béo thực vật thanh nhẹ tại 3 điểm bán Pilot"
+            },
+            "stage_2_supply": {
+              "role": "supply_chain",
+              "persona": "rs-persona-antifragile-supply",
+              "status": "COMPLETED",
+              "timestamp": "2026-10-17T14:10:00Z",
+              "cost_variance_vs_prev_pct": 3.48,
+              "note": "Xác nhận mã SKU NVL-CRM-LIGHT-01 tồn kho dồi dào tại Kho Tổng Trung Tâm"
+            },
+            "stage_3_ceo": {
+              "role": "chain_ceo",
+              "persona": "rs-persona-first-principles-truth",
+              "status": "APPROVED",
+              "timestamp": "2026-10-18T16:00:00Z",
+              "approval_receipt_sha256": "89b4f102c7e531d8"
+            }
+          },
+          "ingredients": [
+            {
+              "sku_code": "NVL-TEA-OLN-01",
+              "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+              "rnd_qty": 150.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+              "conversion_factor": 25000.0,
+              "unit_cost_vnd": 22.0,
+              "line_cogs_vnd": 3366.0
+            },
+            {
+              "sku_code": "NVL-MLK-TT-01",
+              "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+              "rnd_qty": 40.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.5,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 90.0,
+              "line_cogs_vnd": 3654.0
+            },
+            {
+              "sku_code": "NVL-CRM-LIGHT-01",
+              "ingredient_name": "Kem Sữa Thực Vật Thanh Nhẹ",
+              "rnd_qty": 15.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 65.0,
+              "line_cogs_vnd": 994.5
+            },
+            {
+              "sku_code": "NVL-SYR-CANE-01",
+              "ingredient_name": "Syrup Đường Mía Nguyên Bản",
+              "rnd_qty": 17.5,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.0,
+              "supply_pack_unit": "Can 5000ml",
+              "conversion_factor": 5000.0,
+              "unit_cost_vnd": 45.0,
+              "line_cogs_vnd": 792.6
+            },
+            {
+              "sku_code": "PKG-CAN-PET500",
+              "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+              "rnd_qty": 1.0,
+              "rnd_unit": "bộ",
+              "wastage_pct": 0.5,
+              "supply_pack_unit": "Thùng 500 bộ",
+              "conversion_factor": 500.0,
+              "unit_cost_vnd": 3077.5,
+              "line_cogs_vnd": 3092.9
+            }
+          ],
+          "unit_economics": {
+            "total_recipe_cogs_vnd": 8807.1,
+            "packaging_cogs_vnd": 3092.9,
+            "total_bom_cogs_vnd": 11900.0,
+            "selling_price_vnd": 39000.0,
+            "cogs_pct": 30.51,
+            "gross_margin_pct": 69.49,
+            "cost_variance_vs_prev_pct": 3.48
+          }
+        },
+        {
+          "version_id": "BOM-DRK-OLNS-500@2026-11-15.v4",
+          "version_seq": 4,
+          "parent_version_id": "BOM-DRK-OLNS-500@2026-10-01.v2",
+          "effective_from": "2026-11-15",
+          "effective_to": null,
+          "store_scope": "CHAIN_25_STORES",
+          "applicable_stores": ["ALL_25_ACTIVE_STORES"],
+          "approval_status": "SUPPLY_VERIFIED",
+          "superseded_by_version_id": null,
+          "change_reason": "Đề xuất nhân rộng công thức mùa Đông từ cụm 3 CHH Pilot ra toàn chuỗi 25 điểm bán kể từ ngày 2026-11-15",
+          "governance_trail": {
+            "stage_1_rnd": {
+              "role": "rnd_lead",
+              "persona": "rs-persona-master-rnd",
+              "status": "COMPLETED",
+              "timestamp": "2026-11-01T10:00:00Z",
+              "note": "Kết quả thử nghiệm tại 3 cửa hàng công ty đạt điểm cảm quan 94/100, đề xuất áp dụng toàn chuỗi"
+            },
+            "stage_2_supply": {
+              "role": "supply_chain",
+              "persona": "rs-persona-antifragile-supply",
+              "status": "COMPLETED",
+              "timestamp": "2026-11-02T09:00:00Z",
+              "cost_variance_vs_prev_pct": 2.17,
+              "note": "Đã đàm phán giá mua sỉ kem sữa thực vật cho 25 điểm bán, kéo giá vốn xuống 11750 VND/ly (+2.17%)"
+            },
+            "stage_3_ceo": {
+              "role": "chain_ceo",
+              "persona": "rs-persona-first-principles-truth",
+              "status": "PENDING_CEO_APPROVAL",
+              "timestamp": null,
+              "approval_receipt_sha256": null
+            }
+          },
+          "ingredients": [
+            {
+              "sku_code": "NVL-TEA-OLN-01",
+              "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+              "rnd_qty": 150.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+              "conversion_factor": 25000.0,
+              "unit_cost_vnd": 22.0,
+              "line_cogs_vnd": 3366.0
+            },
+            {
+              "sku_code": "NVL-MLK-TT-01",
+              "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+              "rnd_qty": 40.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.5,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 90.0,
+              "line_cogs_vnd": 3654.0
+            },
+            {
+              "sku_code": "NVL-CRM-LIGHT-01",
+              "ingredient_name": "Kem Sữa Thực Vật Thanh Nhẹ",
+              "rnd_qty": 15.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 55.2,
+              "line_cogs_vnd": 844.5
+            },
+            {
+              "sku_code": "NVL-SYR-CANE-01",
+              "ingredient_name": "Syrup Đường Mía Nguyên Bản",
+              "rnd_qty": 17.5,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.0,
+              "supply_pack_unit": "Can 5000ml",
+              "conversion_factor": 5000.0,
+              "unit_cost_vnd": 45.0,
+              "line_cogs_vnd": 792.6
+            },
+            {
+              "sku_code": "PKG-CAN-PET500",
+              "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+              "rnd_qty": 1.0,
+              "rnd_unit": "bộ",
+              "wastage_pct": 0.5,
+              "supply_pack_unit": "Thùng 500 bộ",
+              "conversion_factor": 500.0,
+              "unit_cost_vnd": 3077.5,
+              "line_cogs_vnd": 3092.9
+            }
+          ],
+          "unit_economics": {
+            "total_recipe_cogs_vnd": 8657.1,
+            "packaging_cogs_vnd": 3092.9,
+            "total_bom_cogs_vnd": 11750.0,
+            "selling_price_vnd": 39000.0,
+            "cogs_pct": 30.13,
+            "gross_margin_pct": 69.87,
+            "cost_variance_vs_prev_pct": 2.17
+          }
+        },
+        {
+          "version_id": "BOM-DRK-OLNS-500@2026-12-01.v5",
+          "version_seq": 5,
+          "parent_version_id": "BOM-DRK-OLNS-500@2026-11-15.v4",
+          "effective_from": "2026-12-01",
+          "effective_to": null,
+          "store_scope": "PILOT_COMPANY_3",
+          "applicable_stores": ["38197", "46880", "87024"],
+          "approval_status": "DRAFT_RND",
+          "superseded_by_version_id": null,
+          "change_reason": "Bản nháp R&D công thức mùa Lễ hội cuối năm thử nghiệm tại cụm 03 cửa hàng công ty",
+          "governance_trail": {
+            "stage_1_rnd": {
+              "role": "rnd_lead",
+              "persona": "rs-persona-master-rnd",
+              "status": "COMPLETED",
+              "timestamp": "2026-11-02T15:00:00Z",
+              "note": "Khởi tạo định mức thử nghiệm mùa Lễ hội chờ bộ phận Cung ứng khớp mã SKU và giá nhập"
+            },
+            "stage_2_supply": {
+              "role": "supply_chain",
+              "persona": "rs-persona-antifragile-supply",
+              "status": "PENDING_SUPPLY_VERIFICATION",
+              "timestamp": null,
+              "cost_variance_vs_prev_pct": null,
+              "note": null
+            },
+            "stage_3_ceo": {
+              "role": "chain_ceo",
+              "persona": "rs-persona-first-principles-truth",
+              "status": "WAITING_FOR_SUPPLY_STAGE",
+              "timestamp": null,
+              "approval_receipt_sha256": null
+            }
+          },
+          "ingredients": [
+            {
+              "sku_code": "NVL-TEA-OLN-01",
+              "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+              "rnd_qty": 150.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+              "conversion_factor": 25000.0,
+              "unit_cost_vnd": 22.0,
+              "line_cogs_vnd": 3366.0
+            },
+            {
+              "sku_code": "NVL-MLK-TT-01",
+              "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+              "rnd_qty": 45.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.5,
+              "supply_pack_unit": "Hộp 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 90.0,
+              "line_cogs_vnd": 4110.8
+            },
+            {
+              "sku_code": "NVL-SYR-CHESTNUT-01",
+              "ingredient_name": "Syrup Hạt Dẻ Nướng Mùa Lễ Hội",
+              "rnd_qty": 20.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 1.5,
+              "supply_pack_unit": "Chai 1000ml",
+              "conversion_factor": 1000.0,
+              "unit_cost_vnd": 75.0,
+              "line_cogs_vnd": 1522.5
+            },
+            {
+              "sku_code": "PKG-CAN-PET500",
+              "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+              "rnd_qty": 1.0,
+              "rnd_unit": "bộ",
+              "wastage_pct": 0.5,
+              "supply_pack_unit": "Thùng 500 bộ",
+              "conversion_factor": 500.0,
+              "unit_cost_vnd": 3077.5,
+              "line_cogs_vnd": 3092.9
+            }
+          ],
+          "unit_economics": {
+            "total_recipe_cogs_vnd": 8999.3,
+            "packaging_cogs_vnd": 3092.9,
+            "total_bom_cogs_vnd": 12092.2,
+            "selling_price_vnd": 42000.0,
+            "cogs_pct": 28.79,
+            "gross_margin_pct": 71.21,
+            "cost_variance_vs_prev_pct": 2.91
+          }
+        }
+      ]
+    },
+    "BOM-DRK-OLDH-500": {
+      "bom_id": "BOM-DRK-OLDH-500",
+      "product_code": "DRK-OLDH-500",
+      "product_name": "Trà Ô Long Đào Hồng Rosier 500ml",
+      "category": "FRUIT_TEA_SIGNATURE",
+      "cup_size_ml": 500,
+      "selling_price_vnd": 42000,
+      "versions": [
+        {
+          "version_id": "BOM-DRK-OLDH-500@2026-07-01.v1",
+          "version_seq": 1,
+          "parent_version_id": null,
+          "effective_from": "2026-07-01",
+          "effective_to": null,
+          "store_scope": "CHAIN_25_STORES",
+          "applicable_stores": ["ALL_25_ACTIVE_STORES"],
+          "approval_status": "APPROVED_ACTIVE",
+          "superseded_by_version_id": null,
+          "change_reason": "Ban hành định mức chuẩn Trà Ô Long Đào Hồng 500ml áp dụng toàn chuỗi 25 điểm bán",
+          "governance_trail": {
+            "stage_1_rnd": {
+              "role": "rnd_lead",
+              "persona": "rs-persona-master-rnd",
+              "status": "COMPLETED",
+              "timestamp": "2026-06-22T09:00:00Z",
+              "note": "Chuẩn hóa công thức trà trái cây tươi thanh mát"
+            },
+            "stage_2_supply": {
+              "role": "supply_chain",
+              "persona": "rs-persona-antifragile-supply",
+              "status": "COMPLETED",
+              "timestamp": "2026-06-25T11:00:00Z",
+              "cost_variance_vs_prev_pct": 0.0,
+              "note": "Khớp mã SKU mứt đào hồng và cốt trà Ô Long tại Kho Tổng Trung Tâm"
+            },
+            "stage_3_ceo": {
+              "role": "chain_ceo",
+              "persona": "rs-persona-first-principles-truth",
+              "status": "APPROVED",
+              "timestamp": "2026-06-28T15:00:00Z",
+              "approval_receipt_sha256": "7f319e04a82b61c5"
+            }
+          },
+          "ingredients": [
+            {
+              "sku_code": "NVL-TEA-OLN-01",
+              "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+              "rnd_qty": 160.0,
+              "rnd_unit": "ml",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+              "conversion_factor": 25000.0,
+              "unit_cost_vnd": 22.0,
+              "line_cogs_vnd": 3590.4
+            },
+            {
+              "sku_code": "NVL-JAM-PEACH-01",
+              "ingredient_name": "Mứt Đào Hồng Tự Nhiên",
+              "rnd_qty": 35.0,
+              "rnd_unit": "g",
+              "wastage_pct": 2.0,
+              "supply_pack_unit": "Hũ 1200g",
+              "conversion_factor": 1200.0,
+              "unit_cost_vnd": 165.0,
+              "line_cogs_vnd": 5890.5
+            },
+            {
+              "sku_code": "PKG-CAN-PET500",
+              "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+              "rnd_qty": 1.0,
+              "rnd_unit": "bộ",
+              "wastage_pct": 0.5,
+              "supply_pack_unit": "Thùng 500 bộ",
+              "conversion_factor": 500.0,
+              "unit_cost_vnd": 3077.5,
+              "line_cogs_vnd": 3092.9
+            }
+          ],
+          "unit_economics": {
+            "total_recipe_cogs_vnd": 9480.9,
+            "packaging_cogs_vnd": 3092.9,
+            "total_bom_cogs_vnd": 12573.8,
+            "selling_price_vnd": 42000.0,
+            "cogs_pct": 29.94,
+            "gross_margin_pct": 70.06,
+            "cost_variance_vs_prev_pct": 0.0
+          }
+        }
+      ]
+    }
+  }
+}

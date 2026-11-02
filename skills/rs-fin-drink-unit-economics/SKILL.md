@@ -33,10 +33,10 @@ security_zone: "INTERNAL_PRIVILEGED"
 1. **Step 1 · Context & Gate Verification:**
    - Read [`references/rosier-context-lock.md`](references/rosier-context-lock.md) and [`references/domain-canon.md`](references/domain-canon.md).
    - If the task produces visual/creative/strategic options, enforce the **Rosier 3-Direction Mandatory Gate** (present 3 distinct options · *1. Quiet Luxury Modern Zen*, *2. Editorial Tea Magazine*, *3. Fresh Tea-Commerce Gen Z* · and record the choice in `direction-approved.md` before full build).
-2. **Step 2 · Deterministic CLI Calculation (`--dry-run` & `--json`):**
-   - Never perform mental math in the LLM. Run the bundled Rosier CLI tool:
+2. **Step 2 · Deterministic CLI Calculation & Tra Cứu Giá Vốn BOM Theo Kỳ Ngày Tháng (`--dry-run` & `--json`):**
+   - Never perform mental math in the LLM. Tự động lấy định mức và giá vốn (`unit_economics`) từ Sổ cái BOM bất biến theo ngày [`core/bom_temporal_ledger.json`](../../core/bom_temporal_ledger.json) theo đúng mốc `as_of_date` (`YYYY-MM-DD`) và mã cửa hàng `store_code`:
      ```bash
-     python3 scripts/rs_fin_drink_unit_economics_tool.py calc --input payload.json --dry-run --json
+     python3 scripts/rs_fin_drink_unit_economics_tool.py calc --input '{"bom_id":"BOM-DRK-OLNS-500","as_of_date":"2026-10-25","store_code":"38197"}' --dry-run --json
      python3 scripts/rs_fin_drink_unit_economics_tool.py calc --input payload.json --json
      python3 scripts/rs_fin_drink_unit_economics_tool.py audit --text "Draft Vietnamese text..." --json
      ```

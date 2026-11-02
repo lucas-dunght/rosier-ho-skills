@@ -13,14 +13,16 @@ import hashlib
 import json
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-ENGINE_VERSION = "6.5.0-ho.1-staff-safe-edition"
+ENGINE_VERSION = "6.5.0-ho.2-staff-safe-edition"
 HO_EDITION_MODE = True
 FORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}
 SUITE_ROOT_DIR = Path(__file__).resolve().parent.parent
+BOM_LEDGER_PATH = SUITE_ROOT_DIR / "core" / "bom_temporal_ledger.json"
+PILOT_COMPANY_3_CODES = {"38197", "46880", "87024"}
 
 EM_DASH_CHAR = "\u2014"
 COMMA_VA_RE = re.compile(r",\s+v\u00e0\b")
@@ -468,6 +470,800 @@ def calc_division_01_exec(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def load_bom_temporal_ledger() -> Dict[str, Any]:
+    """Load the Append-Only Bi-Temporal BOM Ledger (core/bom_temporal_ledger.json)."""
+    if BOM_LEDGER_PATH.exists():
+        try:
+            return json.loads(BOM_LEDGER_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {
+        "schema_version": "1.0.0-rosier-bitemporal-bom",
+        "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+        "allow_bom_deletion": False,
+        "allow_in_place_overwrite": False,
+        "boms": {},
+    }
+
+
+def _prev_day_iso(date_str: str) -> str:
+    """Return YYYY-MM-DD one calendar day before date_str."""
+    dt = datetime.strptime(date_str.strip()[:10], "%Y-%m-%d").date()
+    return (dt - timedelta(days=1)).isoformat()
+
+
+def _compute_bom_unit_economics(
+    ingredients: List[Dict[str, Any]],
+    selling_price_vnd: float = 39000.0,
+    prev_total_cogs: float | None = None,
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """Deterministically compute line COGS, recipe vs packaging COGS, margin %, and cost variance %."""
+    computed_lines: List[Dict[str, Any]] = []
+    recipe_cogs = 0.0
+    packaging_cogs = 0.0
+    for item in ingredients:
+        line = dict(item)
+        qty = float(line.get("rnd_qty", 0.0))
+        wastage_pct = float(line.get("wastage_pct", 0.0))
+        unit_cost = float(line.get("unit_cost_vnd", 0.0))
+        line_cogs = round(qty * (1.0 + wastage_pct / 100.0) * unit_cost, 1)
+        line["line_cogs_vnd"] = line_cogs
+        sku_code = str(line.get("sku_code", ""))
+        if sku_code.startswith("PKG-") or str(line.get("rnd_unit", "")).lower() == "bộ":
+            packaging_cogs += line_cogs
+        else:
+            recipe_cogs += line_cogs
+        computed_lines.append(line)
+
+    total_bom_cogs = round(recipe_cogs + packaging_cogs, 1)
+    safe_price = max(1.0, float(selling_price_vnd or 39000.0))
+    cogs_pct = round((total_bom_cogs / safe_price) * 100.0, 2)
+    gross_margin_pct = round(100.0 - cogs_pct, 2)
+    if prev_total_cogs and prev_total_cogs > 0:
+        variance_pct = round(((total_bom_cogs - prev_total_cogs) / prev_total_cogs) * 100.0, 2)
+    else:
+        variance_pct = 0.0
+
+    economics = {
+        "total_recipe_cogs_vnd": round(recipe_cogs, 1),
+        "packaging_cogs_vnd": round(packaging_cogs, 1),
+        "total_bom_cogs_vnd": total_bom_cogs,
+        "selling_price_vnd": round(safe_price, 1),
+        "cogs_pct": cogs_pct,
+        "gross_margin_pct": gross_margin_pct,
+        "cost_variance_vs_prev_pct": variance_pct,
+    }
+    return computed_lines, economics
+
+
+def resolve_active_bom_as_of(
+    bom_id: str = "BOM-DRK-OLNS-500",
+    as_of_date: str = "2026-11-02",
+    store_code: str = "38197",
+    ledger_data: Dict[str, Any] | None = None,
+    prefer_scope: str = "",
+) -> Dict[str, Any]:
+    """Resolve the active or historical BOM version as of a target YYYY-MM-DD date and store_code."""
+    clean_store = str(store_code or "38197").strip()
+    if clean_store in CLOSED_STORES:
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "route_blocked": True,
+            "store_code": clean_store,
+            "error": {
+                "code": "CLOSED_STORE_BLOCKED",
+                "root_cause": f"Điểm bán {clean_store} ({CLOSED_STORES[clean_store]}) đã ngừng hoạt động vĩnh viễn theo khóa ngữ cảnh Rosier.",
+                "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-as-of --bom-id BOM-DRK-OLNS-500 --as-of-date 2026-11-02 --store-code 38197 --json",
+            },
+        }
+
+    ledger = ledger_data or load_bom_temporal_ledger()
+    boms_map = ledger.get("boms", {})
+    bom_entry = boms_map.get(bom_id)
+    if not bom_entry:
+        return {
+            "ok": False,
+            "status": "ERROR",
+            "route_blocked": False,
+            "error": {
+                "code": "BOM_ID_NOT_FOUND",
+                "root_cause": f"Không tìm thấy mã BOM '{bom_id}' trong Sổ cái BOM theo ngày. Danh sách hợp lệ: {sorted(boms_map.keys())}",
+                "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+            },
+        }
+
+    target_date = str(as_of_date or "2026-11-02").strip()[:10]
+    versions: List[Dict[str, Any]] = bom_entry.get("versions", [])
+    is_pilot_store = (
+        prefer_scope == "PILOT_COMPANY_3"
+        or (prefer_scope != "CHAIN_25_STORES" and clean_store in PILOT_COMPANY_3_CODES)
+    )
+
+    eligible_approved: List[Dict[str, Any]] = []
+    for v in versions:
+        st = str(v.get("approval_status", ""))
+        if st not in ("APPROVED_ACTIVE", "SUPERSEDED_ARCHIVED", "APPROVED_SCHEDULED"):
+            continue
+        ef_from = str(v.get("effective_from", "1970-01-01"))[:10]
+        ef_to = v.get("effective_to")
+        if ef_from <= target_date and (ef_to is None or target_date <= str(ef_to)[:10]):
+            eligible_approved.append(v)
+
+    pilot_matches = [v for v in eligible_approved if v.get("store_scope") == "PILOT_COMPANY_3"]
+    chain_matches = [v for v in eligible_approved if v.get("store_scope") == "CHAIN_25_STORES"]
+
+    selected_v = None
+    if is_pilot_store and pilot_matches:
+        pilot_matches.sort(key=lambda x: (str(x.get("effective_from", "")), int(x.get("version_seq", 0))), reverse=True)
+        selected_v = pilot_matches[0]
+    elif chain_matches:
+        chain_matches.sort(key=lambda x: (str(x.get("effective_from", "")), int(x.get("version_seq", 0))), reverse=True)
+        selected_v = chain_matches[0]
+    elif eligible_approved:
+        eligible_approved.sort(key=lambda x: int(x.get("version_seq", 0)), reverse=True)
+        selected_v = eligible_approved[0]
+
+    archived_count = sum(1 for v in versions if v.get("approval_status") == "SUPERSEDED_ARCHIVED")
+    if not selected_v:
+        return {
+            "ok": False,
+            "status": "NOT_FOUND_FOR_DATE",
+            "route_blocked": False,
+            "bom_id": bom_id,
+            "as_of_date": target_date,
+            "store_code": clean_store,
+            "total_versions_in_ledger": len(versions),
+            "preserved_archived_versions_count": archived_count,
+            "error": {
+                "code": "NO_APPROVED_BOM_FOR_DATE",
+                "root_cause": f"Không có phiên bản BOM đã duyệt nào có hiệu lực tại ngày {target_date} cho mã {bom_id}.",
+                "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id {bom_id} --json",
+            },
+        }
+
+    return {
+        "ok": True,
+        "status": "OK",
+        "claim_label": "[OBSERVED: core/bom_temporal_ledger.json]",
+        "route_blocked": False,
+        "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+        "allow_bom_deletion": False,
+        "bom_id": bom_id,
+        "product_name": bom_entry.get("product_name"),
+        "as_of_date": target_date,
+        "store_code": clean_store,
+        "is_pilot_company_store": clean_store in PILOT_COMPANY_3_CODES,
+        "resolved_version": selected_v,
+        "resolved_version_id": selected_v.get("version_id"),
+        "effective_from": selected_v.get("effective_from"),
+        "effective_to": selected_v.get("effective_to"),
+        "store_scope": selected_v.get("store_scope"),
+        "approval_status": selected_v.get("approval_status"),
+        "unit_economics": selected_v.get("unit_economics"),
+        "total_versions_in_ledger": len(versions),
+        "preserved_archived_versions_count": archived_count,
+    }
+
+
+def diff_bom_versions(
+    bom_id: str = "BOM-DRK-OLNS-500",
+    from_version_id: str = "",
+    to_version_id: str = "",
+    ledger_data: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    """Compare two temporal BOM versions across ingredients and unit economics without mutating history."""
+    ledger = ledger_data or load_bom_temporal_ledger()
+    bom_entry = ledger.get("boms", {}).get(bom_id)
+    if not bom_entry:
+        return {
+            "ok": False,
+            "status": "ERROR",
+            "error": {
+                "code": "BOM_ID_NOT_FOUND",
+                "root_cause": f"Không tìm thấy mã BOM '{bom_id}' để so sánh phiên bản.",
+                "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+            },
+        }
+    versions: List[Dict[str, Any]] = bom_entry.get("versions", [])
+    by_id = {str(v.get("version_id")): v for v in versions}
+    if not from_version_id or not to_version_id:
+        if len(versions) >= 2:
+            v_from = versions[0]
+            v_to = versions[1]
+        else:
+            v_from = versions[0]
+            v_to = versions[0]
+    else:
+        v_from = by_id.get(from_version_id)
+        v_to = by_id.get(to_version_id)
+        if not v_from or not v_to:
+            return {
+                "ok": False,
+                "status": "ERROR",
+                "error": {
+                    "code": "BOM_VERSION_NOT_FOUND",
+                    "root_cause": f"Không tìm thấy phiên bản so sánh '{from_version_id}' hoặc '{to_version_id}'. Các phiên bản hiện có: {sorted(by_id.keys())}",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id {bom_id} --json",
+                },
+            }
+
+    from_ing = {str(i.get("sku_code")): i for i in v_from.get("ingredients", [])}
+    to_ing = {str(i.get("sku_code")): i for i in v_to.get("ingredients", [])}
+    added_skus = sorted(set(to_ing.keys()) - set(from_ing.keys()))
+    removed_skus = sorted(set(from_ing.keys()) - set(to_ing.keys()))
+    modified_lines: List[Dict[str, Any]] = []
+    for sku in sorted(set(from_ing.keys()) & set(to_ing.keys())):
+        a = from_ing[sku]
+        b = to_ing[sku]
+        if (
+            float(a.get("rnd_qty", 0.0)) != float(b.get("rnd_qty", 0.0))
+            or float(a.get("unit_cost_vnd", 0.0)) != float(b.get("unit_cost_vnd", 0.0))
+            or float(a.get("wastage_pct", 0.0)) != float(b.get("wastage_pct", 0.0))
+        ):
+            modified_lines.append({
+                "sku_code": sku,
+                "ingredient_name": b.get("ingredient_name"),
+                "from_qty": a.get("rnd_qty"),
+                "to_qty": b.get("rnd_qty"),
+                "from_unit_cost_vnd": a.get("unit_cost_vnd"),
+                "to_unit_cost_vnd": b.get("unit_cost_vnd"),
+                "from_line_cogs_vnd": a.get("line_cogs_vnd"),
+                "to_line_cogs_vnd": b.get("line_cogs_vnd"),
+            })
+
+    econ_from = v_from.get("unit_economics", {})
+    econ_to = v_to.get("unit_economics", {})
+    cogs_from = float(econ_from.get("total_bom_cogs_vnd", 0.0))
+    cogs_to = float(econ_to.get("total_bom_cogs_vnd", 0.0))
+    cogs_delta = round(cogs_to - cogs_from, 1)
+    cogs_delta_pct = round((cogs_delta / max(1.0, cogs_from)) * 100.0, 2)
+
+    return {
+        "ok": True,
+        "status": "OK",
+        "claim_label": "[DERIVED]",
+        "bom_id": bom_id,
+        "from_version_id": v_from.get("version_id"),
+        "from_effective_range": f"{v_from.get('effective_from')} -> {v_from.get('effective_to') or 'OPEN'}",
+        "to_version_id": v_to.get("version_id"),
+        "to_effective_range": f"{v_to.get('effective_from')} -> {v_to.get('effective_to') or 'OPEN'}",
+        "added_skus": added_skus,
+        "removed_skus": removed_skus,
+        "modified_ingredients": modified_lines,
+        "cogs_from_vnd": cogs_from,
+        "cogs_to_vnd": cogs_to,
+        "cogs_delta_vnd": cogs_delta,
+        "cogs_variance_pct": cogs_delta_pct,
+        "requires_ceo_approval": True,
+    }
+
+
+def execute_bom_lifecycle_action(
+    payload: Dict[str, Any],
+    dry_run: bool = False,
+    is_ho_edition: bool = False,
+) -> Dict[str, Any]:
+    """
+    Execute deterministic Append-Only Temporal BOM Ledger and 3-Stage Approval Gate operations:
+      - bom-create (Stage 1 · R&D creates v1 or new draft version -> DRAFT_RND)
+      - bom-update (Stage 1 · R&D or Supply Chain appends date-versioned vN+1 -> DRAFT_RND; never deletes old BOMs)
+      - bom-verify-supply (Stage 2 · Supply Chain verifies SKUs, conversion factor & unit cost -> SUPPLY_VERIFIED)
+      - bom-approve (Stage 3 · Chain CEO approves -> APPROVED_ACTIVE / APPROVED_SCHEDULED & closes prior effective_to = D-1)
+      - bom-as-of (Point-in-time resolution by YYYY-MM-DD and store_code)
+      - bom-history (Full immutable version history)
+      - bom-diff (Ingredient & COGS diff between versions)
+      - bom-delete / bom-overwrite (Permanently blocked: IMMUTABLE_BOM_DELETE_FORBIDDEN)
+    """
+    action = str(payload.get("bom_action") or payload.get("action") or "bom-history").lower().strip()
+    bom_id = str(payload.get("bom_id", "BOM-DRK-OLNS-500")).strip()
+    role = str(payload.get("role", "rnd_lead")).lower().strip()
+    store_code = str(payload.get("store_code", "38197")).strip()
+
+    if store_code in CLOSED_STORES:
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "route_blocked": True,
+            "error": {
+                "code": "CLOSED_STORE_BLOCKED",
+                "root_cause": f"Điểm bán {store_code} ({CLOSED_STORES[store_code]}) đã ngừng hoạt động vĩnh viễn.",
+                "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-as-of --bom-id BOM-DRK-OLNS-500 --store-code 38197 --json",
+            },
+        }
+
+    # 1. Hard Gate: Never delete or overwrite historical BOM versions
+    if action in ("bom-delete", "delete", "remove", "drop", "bom-overwrite", "overwrite", " purge") or bool(payload.get("delete_old_bom")) or bool(payload.get("overwrite_in_place")):
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "bom_action": action,
+            "bom_id": bom_id,
+            "allow_bom_deletion": False,
+            "allow_in_place_overwrite": False,
+            "error": {
+                "code": "IMMUTABLE_BOM_DELETE_FORBIDDEN",
+                "root_cause": "Cơ chế Sổ cái BOM Rosier khóa cứng quyền xóa hoặc ghi đè BOM cũ (Append-Only Temporal Ledger). Mọi thay đổi định mức chỉ được phép cập nhật bằng cách tạo phiên bản mới theo ngày hiệu lực (effective_from: YYYY-MM-DD).",
+                "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-update --bom-id {bom_id} --effective-from 2026-11-15 --role rnd_lead --dry-run --json",
+            },
+        }
+
+    ledger = json.loads(json.dumps(load_bom_temporal_ledger()))
+    boms_map = ledger.setdefault("boms", {})
+
+    if action == "bom-as-of":
+        as_of_date = str(payload.get("as_of_date") or payload.get("effective_from") or "2026-11-02").strip()[:10]
+        prefer_scope = str(payload.get("store_scope", "")).strip()
+        return resolve_active_bom_as_of(
+            bom_id=bom_id,
+            as_of_date=as_of_date,
+            store_code=store_code,
+            ledger_data=ledger,
+            prefer_scope=prefer_scope,
+        )
+
+    if action == "bom-diff":
+        return diff_bom_versions(
+            bom_id=bom_id,
+            from_version_id=str(payload.get("from_version_id", "")).strip(),
+            to_version_id=str(payload.get("to_version_id", "")).strip(),
+            ledger_data=ledger,
+        )
+
+    if action == "bom-history":
+        bom_entry = boms_map.get(bom_id)
+        if not bom_entry:
+            return {
+                "ok": False,
+                "status": "ERROR",
+                "error": {
+                    "code": "BOM_ID_NOT_FOUND",
+                    "root_cause": f"Không tìm thấy mã BOM '{bom_id}'. Danh sách hợp lệ: {sorted(boms_map.keys())}",
+                    "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+                },
+            }
+        versions = bom_entry.get("versions", [])
+        return {
+            "ok": True,
+            "status": "OK",
+            "claim_label": "[OBSERVED: core/bom_temporal_ledger.json]",
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "allow_bom_deletion": False,
+            "bom_id": bom_id,
+            "product_name": bom_entry.get("product_name"),
+            "total_versions": len(versions),
+            "archived_versions_preserved": sum(1 for v in versions if v.get("approval_status") == "SUPERSEDED_ARCHIVED"),
+            "active_versions_count": sum(1 for v in versions if v.get("approval_status") == "APPROVED_ACTIVE"),
+            "pending_pipeline_versions_count": sum(1 for v in versions if v.get("approval_status") in ("DRAFT_RND", "SUPPLY_VERIFIED", "APPROVED_SCHEDULED")),
+            "timeline": [
+                {
+                    "version_id": v.get("version_id"),
+                    "version_seq": v.get("version_seq"),
+                    "parent_version_id": v.get("parent_version_id"),
+                    "effective_from": v.get("effective_from"),
+                    "effective_to": v.get("effective_to"),
+                    "store_scope": v.get("store_scope"),
+                    "approval_status": v.get("approval_status"),
+                    "total_bom_cogs_vnd": v.get("unit_economics", {}).get("total_bom_cogs_vnd"),
+                    "cogs_pct": v.get("unit_economics", {}).get("cogs_pct"),
+                    "change_reason": v.get("change_reason"),
+                }
+                for v in versions
+            ],
+        }
+
+    # Stage 1: bom-create or bom-update
+    if action in ("bom-create", "bom-update"):
+        allowed_proposers = {"rnd_lead", "supply_chain", "ho_lms_rnd", "ho_ops_supply", "chain_ceo", "internal_staff"}
+        if role not in allowed_proposers:
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "error": {
+                    "code": "BOM_ROLE_UNAUTHORIZED",
+                    "root_cause": f"Vai trò '{role}' không có quyền tạo mới hoặc đề xuất cập nhật BOM. Chỉ Bộ phận R&D (rnd_lead), Cung ứng (supply_chain) hoặc CEO Toàn Chuỗi mới được khởi tạo.",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py {action} --bom-id {bom_id} --role rnd_lead --dry-run --json",
+                },
+            }
+
+        effective_from = str(payload.get("effective_from") or "2026-11-20").strip()[:10]
+        store_scope = str(payload.get("store_scope") or "PILOT_COMPANY_3").strip().upper()
+        if store_scope not in ("PILOT_COMPANY_3", "CHAIN_25_STORES"):
+            store_scope = "PILOT_COMPANY_3"
+        applicable_stores = ["38197", "46880", "87024"] if store_scope == "PILOT_COMPANY_3" else ["ALL_25_ACTIVE_STORES"]
+
+        existing_bom = boms_map.get(bom_id)
+        if not existing_bom:
+            product_name = sanitize_rosier_text(str(payload.get("product_name", f"Đồ Uống Chuẩn Rosier ({bom_id})")))
+            selling_price = float(payload.get("selling_price_vnd", 39000.0))
+            existing_bom = {
+                "bom_id": bom_id,
+                "product_code": bom_id.replace("BOM-", ""),
+                "product_name": product_name,
+                "category": str(payload.get("category", "MILK_TEA_SIGNATURE")),
+                "cup_size_ml": int(payload.get("cup_size_ml", 500)),
+                "selling_price_vnd": selling_price,
+                "versions": [],
+            }
+            boms_map[bom_id] = existing_bom
+
+        versions = existing_bom["versions"]
+        next_seq = (max((int(v.get("version_seq", 0)) for v in versions), default=0)) + 1
+        parent_vid = str(payload.get("parent_version_id") or (versions[-1]["version_id"] if versions else "")).strip() or None
+        new_version_id = f"{bom_id}@{effective_from}.v{next_seq}"
+
+        base_ingredients = payload.get("ingredients")
+        prev_total_cogs = None
+        if versions:
+            prev_total_cogs = float(versions[-1].get("unit_economics", {}).get("total_bom_cogs_vnd", 0.0))
+        if not base_ingredients:
+            if versions:
+                base_ingredients = json.loads(json.dumps(versions[-1].get("ingredients", [])))
+            else:
+                base_ingredients = [
+                    {
+                        "sku_code": "NVL-TEA-OLN-01",
+                        "ingredient_name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+                        "rnd_qty": 150.0,
+                        "rnd_unit": "ml",
+                        "wastage_pct": 2.0,
+                        "supply_pack_unit": "Túi 1000g (pha 25000ml cốt)",
+                        "conversion_factor": 25000.0,
+                        "unit_cost_vnd": 22.0,
+                    },
+                    {
+                        "sku_code": "NVL-MLK-TT-01",
+                        "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+                        "rnd_qty": 45.0,
+                        "rnd_unit": "ml",
+                        "wastage_pct": 1.5,
+                        "supply_pack_unit": "Hộp 1000ml",
+                        "conversion_factor": 1000.0,
+                        "unit_cost_vnd": 90.0,
+                    },
+                    {
+                        "sku_code": "PKG-CAN-PET500",
+                        "ingredient_name": "Bộ Vỏ Lon PET 500ml Kèm Nắp Nhôm & Túi Đựng",
+                        "rnd_qty": 1.0,
+                        "rnd_unit": "bộ",
+                        "wastage_pct": 0.5,
+                        "supply_pack_unit": "Thùng 500 bộ",
+                        "conversion_factor": 500.0,
+                        "unit_cost_vnd": 3077.5,
+                    },
+                ]
+
+        selling_price = float(payload.get("selling_price_vnd", existing_bom.get("selling_price_vnd", 39000.0)))
+        computed_lines, economics = _compute_bom_unit_economics(base_ingredients, selling_price, prev_total_cogs)
+        change_reason = sanitize_rosier_text(
+            str(payload.get("change_reason") or f"Cập nhật phiên bản định mức theo ngày {effective_from} (kế thừa từ {parent_vid or 'gốc'})")
+        )
+
+        new_version = {
+            "version_id": new_version_id,
+            "version_seq": next_seq,
+            "parent_version_id": parent_vid,
+            "effective_from": effective_from,
+            "effective_to": None,
+            "store_scope": store_scope,
+            "applicable_stores": applicable_stores,
+            "approval_status": "DRAFT_RND",
+            "superseded_by_version_id": None,
+            "change_reason": change_reason,
+            "governance_trail": {
+                "stage_1_rnd": {
+                    "role": role,
+                    "persona": "rs-persona-master-rnd",
+                    "status": "COMPLETED",
+                    "timestamp": "2026-11-02T16:00:00Z",
+                    "note": change_reason,
+                },
+                "stage_2_supply": {
+                    "role": "supply_chain",
+                    "persona": "rs-persona-antifragile-supply",
+                    "status": "PENDING_SUPPLY_VERIFICATION",
+                    "timestamp": None,
+                    "cost_variance_vs_prev_pct": economics["cost_variance_vs_prev_pct"],
+                    "note": None,
+                },
+                "stage_3_ceo": {
+                    "role": "chain_ceo",
+                    "persona": "rs-persona-first-principles-truth",
+                    "status": "WAITING_FOR_SUPPLY_STAGE",
+                    "timestamp": None,
+                    "approval_receipt_sha256": None,
+                },
+            },
+            "ingredients": computed_lines,
+            "unit_economics": economics,
+        }
+        versions.append(new_version)
+        if not dry_run and bool(payload.get("persist", False)):
+            BOM_LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "DRAFT_CREATED_OK",
+            "claim_label": "[DERIVED]",
+            "bom_action": action,
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "allow_bom_deletion": False,
+            "old_versions_deleted": 0,
+            "total_versions_preserved": len(versions),
+            "bom_id": bom_id,
+            "created_version": new_version,
+            "next_stage_required": "STAGE_2_SUPPLY_CHAIN_VERIFICATION",
+            "next_command": (
+                f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-verify-supply "
+                f"--bom-id {bom_id} --version-id {new_version_id} --role supply_chain --dry-run --json"
+            ),
+        }
+
+    # Stage 2: bom-verify-supply
+    if action == "bom-verify-supply":
+        if role not in ("supply_chain", "ho_ops_supply", "chain_ceo"):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "error": {
+                    "code": "SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED",
+                    "root_cause": f"Vai trò '{role}' không được phép tự xác nhận giá vốn Cung ứng (Chốt 2). Bắt buộc Bộ phận Cung ứng (role=supply_chain / ho_ops_supply) khớp mã SKU Kho Tổng, hệ số quy đổi và đơn giá nhập.",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-verify-supply --bom-id {bom_id} --role supply_chain --dry-run --json",
+                },
+            }
+
+        bom_entry = boms_map.get(bom_id)
+        if not bom_entry:
+            return {
+                "ok": False,
+                "status": "ERROR",
+                "error": {
+                    "code": "BOM_ID_NOT_FOUND",
+                    "root_cause": f"Không tìm thấy mã BOM '{bom_id}'.",
+                    "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+                },
+            }
+        versions = bom_entry.get("versions", [])
+        target_vid = str(payload.get("version_id", "")).strip()
+        target_v = None
+        for v in reversed(versions):
+            if (target_vid and v.get("version_id") == target_vid) or (not target_vid and v.get("approval_status") in ("DRAFT_RND", "SUPPLY_VERIFIED")):
+                target_v = v
+                break
+        if not target_v:
+            return {
+                "ok": False,
+                "status": "ERROR",
+                "error": {
+                    "code": "BOM_DRAFT_VERSION_NOT_FOUND",
+                    "root_cause": f"Không tìm thấy phiên bản nháp '{target_vid}' của mã {bom_id} để Cung ứng xác nhận.",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id {bom_id} --json",
+                },
+            }
+
+        if payload.get("ingredients"):
+            target_v["ingredients"] = payload["ingredients"]
+        prev_cogs = 11500.0
+        for v in versions:
+            if v.get("version_id") == target_v.get("parent_version_id"):
+                prev_cogs = float(v.get("unit_economics", {}).get("total_bom_cogs_vnd", 11500.0))
+                break
+        computed_lines, economics = _compute_bom_unit_economics(
+            target_v.get("ingredients", []),
+            float(bom_entry.get("selling_price_vnd", 39000.0)),
+            prev_cogs,
+        )
+        target_v["ingredients"] = computed_lines
+        target_v["unit_economics"] = economics
+        target_v["approval_status"] = "SUPPLY_VERIFIED"
+        supply_note = sanitize_rosier_text(
+            str(payload.get("supply_note") or "Đã khớp 100% mã SKU Kho Tổng Trung Tâm, hệ số quy đổi và đơn giá nhập bình quân gia quyền.")
+        )
+        target_v["governance_trail"]["stage_2_supply"] = {
+            "role": role,
+            "persona": "rs-persona-antifragile-supply",
+            "status": "COMPLETED",
+            "timestamp": "2026-11-02T16:15:00Z",
+            "cost_variance_vs_prev_pct": economics["cost_variance_vs_prev_pct"],
+            "note": supply_note,
+        }
+        target_v["governance_trail"]["stage_3_ceo"]["status"] = "PENDING_CEO_APPROVAL"
+
+        proposal_digest = hashlib.sha256(
+            json.dumps(
+                {
+                    "bom_id": bom_id,
+                    "version_id": target_v["version_id"],
+                    "effective_from": target_v["effective_from"],
+                    "store_scope": target_v["store_scope"],
+                    "total_bom_cogs_vnd": economics["total_bom_cogs_vnd"],
+                },
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()[:16]
+
+        if not dry_run and bool(payload.get("persist", False)):
+            BOM_LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "SUPPLY_VERIFIED_OK",
+            "claim_label": "[DERIVED]",
+            "bom_action": "bom-verify-supply",
+            "bom_id": bom_id,
+            "version_id": target_v["version_id"],
+            "approval_status": "SUPPLY_VERIFIED",
+            "unit_economics": economics,
+            "cost_variance_exceeds_2pct_alert": abs(float(economics["cost_variance_vs_prev_pct"])) >= 2.0,
+            "supply_verification_digest_sha256_16": proposal_digest,
+            "next_stage_required": "STAGE_3_CEO_FINAL_APPROVAL",
+            "next_command": (
+                f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-approve "
+                f"--bom-id {bom_id} --version-id {target_v['version_id']} --role chain_ceo --dry-run --json"
+            ),
+        }
+
+    # Stage 3: bom-approve
+    if action == "bom-approve":
+        ceo_receipt_token = str(payload.get("approval_token") or payload.get("ceo_approval_receipt") or "").strip()
+        if is_ho_edition and not ceo_receipt_token.startswith("CEO-SIG-"):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "bom_action": "bom-approve",
+                "bom_id": bom_id,
+                "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+                "error": {
+                    "code": "HO_CEO_APPROVAL_REQUIRED",
+                    "root_cause": "Bộ kỹ năng Khối HO (rosier-ho-skills) khóa cứng quyền tự phê duyệt hiệu lực BOM chính thức (Chốt 3 của CEO Toàn Chuỗi). Nhân sự R&D và Cung ứng chỉ được phép tạo bản nháp (DRAFT_RND) và xác nhận giá vốn (SUPPLY_VERIFIED), sau đó trình CEO phê duyệt tại kho gốc hoặc truyền mã chữ ký hợp lệ (--approval-token CEO-SIG-...).",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-verify-supply --bom-id {bom_id} --role supply_chain --dry-run --json",
+                },
+            }
+
+        if role != "chain_ceo" and not ceo_receipt_token.startswith("CEO-SIG-"):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "error": {
+                    "code": "CEO_ROLE_REQUIRED_FOR_BOM_APPROVAL",
+                    "root_cause": f"Vai trò '{role}' không có thẩm quyền phê duyệt hiệu lực BOM (Chốt 3). Bắt buộc CEO Toàn Chuỗi (role=chain_ceo) phê duyệt chốt biên lợi nhuận gộp.",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-approve --bom-id {bom_id} --role chain_ceo --dry-run --json",
+                },
+            }
+
+        bom_entry = boms_map.get(bom_id)
+        if not bom_entry:
+            return {
+                "ok": False,
+                "status": "ERROR",
+                "error": {
+                    "code": "BOM_ID_NOT_FOUND",
+                    "root_cause": f"Không tìm thấy mã BOM '{bom_id}'.",
+                    "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+                },
+            }
+
+        versions = bom_entry.get("versions", [])
+        target_vid = str(payload.get("version_id", "")).strip()
+        target_v = None
+        for v in reversed(versions):
+            if (target_vid and v.get("version_id") == target_vid) or (not target_vid and v.get("approval_status") == "SUPPLY_VERIFIED"):
+                target_v = v
+                break
+        if not target_v:
+            return {
+                "ok": False,
+                "status": "ERROR",
+                "error": {
+                    "code": "BOM_VERSION_NOT_FOUND",
+                    "root_cause": f"Không tìm thấy phiên bản chờ duyệt '{target_vid}' của mã {bom_id}.",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id {bom_id} --json",
+                },
+            }
+
+        if target_v.get("approval_status") == "DRAFT_RND":
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "error": {
+                    "code": "BOM_SUPPLY_VERIFICATION_REQUIRED",
+                    "root_cause": f"Phiên bản '{target_v.get('version_id')}' đang ở trạng thái DRAFT_RND (Chốt 1), chưa qua bước Cung ứng xác nhận mã SKU và giá vốn (Chốt 2: SUPPLY_VERIFIED). Không được phép duyệt nhảy cóc.",
+                    "next_command": f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-verify-supply --bom-id {bom_id} --version-id {target_v.get('version_id')} --role supply_chain --dry-run --json",
+                },
+            }
+
+        if payload.get("effective_from"):
+            target_v["effective_from"] = str(payload["effective_from"]).strip()[:10]
+        eff_from = str(target_v["effective_from"])[:10]
+        prev_day = _prev_day_iso(eff_from)
+        target_scope = target_v.get("store_scope", "CHAIN_25_STORES")
+
+        auto_closed_versions: List[Dict[str, str]] = []
+        for v in versions:
+            if v.get("version_id") == target_v.get("version_id"):
+                continue
+            if v.get("store_scope") == target_scope and v.get("approval_status") in ("APPROVED_ACTIVE", "APPROVED_SCHEDULED"):
+                if str(v.get("effective_from", "1970-01-01"))[:10] < eff_from and v.get("effective_to") is None:
+                    v["effective_to"] = prev_day
+                    v["approval_status"] = "SUPERSEDED_ARCHIVED"
+                    v["superseded_by_version_id"] = target_v["version_id"]
+                    auto_closed_versions.append({
+                        "closed_version_id": str(v.get("version_id")),
+                        "effective_from": str(v.get("effective_from")),
+                        "closed_effective_to": prev_day,
+                        "new_status": "SUPERSEDED_ARCHIVED",
+                    })
+
+        ref_today = str(payload.get("reference_today", "2026-11-02")).strip()[:10]
+        new_status = "APPROVED_SCHEDULED" if eff_from > ref_today else "APPROVED_ACTIVE"
+        receipt_hash = hashlib.sha256(
+            json.dumps(
+                {
+                    "bom_id": bom_id,
+                    "version_id": target_v["version_id"],
+                    "effective_from": eff_from,
+                    "store_scope": target_scope,
+                    "approver": "chain_ceo",
+                },
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()[:16]
+
+        target_v["approval_status"] = new_status
+        target_v["governance_trail"]["stage_3_ceo"] = {
+            "role": "chain_ceo",
+            "persona": "rs-persona-first-principles-truth",
+            "status": "APPROVED",
+            "timestamp": "2026-11-02T16:30:00Z",
+            "approval_receipt_sha256": receipt_hash,
+        }
+
+        if not dry_run and bool(payload.get("persist", False)):
+            BOM_LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "APPROVED_OK",
+            "claim_label": "[DERIVED]",
+            "bom_action": "bom-approve",
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "allow_bom_deletion": False,
+            "old_versions_deleted": 0,
+            "bom_id": bom_id,
+            "approved_version_id": target_v["version_id"],
+            "effective_from": eff_from,
+            "effective_to": target_v["effective_to"],
+            "store_scope": target_scope,
+            "approval_status": new_status,
+            "approval_receipt_sha256": receipt_hash,
+            "auto_closed_prior_versions": auto_closed_versions,
+            "unit_economics": target_v.get("unit_economics"),
+            "next_command": (
+                f"python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-as-of "
+                f"--bom-id {bom_id} --as-of-date {eff_from} --store-code 38197 --json"
+            ),
+        }
+
+    return {
+        "ok": False,
+        "status": "ERROR",
+        "error": {
+            "code": "UNKNOWN_BOM_ACTION",
+            "root_cause": f"Hành động BOM '{action}' không hợp lệ. Hỗ trợ: bom-create, bom-update, bom-verify-supply, bom-approve, bom-as-of, bom-history, bom-diff.",
+            "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+        },
+    }
+
+
 def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
     raw_doc = payload.get("document", {
         "title": "SOP Pha Chế Trà Ô Long Nhài Sữa Chuẩn Rosier",
@@ -482,7 +1278,12 @@ def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
     stripped_fields = [k for k in raw_doc.keys() if k not in sanitized_doc]
     total_q = max(1, sum(int(v) for v in quiz_counts.values()))
     bloom_ratios = {k: round(int(v) / total_q, 3) for k, v in quiz_counts.items()}
-    return {
+    bom_resolved = resolve_active_bom_as_of(
+        bom_id=str(payload.get("bom_id", "BOM-DRK-OLNS-500")),
+        as_of_date=str(payload.get("as_of_date", "2026-11-02")),
+        store_code=str(payload.get("store_code", "38197")),
+    )
+    out: Dict[str, Any] = {
         "division": "02-rs-kb-lms",
         "source_hub": KNOWLEDGE_HUBS["ROSIER_BUSINESS"]["hub_id"],
         "target_hub": KNOWLEDGE_HUBS["ROSIER_STORE_HUB"]["hub_id"],
@@ -491,7 +1292,26 @@ def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
         "bloom_total_questions": total_q,
         "bloom_distribution": bloom_ratios,
         "lms_1700_deadline_enforced": True,
+        "bom_temporal_governance": {
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "allow_bom_deletion": False,
+            "approval_pipeline": ["DRAFT_RND", "SUPPLY_VERIFIED", "APPROVED_ACTIVE"],
+            "active_bom_id": bom_resolved.get("bom_id"),
+            "resolved_version_id": bom_resolved.get("resolved_version_id"),
+            "effective_from": bom_resolved.get("effective_from"),
+            "effective_to": bom_resolved.get("effective_to"),
+            "store_scope": bom_resolved.get("store_scope"),
+            "total_versions_in_ledger": bom_resolved.get("total_versions_in_ledger"),
+            "preserved_archived_versions_count": bom_resolved.get("preserved_archived_versions_count"),
+        },
     }
+    if payload.get("bom_action"):
+        out["bom_action_result"] = execute_bom_lifecycle_action(
+            payload,
+            dry_run=bool(payload.get("dry_run", True)),
+            is_ho_edition=bool(payload.get("is_ho_edition", True)),
+        )
+    return out
 
 
 def calc_division_03_ops(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -528,6 +1348,11 @@ def calc_division_04_supply(payload: Dict[str, Any]) -> Dict[str, Any]:
     theoretical_close = round(stock_open + stock_in - usage_pos, 3)
     variance_qty = round(stock_blind_count - theoretical_close, 3)
     variance_pct = round(abs(variance_qty) / max(1.0, usage_pos) * 100.0, 2)
+    bom_as_of = resolve_active_bom_as_of(
+        bom_id=str(payload.get("bom_id", "BOM-DRK-OLNS-500")),
+        as_of_date=str(payload.get("as_of_date", "2026-11-02")),
+        store_code=str(payload.get("store_code", "38197")),
+    )
     return {
         "division": "04-rs-supply",
         "warehouse": "CENTRAL_WAREHOUSE_5S_FIFO",
@@ -536,6 +1361,16 @@ def calc_division_04_supply(payload: Dict[str, Any]) -> Dict[str, Any]:
         "variance_qty": variance_qty,
         "variance_pct": variance_pct,
         "exceeds_2pct_threshold": variance_pct > 2.0,
+        "bom_as_of_resolution": {
+            "bom_id": bom_as_of.get("bom_id"),
+            "as_of_date": bom_as_of.get("as_of_date"),
+            "store_code": bom_as_of.get("store_code"),
+            "resolved_version_id": bom_as_of.get("resolved_version_id"),
+            "effective_from": bom_as_of.get("effective_from"),
+            "effective_to": bom_as_of.get("effective_to"),
+            "store_scope": bom_as_of.get("store_scope"),
+            "total_bom_cogs_vnd": (bom_as_of.get("unit_economics") or {}).get("total_bom_cogs_vnd"),
+        },
     }
 
 
@@ -547,6 +1382,11 @@ def calc_division_05_fin(payload: Dict[str, Any]) -> Dict[str, Any]:
     ledger_booked_vnd = float(payload.get("ledger_booked_vnd", 145_250_000))
     cb01_hold = (overdue_days > 3) or (debt_balance > credit_limit)
     bank_diff_vnd = abs(bank_statement_vnd - ledger_booked_vnd)
+    bom_as_of = resolve_active_bom_as_of(
+        bom_id=str(payload.get("bom_id", "BOM-DRK-OLNS-500")),
+        as_of_date=str(payload.get("as_of_date", "2026-11-02")),
+        store_code=str(payload.get("store_code", "38197")),
+    )
     return {
         "division": "05-rs-fin",
         "cb01_status": "HOLD_ORDER" if cb01_hold else "RELEASE_ORDER",
@@ -555,6 +1395,14 @@ def calc_division_05_fin(payload: Dict[str, Any]) -> Dict[str, Any]:
         "within_5vnd_tolerance": bank_diff_vnd <= 5.0,
         "multi_entity_isolated": True,
         "entities": list(LEGAL_ENTITIES.keys()),
+        "resolved_bom_unit_economics": {
+            "bom_id": bom_as_of.get("bom_id"),
+            "as_of_date": bom_as_of.get("as_of_date"),
+            "resolved_version_id": bom_as_of.get("resolved_version_id"),
+            "effective_from": bom_as_of.get("effective_from"),
+            "effective_to": bom_as_of.get("effective_to"),
+            "unit_economics": bom_as_of.get("unit_economics"),
+        },
     }
 
 
@@ -707,12 +1555,13 @@ INTENT_DOMAIN_RULES: List[Dict[str, Any]] = [
         "div_code": "02",
         "profile": "academy-kb",
         "keywords": [
+            "bom", "tạo mới bom", "cập nhật bom", "duyệt bom", "lịch sử bom", "định mức công thức",
             "sop", "quy trình pha chế", "công thức", "r&d", "định mức", "ủ trà", "haccp",
             "iso", "học viện", "lms", "khóa học", "bài giảng", "slide đào tạo",
             "quiz", "trắc nghiệm", "bloom", "tích xanh", "17:00", "hội nhập", "onboarding",
             "đồng bộ kho tri thức", "2 hub", "store hub", "wiki", "faq",
         ],
-        "primary_skills": ["rs-kb-sop-iso-author", "rs-lms-course-factory", "rs-lms-slide-to-course", "rs-kb-knowledge-2hub-router"],
+        "primary_skills": ["rs-kb-recipe-rd-vault", "rs-kb-sop-iso-author", "rs-lms-course-factory", "rs-kb-knowledge-2hub-router"],
         "personas": ["rs-persona-master-rnd", "rs-persona-first-principles-truth"],
         "workflow": "rs-wf-lms-slide-to-published-course",
         "mcp_tools": ["rs-mcp-lms-course-publish", "rs-mcp-hub-2way-sanitize-sync"],
@@ -1057,6 +1906,22 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
                 "matched_signals": kw_hits[:5],
             })
 
+    if any(k in lowered_q for k in ("bom", "tạo mới bom", "cập nhật bom", "duyệt bom", "lịch sử bom", "định mức công thức")) and not is_dmz:
+        for idx_b, (b_sid, b_div, b_code) in enumerate([
+            ("rs-kb-recipe-rd-vault", "02-rs-kb-lms", "02"),
+            ("rs-supply-cost-variance-alert", "04-rs-supply", "04"),
+            ("rs-fin-drink-unit-economics", "05-rs-fin", "05"),
+        ]):
+            if b_sid not in seen_skill_ids:
+                seen_skill_ids.add(b_sid)
+                scored_execution_skills.insert(idx_b, {
+                    "skill_id": b_sid,
+                    "division": b_div,
+                    "div_code": b_code,
+                    "confidence_score": round(99.0 - idx_b * 1.5, 1),
+                    "matched_signals": ["bom_temporal_ledger_3stage_gate"],
+                })
+
     if matched_company_stores and "rs-ops-company3-pilot-lab" not in seen_skill_ids and not is_dmz:
         scored_execution_skills.insert(0, {
             "skill_id": "rs-ops-company3-pilot-lab",
@@ -1081,9 +1946,10 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
     if any(k in lowered_q for k in ("thuế", "hạch toán", "hóa đơn", "quyết toán", "đa pháp nhân")):
         if "rs-persona-tax-shield-ledger" not in persona_candidates:
             persona_candidates.append("rs-persona-tax-shield-ledger")
-    if any(k in lowered_q for k in ("công thức", "r&d", "ủ trà", "pha chế", "định mức")):
-        if "rs-persona-master-rnd" not in persona_candidates:
-            persona_candidates.append("rs-persona-master-rnd")
+    if any(k in lowered_q for k in ("bom", "công thức", "r&d", "ủ trà", "pha chế", "định mức")):
+        for p_bom in ("rs-persona-master-rnd", "rs-persona-antifragile-supply"):
+            if p_bom not in persona_candidates:
+                persona_candidates.append(p_bom)
     if any(k in lowered_q for k in ("kiểm tra thực địa", "kiểm kê mù", "focus 12", "vận hành quán")):
         if "rs-persona-field-commander" not in persona_candidates:
             persona_candidates.append("rs-persona-field-commander")
@@ -1431,6 +2297,41 @@ def self_test_all_divisions() -> Dict[str, Any]:
     assert router_blocked["route_blocked"] is True, "Router must block closed store 115953"
     ceo_blocked = route_rosier_intent({"mode": "rs-auto", "query": "Thực thi quyền điều hành", "role": "chain_ceo"}, dry_run=True)
     assert ceo_blocked["route_blocked"] is True, "HO Router must block chain_ceo privilege escalation"
+    # BOM Temporal Ledger & 3-Stage Approval Gate self-tests
+    bom_del_block = execute_bom_lifecycle_action({"bom_action": "bom-delete", "bom_id": "BOM-DRK-OLNS-500"}, dry_run=True)
+    assert bom_del_block["status"] == "BLOCKED" and bom_del_block["error"]["code"] == "IMMUTABLE_BOM_DELETE_FORBIDDEN", "Must block BOM deletion"
+    bom_hist = execute_bom_lifecycle_action({"bom_action": "bom-history", "bom_id": "BOM-DRK-OLNS-500"}, dry_run=True)
+    assert bom_hist["ok"] is True and bom_hist["archived_versions_preserved"] >= 1, "Must preserve historical BOM versions"
+    bom_asof_summer = resolve_active_bom_as_of("BOM-DRK-OLNS-500", "2026-08-15", "38197")
+    assert bom_asof_summer["resolved_version_id"] == "BOM-DRK-OLNS-500@2026-06-01.v1", "Must resolve historical v1 for 2026-08-15"
+    bom_asof_pilot = resolve_active_bom_as_of("BOM-DRK-OLNS-500", "2026-10-25", "38197")
+    assert bom_asof_pilot["resolved_version_id"] == "BOM-DRK-OLNS-500@2026-10-20.v3" and bom_asof_pilot["store_scope"] == "PILOT_COMPANY_3", "Must resolve v3 Pilot for store 38197"
+    bom_asof_chain = resolve_active_bom_as_of("BOM-DRK-OLNS-500", "2026-10-25", "67650")
+    assert bom_asof_chain["resolved_version_id"] == "BOM-DRK-OLNS-500@2026-10-01.v2" and bom_asof_chain["store_scope"] == "CHAIN_25_STORES", "Must resolve v2 Chain for store 67650"
+    bom_sod_block = execute_bom_lifecycle_action({"bom_action": "bom-verify-supply", "bom_id": "BOM-DRK-OLNS-500", "role": "rnd_lead"}, dry_run=True)
+    assert bom_sod_block["status"] == "BLOCKED" and bom_sod_block["error"]["code"] == "SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED", "Must block R&D from self-verifying supply"
+    bom_skip_stage_block = execute_bom_lifecycle_action({
+        "bom_action": "bom-approve",
+        "bom_id": "BOM-DRK-OLNS-500",
+        "version_id": "BOM-DRK-OLNS-500@2026-12-01.v5",
+        "role": "chain_ceo",
+    }, dry_run=True)
+    assert bom_skip_stage_block["status"] == "BLOCKED" and bom_skip_stage_block["error"]["code"] == "BOM_SUPPLY_VERIFICATION_REQUIRED", "Must block CEO approval of unverified DRAFT_RND"
+    bom_ho_block = execute_bom_lifecycle_action({
+        "bom_action": "bom-approve",
+        "bom_id": "BOM-DRK-OLNS-500",
+        "version_id": "BOM-DRK-OLNS-500@2026-11-15.v4",
+        "role": "chain_ceo",
+    }, dry_run=True, is_ho_edition=True)
+    assert bom_ho_block["status"] == "BLOCKED" and bom_ho_block["error"]["code"] == "HO_CEO_APPROVAL_REQUIRED", "Must block direct CEO BOM approval in HO edition without token"
+    bom_ceo_approve = execute_bom_lifecycle_action({
+        "bom_action": "bom-approve",
+        "bom_id": "BOM-DRK-OLNS-500",
+        "version_id": "BOM-DRK-OLNS-500@2026-11-15.v4",
+        "role": "chain_ceo",
+    }, dry_run=True, is_ho_edition=False)
+    assert bom_ceo_approve["ok"] is True and len(bom_ceo_approve["auto_closed_prior_versions"]) >= 1, "CEO approval must auto-close prior active version effective_to = D-1"
+    assert bom_ceo_approve["auto_closed_prior_versions"][0]["closed_effective_to"] == "2026-11-14", "Prior version effective_to must be 2026-11-14"
     return {
         "status": "PASS",
         "claim_label": "[OBSERVED: core/rs_core_engine.py]",
@@ -1442,6 +2343,7 @@ def self_test_all_divisions() -> Dict[str, Any]:
         "rosier_intent_router_verified": True,
         "rs_auto_clarification_gate_verified": True,
         "ownership_triad_verified": True,
+        "bom_bitemporal_ledger_and_3stage_gate_verified": True,
         "results": results,
     }
 

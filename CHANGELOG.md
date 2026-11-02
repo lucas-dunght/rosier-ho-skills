@@ -1,4 +1,15 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.2`)
+
+## [6.5.0-ho.2] - 2026-11-02
+
+### Nâng cấp Quản Trị BOM Bất Biến Theo Ngày & Luồng Phê Duyệt 3 Chốt (`Added & Governance`)
+- **Sổ Cái BOM Bất Biến Theo Ngày Hiệu Lực (`Append-Only Bi-Temporal BOM Ledger` · `core/bom_temporal_ledger.json`):**
+  - Khóa cứng 100% thao tác xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`). Mỗi lần điều chỉnh định mức sinh một phiên bản mới (`vN+1`) gắn ngày hiệu lực `effective_from` (`YYYY-MM-DD`) và phạm vi điểm bán (`PILOT_COMPANY_3` cho 3 quán công ty `38197, 46880, 87024` hoặc `CHAIN_25_STORES` cho toàn chuỗi 25 điểm bán).
+  - Khi phiên bản mới có hiệu lực từ ngày `D` được phê duyệt chốt, phiên bản cũ cùng phạm vi tự động đóng `effective_to = D - 1 ngày` và chuyển sang trạng thái `SUPERSEDED_ARCHIVED`.
+- **Luồng Phê Duyệt 3 Chốt Tuần Tự (`R&D -> Cung Ứng -> CEO Toàn Chuỗi`):**
+  - Chốt 1 (`DRAFT_RND` · `rnd_lead`): Khởi tạo mới (`bom-create`) hoặc đề xuất cập nhật theo ngày (`bom-update`).
+  - Chốt 2 (`SUPPLY_VERIFIED` · `supply_chain`): Khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi và đơn giá vốn (`bom-verify-supply`), chặn R&D tự xác nhận chéo (`SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`).
+  - Chốt 3 (`APPROVED_ACTIVE` / `APPROVED_SCHEDULED` · `chain_ceo`): Khóa cứng lệnh tự duyệt hiệu lực tại kho HO (`HO_CEO_APPROVAL_REQUIRED`) khi chưa có mã biên nhận phê duyệt từ kho gốc CEO.
 
 ## [6.5.0-ho.1] - 2026-11-02
 
@@ -15,6 +26,19 @@
 
 ---
 
+
+## [v6.5.0-bom.1] - 2026-11-02
+
+### Bổ sung Quản Trị BOM Bất Biến Theo Ngày & Luồng Phê Duyệt 3 Chốt (`Added`)
+- **Sổ Cái BOM Bất Biến Theo Ngày Hiệu Lực (`core/bom_temporal_ledger.json` & `core/rs_core_engine.py`):**
+  - Khóa cứng 100% thao tác xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`). Mỗi lần điều chỉnh định mức sinh một phiên bản mới (`vN+1`) gắn ngày hiệu lực `effective_from` (`YYYY-MM-DD`) và phạm vi điểm bán (`PILOT_COMPANY_3` cho 3 quán công ty `38197, 46880, 87024` hoặc `CHAIN_25_STORES` cho toàn chuỗi 25 điểm bán).
+  - Khi phiên bản mới có hiệu lực từ ngày `D` được CEO phê duyệt, phiên bản cũ cùng phạm vi tự động đóng `effective_to = D - 1 ngày` và chuyển sang trạng thái `SUPERSEDED_ARCHIVED`.
+- **Luồng Phê Duyệt 3 Chốt Tuần Tự (`R&D -> Cung Ứng -> CEO Toàn Chuỗi` trong `rs-kb-recipe-rd-vault`):**
+  - Chốt 1 (`DRAFT_RND` · `rnd_lead`): Khởi tạo mới (`bom-create`) hoặc đề xuất cập nhật theo ngày (`bom-update`).
+  - Chốt 2 (`SUPPLY_VERIFIED` · `supply_chain`): Khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi và đơn giá vốn (`bom-verify-supply`); chặn R&D tự xác nhận chéo (`SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`).
+  - Chốt 3 (`APPROVED_ACTIVE` / `APPROVED_SCHEDULED` · `chain_ceo`): CEO phê duyệt hiệu lực (`bom-approve`) kèm mã biên nhận `approval_receipt_sha256` (khóa cứng tại kho HO với mã `HO_CEO_APPROVAL_REQUIRED`).
+
+---
 
 ## [v6.5.0] - 2026-10-30
 

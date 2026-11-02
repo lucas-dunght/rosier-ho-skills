@@ -6,7 +6,7 @@ source_files:
   - skills/rs-omni-cskh-4step-deescalate/SKILL.md
   - skills/rs-omni-cskh-4step-deescalate/scripts/rs_omni_cskh_4step_deescalate_tool.py
 source_hashes:
-  core/rs_core_engine.py: sha256:81c4d2add16abcf8
+  core/rs_core_engine.py: sha256:6f6990ce27a418da
   skills/rs-omni-cskh-4step-deescalate/SKILL.md: sha256:f0466ea2c6ccedaa
   skills/rs-omni-cskh-4step-deescalate/scripts/rs_omni_cskh_4step_deescalate_tool.py: sha256:5a7366e58b67aa48
 ---

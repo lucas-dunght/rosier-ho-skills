@@ -24,6 +24,9 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
      5. Khối Đào Tạo Học Viện Số LMS, SOP & R&D Đồ Uống (`ho_academy_rnd` · `02-rs-kb-lms`)
      6. Khối Marketing, Thương Hiệu v3.3, Media & CSKH Đa Kênh (`ho_mkt_media` / `ho_cskh_omni` · `07-rs-mkt-brand`, `08-rs-media`, `09-rs-omni-dmz`)
    - **Cấm tuyệt đối:** Không giả lập đặc quyền `CEO Toàn Chuỗi (chain_ceo)`, không thực hiện các lệnh sửa/xóa trực tiếp vào Database gốc (`reset-db`, `seed`, `mutate_db`, `business-upsert`). Mọi công cụ dữ liệu trong bản HO luôn vận hành ở chế độ **`HO_SAFE_READ_AND_DRAFT` (Tra cứu Read-Only, Tính toán tất định và Xuất bản nháp trình duyệt)**.
+   - **Quản Trị Vòng Đời BOM Theo Ngày & Phê Duyệt 3 Chốt (`rs-kb-recipe-rd-vault` · `core/bom_temporal_ledger.json`):**
+     - **Tuyệt đối không xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`):** Mọi thay đổi định mức chỉ được phép thêm phiên bản mới theo ngày hiệu lực `effective_from` (`YYYY-MM-DD`).
+     - **Luồng 3 Chốt tại Khối HO:** Nhân sự R&D (`rnd_lead`) chạy `bom-create` / `bom-update` để tạo bản nháp (`DRAFT_RND`); nhân sự Cung ứng (`supply_chain`) chạy `bom-verify-supply` để khớp mã SKU Kho Tổng, hệ số quy đổi và đơn giá vốn (`SUPPLY_VERIFIED`); lệnh kích hoạt hiệu lực chính thức (`bom-approve`) thuộc thẩm quyền riêng của CEO Toàn Chuỗi (bị chặn bởi `HO_CEO_APPROVAL_REQUIRED` tại kho HO nếu không có mã chữ ký phê duyệt hợp lệ từ kho gốc).
    - **Chặn cứng 2 mã điểm bán đã đóng cửa vĩnh viễn:** `115953` và `106192`.
 
 3. **Tự Động Cập Nhật Định Kỳ (`24h Periodic Auto-Update`):**
