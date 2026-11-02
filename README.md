@@ -60,3 +60,16 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 | `ho-academy-kb` | Khối Đào Tạo Học Viện Số LMS, Biên Soạn SOP & R&D Đồ Uống | `python3 scripts/rs_profile_loader.py activate ho-academy-kb` |
 | `ho-growth-media` | Khối Marketing, Thiết Kế Thương Hiệu v3.3 & Sản Xuất Video/Media | `python3 scripts/rs_profile_loader.py activate ho-growth-media` |
 | `ho-omni-dmz` | Khối Chăm Sóc Khách Hàng Đa Kênh, Đối Tác Nhượng Quyền & Bản Đồ Trực Tuyến | `python3 scripts/rs_profile_loader.py activate ho-omni-dmz` |
+| `ho-persona-counsel` | Hội Đồng 11 Chuyên Gia Tư Vấn Chức Năng & 5 Công Cụ Nền Tảng Hỗ Trợ Nhân Sự HO | `python3 scripts/rs_profile_loader.py activate ho-persona-counsel` |
+
+---
+
+## 4. Bản Đồ Tài Liệu Chuẩn Diataxis (`Documentation Index · docs/`)
+
+| Góc phần tư Diataxis | Tài liệu (`docs/`) | Nội dung trọng tâm |
+| :--- | :--- | :--- |
+| **Tutorial (Làm quen nhanh)** | [docs/tutorial-getting-started-ho-staff.md](docs/tutorial-getting-started-ho-staff.md) | Thực hành làm chủ chế độ Zero-Command Auto (`/rs-auto`), cổng hỏi lại 3 trục và chốt chặn bảo mật trong 3 bước |
+| **How-To (Tác vụ thực tế)** | [docs/howto-operations-and-auto-update.md](docs/howto-operations-and-auto-update.md) | Hướng dẫn cài đặt theo phòng ban HO, quản lý tự động cập nhật 24h, khôi phục từ `Rescue Ref` và biên dịch từ kho gốc |
+| **Reference (Danh mục 178 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `126` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
+| **Reference (CLI & MCP API)** | [docs/reference-cli-and-api.md](docs/reference-cli-and-api.md) | Tham chiếu tham số, kiểu dữ liệu và JSON schema của `./bin/rs-control`, `install.sh` và `24` Safe MCP Tools |
+| **Explanation (Kiến trúc & Lý do)** | [docs/explanation-architecture-and-guardrails.md](docs/explanation-architecture-and-guardrails.md) | Giải thích kiến trúc tách đặc quyền CEO, khóa cứng `HO_SAFE_READ_AND_DRAFT` và các đánh đổi thiết kế |

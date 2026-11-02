@@ -21,10 +21,16 @@ Tài liệu ngữ cảnh dành cho AI Agent vận hành trong kho kỹ năng **K
 3. **Chặn Điểm Bán Đã Đóng Cửa (`Closed Store Blocker`):** Chặn cứng mã điểm bán `115953` và `106192`.
 4. **Chế Độ Auto Mặc Định (`Zero-Command Auto`):** Tuân thủ `rules/rs-ho-auto-router.md` (`trigger: always_on`), tự động gọi `./bin/rs-control rs-auto "<yêu cầu>" --json` và hỏi lại tối đa `1-3` câu trắc nghiệm qua `ask_question` khi câu hỏi chưa rõ.
 
-## 3. Lệnh Kiểm Định Nhanh
+## 3. Lệnh Kiểm Định Nhanh & Bản Đồ Tài Liệu (`docs/`)
 
 ```bash
 ./bin/rs-control doctor --json
 python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 python3 scripts/rs_ho_auto_updater.py --self-test --json
 ```
+
+- **Tutorial (Làm quen trong 3 bước):** [docs/tutorial-getting-started-ho-staff.md](docs/tutorial-getting-started-ho-staff.md)
+- **How-To (Hướng dẫn cài đặt, vận hành & cập nhật 24h):** [docs/howto-operations-and-auto-update.md](docs/howto-operations-and-auto-update.md)
+- **Reference (Toàn bộ 126 HO Skills, 28 Workflows & 8 Profiles):** [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md)
+- **Reference (CLI `./bin/rs-control` & 24 Safe MCP Tools):** [docs/reference-cli-and-api.md](docs/reference-cli-and-api.md)
+- **Explanation (Kiến trúc & Chốt chặn bảo mật Khối HO):** [docs/explanation-architecture-and-guardrails.md](docs/explanation-architecture-and-guardrails.md)

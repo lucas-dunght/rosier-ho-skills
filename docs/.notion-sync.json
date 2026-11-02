@@ -2,8 +2,8 @@
   "schema_version": "1.0",
   "repo_name": "rosier-ho-skills",
   "canonical_version": "6.5.0-ho.1",
-  "last_synced_commit": "8ab7e59",
-  "last_synced_at": "2026-11-02T14:40:09.411240+00:00",
+  "last_synced_commit": "b77f848",
+  "last_synced_at": "2026-11-02T14:58:15.290386+00:00",
   "master_hub_page_id": "4054ffbe-44fc-817b-9692-d1538c266ab2",
   "master_hub_page_url": "https://www.notion.so/4054ffbe44fc817b9692d1538c266ab2",
   "repo_hub_page_id": "40c4ffbe-44fc-81c3-b17e-e0b85c1d9315",
@@ -13,7 +13,7 @@
       "title": "01. Kiến Trúc, Data Model & Guardrails (Architecture & Security)",
       "page_id": "40c4ffbe-44fc-8151-af72-ef5e8719d772",
       "page_url": "https://www.notion.so/40c4ffbe44fc8151af72ef5e8719d772",
-      "sha256": "6a6bb05d1652eabe2b1cf22984c97c604983ee8e08b50310fc4fbfc40b424dad",
+      "sha256": "1bb5313de8b0dfb5f000673a17318135b43a7e09549869fe76b75881a2b5a84d",
       "source_files": [
         "AGENTS.md",
         "CLAUDE.md",
@@ -24,7 +24,7 @@
       "title": "02. Danh Mục Packages, Modules & Skills (Packages & Core Capabilities)",
       "page_id": "40c4ffbe-44fc-8103-98af-ee21d424689a",
       "page_url": "https://www.notion.so/40c4ffbe44fc810398afee21d424689a",
-      "sha256": "a24435fc14536a2ca0acdd1e95c4c6e2ab040d821bfeb1cc90fd473615518d29",
+      "sha256": "f8ffc143ecefde926d87ba125c207acb2a3c06234297e10ac0071e4980838e1e",
       "source_files": [
         "README.md",
         "docs/reference-packages-and-skills.md"
@@ -34,7 +34,7 @@
       "title": "03. Tham Chiếu CLI, REST API & MCP Tools (API & MCP Reference)",
       "page_id": "40c4ffbe-44fc-8191-9bec-d8f0b7671355",
       "page_url": "https://www.notion.so/40c4ffbe44fc81919becd8f0b7671355",
-      "sha256": "17ab0a6b5cbb337100d56a483045b6524887ba32073bf276a4bdedfeaef8ae06",
+      "sha256": "90fcf1ae631cbbf4ea5510b3e551aedeb0ba02a1de1cb69d67cc7752674cf4e7",
       "source_files": [
         "docs/reference-cli-and-api.md"
       ]
@@ -43,15 +43,16 @@
       "title": "04. Hướng Dẫn Cấu Hình, Vận Hành & Triển Khai (How-To & Operations)",
       "page_id": "40c4ffbe-44fc-8127-9006-e19cdf133d5e",
       "page_url": "https://www.notion.so/40c4ffbe44fc81279006e19cdf133d5e",
-      "sha256": "94224f239be8472b3eb80fe36973496958bb730e809fcf8451704f1988d22df8",
+      "sha256": "15870d4a8380b0d90e6b09b2f95b35271a73cc5af7021f54bc00908af2f9993d",
       "source_files": [
-        "docs/howto-operations-and-auto-update.md"
+        "docs/howto-operations-and-auto-update.md",
+        "docs/tutorial-getting-started-ho-staff.md"
       ]
     },
     "05_release_calibration_log": {
       "title": "05. Nhật Ký Phát Hành, PRs & Calibration Ledger (Release & Calibration Log)",
       "page_id": "40c4ffbe-44fc-8179-9b23-ca43a6acc07a",
-      "page_url": "https://www.notion.so/40c4ffbe44fc81799b23ca43a6acc07a",
+      "page_url": "https://www.notion.so/40c4ffbe-44fc-8179-9b23-ca43a6acc07a",
       "sha256": "376e46f201889f3de7e297f759dc120dfe326f9162eae96951ba56b89ae8b5f7",
       "source_files": [
         "CHANGELOG.md",

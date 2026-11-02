@@ -15,9 +15,10 @@ Tài liệu định nghĩa quy tắc vận hành cho mọi AI Agent làm việc 
 - **Chuẩn văn bản Rosier (`Constraint Loop`):** Tuyệt đối không sử dụng dấu gạch ngang dài (`em-dash`), không viết dấu phẩy trước chữ `và` và không để lộ khóa bí mật hoặc tên phần mềm/đối tác bên ngoài.
 - **Tự động cập nhật định kỳ 24h:** Sử dụng `./install.sh --enable-auto-update` hoặc `./bin/rs-control self-update --json` để đồng bộ bản mới nhất từ GitHub kèm nhánh cứu hộ `Rescue Ref`.
 
-## 3. Danh Mục Tài Liệu Tham Chiếu (`docs/`)
+## 3. Danh Mục Tài Liệu Tham Chiếu Chuẩn Diataxis (`docs/`)
 
-- [Kiến trúc & Chốt chặn bảo mật Khối HO](docs/explanation-architecture-and-guardrails.md)
-- [Danh mục 126 HO Skills, 28 Workflows & 8 Profiles](docs/reference-packages-and-skills.md)
-- [Tham chiếu CLI `./bin/rs-control` & 24 Safe MCP Tools](docs/reference-cli-and-api.md)
-- [Hướng dẫn Cài đặt, Vận hành & Tự động cập nhật 24h](docs/howto-operations-and-auto-update.md)
+- [Tutorial: Làm chủ bộ kỹ năng Khối HO trong 3 bước](docs/tutorial-getting-started-ho-staff.md)
+- [How-To: Cài đặt, vận hành Chế độ Auto & Tự động cập nhật 24h](docs/howto-operations-and-auto-update.md)
+- [Reference: Danh mục 126 HO Skills, 28 Workflows & 8 Profiles](docs/reference-packages-and-skills.md)
+- [Reference: Tham chiếu CLI `./bin/rs-control` & 24 Safe MCP Tools](docs/reference-cli-and-api.md)
+- [Explanation: Kiến trúc & Chốt chặn bảo mật Khối HO](docs/explanation-architecture-and-guardrails.md)
