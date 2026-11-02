@@ -1,0 +1,10 @@
+{
+  "name": "rs-ops-store-risk-scorer",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-ops-store-risk-scorer",
+  "version": "6.2.0",
+  "commit": "65d13159b519b486",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

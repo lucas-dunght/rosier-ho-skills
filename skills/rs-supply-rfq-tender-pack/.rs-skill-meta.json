@@ -1,0 +1,10 @@
+{
+  "name": "rs-supply-rfq-tender-pack",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-supply-rfq-tender-pack",
+  "version": "6.2.0",
+  "commit": "1258bbc85bf61774",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

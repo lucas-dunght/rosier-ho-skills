@@ -1,0 +1,10 @@
+{
+  "name": "rs-supply-pos-erp-blindcount",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-supply-pos-erp-blindcount",
+  "version": "6.2.0",
+  "commit": "c34af5b05cc27159",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

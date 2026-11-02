@@ -1,0 +1,18 @@
+{
+  "index": 170,
+  "workflow_id": "rs-wf-omni-investor-weekly-care",
+  "group": "WF-05",
+  "title": "Chu trình Chăm Sóc Hàng Tuần & Giải Đáp Tự Động Cho 22 Chủ Cửa Hàng Nhượng Quyền",
+  "skills_chain": [
+    "rs-omni-franchise-investor-desk",
+    "rs-fin-franchise-royalty-billing",
+    "rs-ops-franchise-compliance",
+    "rs-persona-store-owner-hkd"
+  ],
+  "mcp_tools": [
+    "rs-mcp-omni-owner-group-care",
+    "rs-mcp-hub-store-publish"
+  ],
+  "definition_of_done": "100% thắc mắc của Chủ cửa hàng nhượng quyền được phản hồi chính xác theo đúng chính sách công khai.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

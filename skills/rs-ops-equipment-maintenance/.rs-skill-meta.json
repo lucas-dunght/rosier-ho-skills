@@ -1,0 +1,10 @@
+{
+  "name": "rs-ops-equipment-maintenance",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-ops-equipment-maintenance",
+  "version": "6.2.0",
+  "commit": "28c071c71fbf5949",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

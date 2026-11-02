@@ -1,0 +1,18 @@
+{
+  "index": 168,
+  "workflow_id": "rs-wf-media-raw-to-multi-platform",
+  "group": "WF-05",
+  "title": "Chu trình Mổ Xẻ Video 7 Chiều & Dựng 1 Video Ngang (16:9) + 3 Shorts Dọc (9:16)",
+  "skills_chain": [
+    "rs-media-core-normalizer",
+    "rs-media-video-studio-pro",
+    "rs-media-mkt-shorts-factory",
+    "rs-persona-hook-retention-3s"
+  ],
+  "mcp_tools": [
+    "rs-mcp-studio-video-render",
+    "rs-mcp-studio-brand-v33-gate"
+  ],
+  "definition_of_done": "Xuất xưởng đồng thời 4 file MP4 chuẩn Rec.709 30fps CFR kèm phụ đề và Hook 3 giây đầu.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

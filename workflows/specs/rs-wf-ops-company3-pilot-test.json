@@ -1,0 +1,18 @@
+{
+  "index": 150,
+  "workflow_id": "rs-wf-ops-company3-pilot-test",
+  "group": "WF-02",
+  "title": "Chu trình Thử Nghiệm Món Mới & Quy Trình Mới Tại 3 Cửa Hàng Mô Hình Công Ty (38197, 46880, 87024)",
+  "skills_chain": [
+    "rs-ops-company3-pilot-lab",
+    "rs-kb-recipe-rd-vault",
+    "rs-fin-drink-unit-economics",
+    "rs-persona-store-owner-company"
+  ],
+  "mcp_tools": [
+    "rs-mcp-pos-sales-sync",
+    "rs-mcp-hub-business-query"
+  ],
+  "definition_of_done": "Báo cáo nghiệm thu thử nghiệm 7 ngày tại 3 CHH trước khi nhân rộng ra 22 CHNQ.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

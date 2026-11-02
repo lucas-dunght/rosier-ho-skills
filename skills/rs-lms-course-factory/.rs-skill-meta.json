@@ -1,0 +1,10 @@
+{
+  "name": "rs-lms-course-factory",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-lms-course-factory",
+  "version": "6.2.0",
+  "commit": "8d65efce50e65bad",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

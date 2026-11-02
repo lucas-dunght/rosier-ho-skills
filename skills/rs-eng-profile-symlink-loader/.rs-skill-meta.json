@@ -1,0 +1,10 @@
+{
+  "name": "rs-eng-profile-symlink-loader",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-eng-profile-symlink-loader",
+  "version": "6.2.0",
+  "commit": "130cb79f7d6e31ba",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

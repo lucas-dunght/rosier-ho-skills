@@ -1,0 +1,10 @@
+{
+  "name": "rs-hr-3p-payroll-engine",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-hr-3p-payroll-engine",
+  "version": "6.2.0",
+  "commit": "c7470bd1ed0bc32d",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

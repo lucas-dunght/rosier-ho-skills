@@ -1,0 +1,10 @@
+{
+  "name": "rs-fin-store-pnl-analyzer",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-fin-store-pnl-analyzer",
+  "version": "6.2.0",
+  "commit": "7e6dfa0a2d00643e",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

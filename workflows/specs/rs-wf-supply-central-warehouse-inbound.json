@@ -1,0 +1,17 @@
+{
+  "index": 154,
+  "workflow_id": "rs-wf-supply-central-warehouse-inbound",
+  "group": "WF-03",
+  "title": "Chu trình Nhập Kho Tổng Trung Tâm: Kiểm Tra Chất Lượng (IQC), Dán Nhãn Hạn Dùng FEFO & Sắp Xếp 5S",
+  "skills_chain": [
+    "rs-supply-coldchain-qc",
+    "rs-supply-central-warehouse-5s",
+    "rs-supply-po-generator"
+  ],
+  "mcp_tools": [
+    "rs-mcp-supply-warehouse-fifo",
+    "rs-mcp-studio-ocr-extract"
+  ],
+  "definition_of_done": "100% lô hàng nhập Kho Tổng Trung Tâm có biên bản IQC và mã lô FEFO trên hệ thống ERP cung ứng.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

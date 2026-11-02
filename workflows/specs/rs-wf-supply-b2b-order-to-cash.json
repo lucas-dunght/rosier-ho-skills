@@ -1,0 +1,18 @@
+{
+  "index": 153,
+  "workflow_id": "rs-wf-supply-b2b-order-to-cash",
+  "group": "WF-03",
+  "title": "Chu trình Đặt Hàng Cổng B2B Nội Bộ -> Duyệt Khóa Nợ CB-01 -> Soạn Hàng Kho Tổng Trung Tâm -> Xuất Kho",
+  "skills_chain": [
+    "rs-supply-b2b-order-portal",
+    "rs-fin-b2b-credit-gate-cb01",
+    "rs-supply-central-warehouse-5s"
+  ],
+  "mcp_tools": [
+    "rs-mcp-supply-order-sync",
+    "rs-mcp-supply-credit-gate-cb01",
+    "rs-mcp-supply-warehouse-fifo"
+  ],
+  "definition_of_done": "100% đơn đặt qua Cổng Đặt Hàng B2B Nội Bộ; đơn quá hạn > 3 ngày tự động dừng ở cổng CB-01.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

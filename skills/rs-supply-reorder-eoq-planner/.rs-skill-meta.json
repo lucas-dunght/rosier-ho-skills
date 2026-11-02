@@ -1,0 +1,10 @@
+{
+  "name": "rs-supply-reorder-eoq-planner",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-supply-reorder-eoq-planner",
+  "version": "6.2.0",
+  "commit": "c60fc576cfecc1cc",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

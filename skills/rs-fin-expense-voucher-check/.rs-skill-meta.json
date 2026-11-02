@@ -1,0 +1,10 @@
+{
+  "name": "rs-fin-expense-voucher-check",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-fin-expense-voucher-check",
+  "version": "6.2.0",
+  "commit": "f17a9e2eff91e9be",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

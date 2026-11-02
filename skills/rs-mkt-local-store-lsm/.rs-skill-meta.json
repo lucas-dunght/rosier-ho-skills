@@ -1,0 +1,10 @@
+{
+  "name": "rs-mkt-local-store-lsm",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-mkt-local-store-lsm",
+  "version": "6.2.0",
+  "commit": "39bf9e69fc20817f",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

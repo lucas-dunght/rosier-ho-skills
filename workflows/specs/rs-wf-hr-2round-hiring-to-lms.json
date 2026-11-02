@@ -1,0 +1,17 @@
+{
+  "index": 162,
+  "workflow_id": "rs-wf-hr-2round-hiring-to-lms",
+  "group": "WF-04",
+  "title": "Chu trình Tuyển Dụng 2 Vòng -> Gửi Offer -> Cấp Tài Khoản Học Hội Nhập Trên Rosier LMS",
+  "skills_chain": [
+    "rs-hr-2round-recruitment-funnel",
+    "rs-hr-jd-offer-composer",
+    "rs-lms-onboarding-path"
+  ],
+  "mcp_tools": [
+    "rs-mcp-hub-business-query",
+    "rs-mcp-lms-course-publish"
+  ],
+  "definition_of_done": "Ứng viên trúng tuyển hoàn thành 100% học phần hội nhập trước khi đứng quầy chính thức.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "rs-kb-recipe-rd-vault",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-kb-recipe-rd-vault",
+  "version": "6.2.0",
+  "commit": "f8cffa35f9e700ab",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

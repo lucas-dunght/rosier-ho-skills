@@ -1,0 +1,10 @@
+{
+  "name": "rs-hr-jd-offer-composer",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-hr-jd-offer-composer",
+  "version": "6.2.0",
+  "commit": "d3ab265e68795e73",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

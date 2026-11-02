@@ -1,0 +1,10 @@
+{
+  "name": "rs-supply-po-generator",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-supply-po-generator",
+  "version": "6.2.0",
+  "commit": "0c3b71c188301037",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

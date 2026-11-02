@@ -1,0 +1,10 @@
+{
+  "name": "rs-omni-crisis-alert-bridge",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-omni-crisis-alert-bridge",
+  "version": "6.2.0",
+  "commit": "dcadc640c3fdcc15",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

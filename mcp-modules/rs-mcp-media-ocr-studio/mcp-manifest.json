@@ -1,0 +1,113 @@
+{
+  "module_id": "rs-mcp-media-ocr-studio",
+  "title": "Mô-đun MCP 06: Cổng Nhà Máy Sản Xuất Video, Hóa Đơn Omni-OCR & Kiểm Định Thương Hiệu v3.3",
+  "version": "6.2.0",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "tool_count": 3,
+  "tools": [
+    {
+      "index": 188,
+      "name": "rs-mcp-studio-video-render",
+      "module_id": "rs-mcp-media-ocr-studio",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Gọi đường ống dựng video tự trị (Track 1 LMS 16:9, Track 2 MKT Shorts 9:16, Track 3 Việt hóa R&D).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 189,
+      "name": "rs-mcp-studio-ocr-extract",
+      "module_id": "rs-mcp-media-ocr-studio",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Bóc tách hóa đơn, chứng từ, sao kê và bảng scan đa ngôn ngữ với kiểm toán số học ±5 VND.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 190,
+      "name": "rs-mcp-studio-brand-v33-gate",
+      "module_id": "rs-mcp-media-ocr-studio",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Quét tự động bảng màu (#FFFCF7, #497A49, #111111), font chữ, 6 nhóm tật văn mẫu AI và Red List.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

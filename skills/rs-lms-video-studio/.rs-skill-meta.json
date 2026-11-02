@@ -1,0 +1,10 @@
+{
+  "name": "rs-lms-video-studio",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-lms-video-studio",
+  "version": "6.2.0",
+  "commit": "d876384e1e3e9e65",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

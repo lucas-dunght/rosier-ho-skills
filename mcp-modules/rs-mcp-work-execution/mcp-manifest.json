@@ -1,0 +1,113 @@
+{
+  "module_id": "rs-mcp-work-execution",
+  "title": "Mô-đun MCP 02: Cổng Điều Phối Kế Hoạch Tác Chiến 10-Sao & Nghiệm Thu DoD",
+  "version": "6.2.0",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "tool_count": 3,
+  "tools": [
+    {
+      "index": 175,
+      "name": "rs-mcp-work-plan-audit",
+      "module_id": "rs-mcp-work-execution",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Kiểm toán bảng kế hoạch theo chuẩn 10-Sao (tổng trọng số = 100%, đủ DoD định lượng, Người phụ trách, Người nghiệm thu).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 176,
+      "name": "rs-mcp-work-task-dispatch",
+      "module_id": "rs-mcp-work-execution",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Phát lệnh giao việc tự động xuống từng bộ phận HO và CHT kèm hạn chót.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 177,
+      "name": "rs-mcp-work-dod-gate",
+      "module_id": "rs-mcp-work-execution",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "description": "Xác minh bằng chứng hoàn thành (link file, ảnh chụp, mã giao dịch) trước khi đóng task.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

@@ -1,0 +1,17 @@
+{
+  "index": 167,
+  "workflow_id": "rs-wf-mkt-delivery-platform-boost",
+  "group": "WF-05",
+  "title": "Chu trình Tối Ưu Thực Đơn, Khung Giờ Flash Sale & Điểm Đánh Giá Trên Các Sàn Giao Đồ Ăn",
+  "skills_chain": [
+    "rs-mkt-food-delivery-growth",
+    "rs-mkt-voucher-promo-roi",
+    "rs-omni-delivery-rating-guard"
+  ],
+  "mcp_tools": [
+    "rs-mcp-pos-sales-sync",
+    "rs-mcp-omni-map-review-sync"
+  ],
+  "definition_of_done": "Biên lợi nhuận ròng kênh sàn đạt ngưỡng an toàn; điểm đánh giá gian hàng >= 4.8 sao.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

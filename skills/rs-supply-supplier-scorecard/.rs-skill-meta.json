@@ -1,0 +1,10 @@
+{
+  "name": "rs-supply-supplier-scorecard",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-supply-supplier-scorecard",
+  "version": "6.2.0",
+  "commit": "4d28083586757efa",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

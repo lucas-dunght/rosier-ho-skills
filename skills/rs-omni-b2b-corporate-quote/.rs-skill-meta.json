@@ -1,0 +1,10 @@
+{
+  "name": "rs-omni-b2b-corporate-quote",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-omni-b2b-corporate-quote",
+  "version": "6.2.0",
+  "commit": "f2d8e4fdea878239",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

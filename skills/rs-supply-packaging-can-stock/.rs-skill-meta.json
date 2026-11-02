@@ -1,0 +1,10 @@
+{
+  "name": "rs-supply-packaging-can-stock",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-supply-packaging-can-stock",
+  "version": "6.2.0",
+  "commit": "4553035f3cb440dc",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}

@@ -1,0 +1,113 @@
+{
+  "module_id": "rs-mcp-knowledge-2hub",
+  "title": "Mô-đun MCP 01: Cổng Quản Trị 2 Kho Tri Thức Cách Ly (ROSIER BUSINESS & ROSIER STORE HUB)",
+  "version": "6.2.0",
+  "security_zone": "INTERNAL_PRIVILEGED_WITH_DMZ_SANITIZER",
+  "tool_count": 3,
+  "tools": [
+    {
+      "index": 171,
+      "name": "rs-mcp-hub-business-query",
+      "module_id": "rs-mcp-knowledge-2hub",
+      "security_zone": "INTERNAL_PRIVILEGED_WITH_DMZ_SANITIZER",
+      "description": "Truy vấn dữ liệu nội bộ tại Hub 1 ROSIER BUSINESS (15e4ffbe44fc8390be0601a8074420d9).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 173,
+      "name": "rs-mcp-hub-store-publish",
+      "module_id": "rs-mcp-knowledge-2hub",
+      "security_zone": "INTERNAL_PRIVILEGED_WITH_DMZ_SANITIZER",
+      "description": "Xuất bản SOP pha chế, thông báo vận hành và lịch đào tạo công khai sang Hub 2 ROSIER STORE HUB (4004ffbe44fc80c1b400cd2a5a0c876d).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    },
+    {
+      "index": 174,
+      "name": "rs-mcp-hub-2way-sanitize-sync",
+      "module_id": "rs-mcp-knowledge-2hub",
+      "security_zone": "INTERNAL_PRIVILEGED_WITH_DMZ_SANITIZER",
+      "description": "Tự động kiểm tra và cắt bỏ 100% trường nhạy cảm (COGS, lương 3P, P&L) trước khi đồng bộ từ Hub 1 sang Hub 2.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "store_code": {
+            "type": "string",
+            "description": "Mã điểm bán Rosier (chặn tự động 115953 và 106192)"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "CTY_TNHH_ROSIER_VN",
+              "CTCP_TRA_CAFE_ROSIER"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Cờ kiểm thử không gây tác dụng phụ (Rosier CLI)"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Dữ liệu đầu vào nghiệp vụ"
+          }
+        },
+        "required": []
+      },
+      "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+      "allow_db_mutation": false
+    }
+  ],
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+  "allow_db_mutation": false
+}

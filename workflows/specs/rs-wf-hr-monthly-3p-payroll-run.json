@@ -1,0 +1,18 @@
+{
+  "index": 163,
+  "workflow_id": "rs-wf-hr-monthly-3p-payroll-run",
+  "group": "WF-04",
+  "title": "Chu trình Tính Lương 3P Cuối Tháng: Tổng Hợp Giờ Công POS + Điểm P2 LMS + Thưởng P3 KPR",
+  "skills_chain": [
+    "rs-hr-3p-payroll-engine",
+    "rs-hr-store-manager-eval",
+    "rs-hr-barista-competency-eval"
+  ],
+  "mcp_tools": [
+    "rs-mcp-pos-staff-shift-sync",
+    "rs-mcp-lms-progress-1700-audit",
+    "rs-mcp-finance-dual-pnl"
+  ],
+  "definition_of_done": "Bảng lương 3P chính xác 100%, minh bạch từng cấu phần P1-P2-P3 cho HO và 25 quán.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

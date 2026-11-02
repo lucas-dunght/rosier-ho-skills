@@ -1,0 +1,17 @@
+{
+  "index": 155,
+  "workflow_id": "rs-wf-supply-outer-route-consolidation",
+  "group": "WF-03",
+  "title": "Chu trình Gom Đơn & Điều Phối Vận Tải 4 Tuyến Ngoại Thành & Liên Tỉnh (67650, 57588, 99324, 100177)",
+  "skills_chain": [
+    "rs-supply-outer-route-dispatch",
+    "rs-supply-reorder-eoq-planner",
+    "rs-persona-antifragile-supply"
+  ],
+  "mcp_tools": [
+    "rs-mcp-supply-order-sync",
+    "rs-mcp-supply-warehouse-fifo"
+  ],
+  "definition_of_done": "Đảm bảo 0% đứt gãy nguyên liệu tại 4 điểm bán tuyến xa, tối ưu chi phí vận tải/kg.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

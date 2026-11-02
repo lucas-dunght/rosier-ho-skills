@@ -1,0 +1,24 @@
+{
+  "skill_id": "rs-omni-map-review-responder",
+  "index": 103,
+  "layer": "bundled_tactical",
+  "division": "09-rs-omni-dmz",
+  "security_zone": "PUBLIC_DMZ_SAFE",
+  "rosier_cli_standard": "rs-os-200",
+  "bundled_engine_files_count": 0,
+  "agents_rule_of_two": {
+    "processes_untrusted_external_input": true,
+    "accesses_private_internal_secrets": false,
+    "performs_unrestricted_external_writes": false,
+    "compliant": true
+  },
+  "allowed_notion_hubs": [
+    "4004ffbe44fc80c1b400cd2a5a0c876d"
+  ],
+  "blocked_closed_stores": [
+    "115953",
+    "106192"
+  ],
+  "cli_entrypoint": "scripts/rs_omni_map_review_responder_tool.py",
+  "self_test_command": "python3 scripts/rs_omni_map_review_responder_tool.py --self-test --json"
+}

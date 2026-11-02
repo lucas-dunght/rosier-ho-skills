@@ -1,0 +1,17 @@
+{
+  "index": 169,
+  "workflow_id": "rs-wf-omni-franchise-lead-to-contract",
+  "group": "WF-05",
+  "title": "Chu trình Sàng Lọc Đối Tác Nhượng Quyền -> Khảo Sát Mặt Bằng -> Ký Hợp Đồng Pháp Lý",
+  "skills_chain": [
+    "rs-omni-franchise-lead-qualifier",
+    "rs-fin-capex-store-roi",
+    "rs-legal-franchise-contract"
+  ],
+  "mcp_tools": [
+    "rs-mcp-omni-messaging-dispatch",
+    "rs-mcp-omni-map-review-sync"
+  ],
+  "definition_of_done": "Hồ sơ ứng viên đạt >= 75 điểm được chuyển mượt từ ROSIE sang Ban Điều Hành thẩm định.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

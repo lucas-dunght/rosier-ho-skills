@@ -1,0 +1,18 @@
+{
+  "index": 165,
+  "workflow_id": "rs-wf-mkt-seasonal-campaign-rollout",
+  "group": "WF-05",
+  "title": "Chu trình Tung Chiến Dịch Menu Mùa Vụ Qua Cổng 3 Hướng Thiết Kế & Kiểm Định v3.3",
+  "skills_chain": [
+    "rs-mkt-seasonal-drink-launch",
+    "rs-brand-design-system-v33",
+    "rs-persona-authentic-brewer",
+    "rs-meta-deslop-3pass"
+  ],
+  "mcp_tools": [
+    "rs-mcp-studio-video-render",
+    "rs-mcp-hub-store-publish"
+  ],
+  "definition_of_done": "Toàn bộ ấn phẩm vượt qua Cổng 3 hướng, đạt chuẩn Rosier Design System v3.3, 0% mùi AI.",
+  "execution_mode": "HO_SAFE_READ_AND_DRAFT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "rs-exec-meeting-minutes",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-exec-meeting-minutes",
+  "version": "6.2.0",
+  "commit": "0313b592f81404c4",
+  "installed_at": "2026-10-29",
+  "last_checked": "2026-10-29"
+}
