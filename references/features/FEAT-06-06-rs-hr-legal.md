@@ -6,8 +6,8 @@ source_files:
   - skills/rs-hr-3p-payroll-engine/SKILL.md
   - skills/rs-hr-3p-payroll-engine/scripts/rs_hr_3p_payroll_engine_tool.py
 source_hashes:
-  core/rs_core_engine.py: sha256:81c4d2add16abcf8
-  skills/rs-hr-3p-payroll-engine/SKILL.md: sha256:c7470bd1ed0bc32d
+  core/rs_core_engine.py: sha256:00e6add682fea5c1
+  skills/rs-hr-3p-payroll-engine/SKILL.md: sha256:9dcfa80beb0b4fdb
   skills/rs-hr-3p-payroll-engine/scripts/rs_hr_3p_payroll_engine_tool.py: sha256:8c642a6a3c06cf94
 ---
 

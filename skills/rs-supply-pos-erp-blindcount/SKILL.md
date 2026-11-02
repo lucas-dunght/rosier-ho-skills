@@ -33,10 +33,10 @@ security_zone: "INTERNAL_PRIVILEGED"
 1. **Step 1 · Context & Gate Verification:**
    - Read [`references/rosier-context-lock.md`](references/rosier-context-lock.md) and [`references/domain-canon.md`](references/domain-canon.md).
    - If the task produces visual/creative/strategic options, enforce the **Rosier 3-Direction Mandatory Gate** (present 3 distinct options · *1. Quiet Luxury Modern Zen*, *2. Editorial Tea Magazine*, *3. Fresh Tea-Commerce Gen Z* · and record the choice in `direction-approved.md` before full build).
-2. **Step 2 · Deterministic CLI Calculation (`--dry-run` & `--json`):**
-   - Never perform mental math in the LLM. Run the bundled Rosier CLI tool:
+2. **Step 2 · Deterministic CLI Calculation & Temporal BOM Resolution (`--dry-run` & `--json`):**
+   - Never perform mental math in the LLM. Khi đối soát Kiểm kê mù cho một ngày giao dịch `as_of_date` (`YYYY-MM-DD`), hệ thống tự động tra cứu phiên bản BOM có hiệu lực tại ngày đó từ [`core/bom_temporal_ledger.json`](../../core/bom_temporal_ledger.json) (ưu tiên bản `PILOT_COMPANY_3` cho 3 cửa hàng công ty `38197, 46880, 87024`, tuyệt đối không bị ảnh hưởng bởi các lần cập nhật BOM sau ngày kiểm kê):
      ```bash
-     python3 scripts/rs_supply_pos_erp_blindcount_tool.py calc --input payload.json --dry-run --json
+     python3 scripts/rs_supply_pos_erp_blindcount_tool.py calc --input '{"store_code":"38197","bom_id":"BOM-DRK-OLNS-500","as_of_date":"2026-08-15"}' --dry-run --json
      python3 scripts/rs_supply_pos_erp_blindcount_tool.py calc --input payload.json --json
      python3 scripts/rs_supply_pos_erp_blindcount_tool.py audit --text "Draft Vietnamese text..." --json
      ```

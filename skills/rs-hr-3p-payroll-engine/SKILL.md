@@ -42,6 +42,7 @@ security_zone: "INTERNAL_PRIVILEGED"
      ```
 3. **Step 3 · Deliverable Packaging:**
    - Format the output using [`assets/templates/output-template.md`](assets/templates/output-template.md) and verify `< 30%` AI footprint score via `audit`.
+   - **Labor Contract & 3P Dossier Typography Lock (`100% Times New Roman` & 360-Degree NDA):** All `.docx` Labor Contracts (`HĐLĐ`), `3P` Salary Appendices, `NDA & IP` Agreements, and HR Commitments MUST use `100% Times New Roman` font across all paragraphs, tables, headers, and footers, and enforce 360-degree `3P` pay secrecy & Law No. 91/2025/QH15 personal data protection.
 
 ### 🤖 Mode B: Autonomous Agent (For 6. Core-HR, HERMES)
 1. **Zero-Turn Deterministic Invocation & Live Control Lever:**
@@ -56,3 +57,4 @@ security_zone: "INTERNAL_PRIVILEGED"
 
 ## 3. Bundled Reference Playbooks & Internal Engines
   - `references/domain-canon.md` & `references/rosier-context-lock.md`
+  - Liên thông trực tiếp với [`rs-hr-monthly-kpi-engine`](../rs-hr-monthly-kpi-engine/SKILL.md) (`kpi-score` / `kpi-finalize`) để tự động nhận hệ số thưởng hiệu suất `p3_kpr_achievement_ratio` (`0.0` đến `1.25`) đã qua đối chất 3 nguồn từ Sổ cái Bất biến `core/kpi_monthly_ledger.json`.

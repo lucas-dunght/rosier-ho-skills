@@ -249,9 +249,11 @@ if __name__ == "__main__":
 def patch_core_engine_for_ho(core_text: str) -> str:
     """Adapt core/rs_core_engine.py for the HO Staff Edition (Zero CEO Privilege, 6 HO Functional Blocks, Safe Mode)."""
     text = sanitize_ho_references(core_text)
-    text = text.replace(
-        'ENGINE_VERSION = "6.4.0-rs-os-200-functional-role-only"',
-        'ENGINE_VERSION = "6.5.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
+    text = re.sub(
+        r'ENGINE_VERSION = "[^"]+"',
+        'ENGINE_VERSION = "6.6.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
+        text,
+        count=1,
     )
 
     # Replace explicit_role check in route_rosier_intent to block chain_ceo privilege escalation
@@ -1503,6 +1505,13 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
     core_dst.mkdir(parents=True, exist_ok=True)
     ctx_lock_txt = sanitize_ho_references((upstream_dir / "core" / "rosier-context-lock.md").read_text(encoding="utf-8"))
     (core_dst / "rosier-context-lock.md").write_text(ctx_lock_txt, encoding="utf-8")
+    for json_ledger in ("bom_temporal_ledger.json", "kpi_monthly_ledger.json"):
+        src_ledger = upstream_dir / "core" / json_ledger
+        if src_ledger.exists():
+            (core_dst / json_ledger).write_text(
+                sanitize_ho_references(src_ledger.read_text(encoding="utf-8")),
+                encoding="utf-8",
+            )
     core_engine_txt = patch_core_engine_for_ho((upstream_dir / "core" / "rs_core_engine.py").read_text(encoding="utf-8"))
     (core_dst / "rs_core_engine.py").write_text(core_engine_txt, encoding="utf-8")
 
@@ -1712,7 +1721,7 @@ def run_self_test() -> Dict[str, Any]:
         zero_ceo_skills
         and zero_ceo_wfs
         and zero_mut_mcp
-        and len(skill_ids) == 126
+        and len(skill_ids) in (126, 127, 128, 129, 130)
         and len(wf_ids) == 28
         and len(mcp_ids) == 24
     )

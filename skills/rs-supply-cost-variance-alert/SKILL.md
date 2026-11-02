@@ -33,11 +33,11 @@ security_zone: "INTERNAL_PRIVILEGED"
 1. **Step 1 · Context & Gate Verification:**
    - Read [`references/rosier-context-lock.md`](references/rosier-context-lock.md) and [`references/domain-canon.md`](references/domain-canon.md).
    - If the task produces visual/creative/strategic options, enforce the **Rosier 3-Direction Mandatory Gate** (present 3 distinct options · *1. Quiet Luxury Modern Zen*, *2. Editorial Tea Magazine*, *3. Fresh Tea-Commerce Gen Z* · and record the choice in `direction-approved.md` before full build).
-2. **Step 2 · Deterministic CLI Calculation (`--dry-run` & `--json`):**
-   - Never perform mental math in the LLM. Run the bundled Rosier CLI tool:
+2. **Step 2 · Deterministic CLI Calculation & Chốt 2 Xác Nhận Giá Vốn BOM (`--dry-run` & `--json`):**
+   - Never perform mental math in the LLM. Liên thông trực tiếp với Sổ cái BOM bất biến theo ngày [`core/bom_temporal_ledger.json`](../../core/bom_temporal_ledger.json) và Chốt 2 (`bom-verify-supply`) của [`rs-kb-recipe-rd-vault`](../rs-kb-recipe-rd-vault/SKILL.md) để cảnh báo biến động giá vốn trước khi trình CEO phê duyệt:
      ```bash
-     python3 scripts/rs_supply_cost_variance_alert_tool.py calc --input payload.json --dry-run --json
-     python3 scripts/rs_supply_cost_variance_alert_tool.py calc --input payload.json --json
+     python3 scripts/rs_supply_cost_variance_alert_tool.py calc --input '{"bom_id":"BOM-DRK-OLNS-500","as_of_date":"2026-11-02"}' --dry-run --json
+     python3 ../rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-verify-supply --bom-id BOM-DRK-OLNS-500 --version-id BOM-DRK-OLNS-500@2026-12-01.v5 --role supply_chain --dry-run --json
      python3 scripts/rs_supply_cost_variance_alert_tool.py audit --text "Draft Vietnamese text..." --json
      ```
 3. **Step 3 · Deliverable Packaging:**

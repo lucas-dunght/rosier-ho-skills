@@ -15,6 +15,7 @@ version: "6.2.0"
 
 ## 1. Tổ Hợp Kỹ Năng (`rs-*`) & Công Cụ Kết Nối (`rs-mcp-*`) Được Huy Động
 - **Các Kỹ năng & Cố vấn Tư duy (`rs-*` / `rs-persona-*` / `rs-meta-*`) tham gia:**
+  - `rs-hr-monthly-kpi-engine`
   - `rs-hr-3p-payroll-engine`
   - `rs-hr-store-manager-eval`
   - `rs-hr-barista-competency-eval`

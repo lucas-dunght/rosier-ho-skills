@@ -4,10 +4,10 @@
   "version": "6.5.0-ho.1",
   "allow_db_mutation": false,
   "zero_command_auto_enabled": true,
-  "generated_at_utc": "2026-11-02T14:35:51.720694+00:00",
+  "generated_at_utc": "2026-11-02T18:01:22.554510+00:00",
   "counts": {
-    "total_items": 178,
-    "skills_count": 126,
+    "total_items": 181,
+    "skills_count": 129,
     "persona_skills_count": 11,
     "workflows_count": 28,
     "mcp_modules_count": 8,
@@ -91,6 +91,7 @@
         "rs-meta-intent-router",
         "rs-exec-weekly-l10",
         "rs-exec-10star-work-planner",
+        "rs-exec-task-dispatch-auto",
         "rs-kb-knowledge-2hub-router",
         "rs-kb-sop-iso-author",
         "rs-lms-course-factory",
@@ -120,7 +121,8 @@
         "rs-persona-store-owner-company",
         "rs-persona-store-owner-hkd",
         "rs-persona-authentic-brewer",
-        "rs-meta-deslop-3pass"
+        "rs-meta-deslop-3pass",
+        "rs-hr-monthly-kpi-engine"
       ]
     },
     "ho-ops-supply": {
@@ -1626,7 +1628,7 @@
       "layer": "persona",
       "id": "rs-persona-store-owner-company",
       "division": "11-rs-persona",
-      "title": "Hệ Tư Duy Chủ Cửa Hàng Hoạt Động Theo Mô Hình Công Ty (Cty TNHH / Doanh Nghiệp Độc Lập · 03 CHH 38197, 46880, 87024): Quản Trị P&L Đầy Đủ, Hóa Đơn VAT, BHXH & Phòng Thí Nghiệm Chuẩn Hóa",
+      "title": "Hệ Điều Hành Nhận Thức Chủ Cửa Hàng Mô Hình Công Ty / TGĐ Khối Công Ty TNHH (RSVN002 · MST 0111566513 · Cụm 03 CHH 38197, 46880, 87024 · V6.2): P&L Độc Lập >= 820M Net, KTTH Chuyên Trách Cty TNHH & Khóa Trần Hủy Hàng Theo Ca",
       "lineage": "rosier-persona + rosier-company-store-owner",
       "security_zone": "INTERNAL_PRIVILEGED",
       "bundled_engine_files": 0,
@@ -1639,7 +1641,7 @@
       "layer": "persona",
       "id": "rs-persona-store-owner-hkd",
       "division": "11-rs-persona",
-      "title": "Hệ Tư Duy Chủ Cửa Hàng Hoạt Động Theo Mô Hình Hộ Kinh Doanh (HKD Cá Thể / Điểm Bán Nhượng Quyền): Tối Ưu Dòng Tiền Thực Thu Hàng Ngày, Điểm Hòa Vốn Ly/Ngày, Thuế HKD (TT88/NĐ70), Hao Hụt Quầy Bar & Thời Gian Hoàn Vốn",
+      "title": "Hệ Điều Hành Nhận Thức Chủ Cửa Hàng Mô Hình Hộ Kinh Doanh (22 Điểm Bán Nhượng Quyền CHNQ · V6.2): Tối Ưu Dòng Tiền Thực Thu Hàng Ngày, Hoàn Vốn ~1,1 Tỷ ₫, Thuế HKD (TT88/NĐ70) & Kỷ Luật Tín Dụng B2B",
       "lineage": "rosier-persona + rosier-hkd-store-owner",
       "security_zone": "INTERNAL_PRIVILEGED",
       "bundled_engine_files": 0,
@@ -1678,7 +1680,7 @@
       "layer": "persona",
       "id": "rs-persona-tax-shield-ledger",
       "division": "11-rs-persona",
-      "title": "Hệ Tư Duy Lá Chắn Thuế & Kế Toán Đa Mô Hình Pháp Nhân (Kế Toán Tổng Hợp & Đơn Vị Tư Vấn Thuế Độc Lập): Tách Bạch CTCP · Cty TNHH · Hộ Kinh Doanh, Quyết Toán Thuế & An Toàn Chứng Từ",
+      "title": "Hệ Điều Hành Nhận Thức Lá Chắn Thuế & Kế Toán Đa Pháp Nhân V6.2 (KTTH CTCP RS012 + KTTH Cty TNHH 03 CHH + Cố Vấn Kế Toán - Thuế Cao Cấp Độc Lập): Tách Bạch CTCP · Cty TNHH · 22 HKD & Đối Soát Sao Kê 3 Năm",
       "lineage": "rosier-persona + rosier-finance",
       "security_zone": "INTERNAL_PRIVILEGED",
       "bundled_engine_files": 0,
@@ -1801,6 +1803,45 @@
       "bundled_engine_files": 2,
       "path": "skills/rs-meta-skill-updater-sync",
       "sha256_16": "68069d102936bf19"
+    },
+    {
+      "index": 141,
+      "type": "SKILL",
+      "layer": "flagship",
+      "id": "rs-ops-pos-sales-sync",
+      "division": "03-rs-ops",
+      "title": "Đồng Bộ Sổ Bán Hàng POS (D05/D06/D08) & Tổng Hợp Doanh Thu Chuỗi 25 Điểm Bán",
+      "lineage": "Xây mới (POS D05/D06/D08 Streaming ETL & Monthly Summary)",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "bundled_engine_files": 0,
+      "path": "skills/rs-ops-pos-sales-sync",
+      "sha256_16": "8f4b2e19c7a05d31"
+    },
+    {
+      "index": 142,
+      "type": "SKILL",
+      "layer": "flagship",
+      "id": "rs-exec-task-dispatch-auto",
+      "division": "01-rs-exec",
+      "title": "Điều Phối Giao Việc Tự Động 3 Phân Hệ (Todolist · Kế Hoạch · Quy Trình) Kèm Cổng Hỏi Lại Khử Mơ Hồ",
+      "lineage": "4-Gate Autonomous Task Dispatch Router + Interactive Clarification Gate",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "bundled_engine_files": 0,
+      "path": "skills/rs-exec-task-dispatch-auto",
+      "sha256_16": "9c3d4e71a2b80f14"
+    },
+    {
+      "index": 143,
+      "type": "SKILL",
+      "layer": "flagship",
+      "id": "rs-hr-monthly-kpi-engine",
+      "division": "06-rs-hr-legal",
+      "title": "Động Cơ Tự Động Tạo Mới KPI Đầu Tháng, Chấm Điểm KPI Cuối Tháng & Liên Thông Lương 3P",
+      "lineage": "hr-monthly-kpi-lifecycle-engine + core/kpi_monthly_ledger.json",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "bundled_engine_files": 0,
+      "path": "skills/rs-hr-monthly-kpi-engine",
+      "sha256_16": "a7f902c4e18b53d1"
     }
   ],
   "workflows": [
@@ -2201,6 +2242,7 @@
       "group": "WF-04",
       "title": "Chu trình Tính Lương 3P Cuối Tháng: Tổng Hợp Giờ Công POS + Điểm P2 LMS + Thưởng P3 KPR",
       "skills_chain": [
+        "rs-hr-monthly-kpi-engine",
         "rs-hr-3p-payroll-engine",
         "rs-hr-store-manager-eval",
         "rs-hr-barista-competency-eval"
@@ -2211,7 +2253,7 @@
         "rs-mcp-finance-dual-pnl"
       ],
       "path": "workflows/rs-wf-hr-monthly-3p-payroll-run.md",
-      "sha256_16": "bf8117c896552db2"
+      "sha256_16": "f9aea370ef0ac9f8"
     },
     {
       "index": 164,

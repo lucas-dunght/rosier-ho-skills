@@ -1,0 +1,10 @@
+{
+  "name": "rs-ops-pos-sales-sync",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-ops-pos-sales-sync",
+  "version": "6.5.0",
+  "commit": "8f4b2e19c7a05d31",
+  "installed_at": "2026-11-02",
+  "last_checked": "2026-11-02"
+}

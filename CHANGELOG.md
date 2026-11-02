@@ -1,4 +1,4 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.6.0-ho.1`)
 
 ## [6.5.0-ho.1] - 2026-11-02
 
@@ -15,6 +15,38 @@
 
 ---
 
+
+## [6.6.0-ho.1] - 2026-11-03
+
+### Bổ sung Mới (`Added`)
+- **Kỹ năng `#143` `rs-hr-monthly-kpi-engine` (`skills/rs-hr-monthly-kpi-engine/` · Phân khu `06-rs-hr-legal`) & Sổ cái KPI Bất biến `core/kpi_monthly_ledger.json`:**
+  - Quản trị trọn vòng đời KPI tháng cho toàn bộ **16 Khung Vị Trí Chuẩn** (gồm **Khối Văn phòng HO 3 Phòng ban V6.2**: `RS004`, `RS006`, `RS008`, `RS009`, `RS013`, `RS011`, `MKT-NEW-01`, `MKT-NEW-02`, `RS010`, `RS005`, `RS012`, `KTTH-TNHH-01` cùng **Khối 25 Điểm bán 4 vị trí quán**: `CHT`, `TTC`, `BAR`, `TN`) tách bạch theo **3 mô hình chủ thể pháp nhân** (`CHAIN_HEADQUARTERS_CTCP`, `COMPANY_OWNED_STORE_ENTITY`, `HOUSEHOLD_BUSINESS_STORE_ENTITY`).
+  - **Pha 1 · Tạo mới & Khóa KPI đầu tháng (`kpi-create` / `kpi-propose` / `kpi-lock`):** Kiểm định tự động tổng trọng số `= 100%`, nguyên tắc *"No Activity, Only Outcome"* (100% chỉ số có `threshold`, `target`, `cap`, `mcp_source`, `dod`), liên thông trực tiếp với `#007 rs-exec-10star-work-planner`.
+  - **Pha 2 · Chấm điểm tự động & Đối chất 3 nguồn cuối tháng (`kpi-score` / `kpi-cross-audit` / `kpi-finalize`):** Kéo số tự động từ POS, ERP Chuỗi Cung Ứng Trung Tâm, Học viện LMS và Kiểm tra thực địa QSC&V; tự động quy `0.0` điểm mọi chỉ số báo cáo khống lệch `>= 10%` hoặc chưa bật `isPublished=True`; quy đổi điểm tổng sang hạng `S/A/B/C/D` và hệ số `p3_kpr_achievement_ratio` (`0.0` đến `1.25`) đẩy thẳng sang `#061 rs-hr-3p-payroll-engine`.
+  - **Phân quyền 2 Phiên bản (`Full Edition` vs `HO Staff Edition`) & Bảo toàn Lịch sử (`Append-Only Immutable History`):** Chặn cứng lệnh xóa/ghi đè lịch sử KPI (`IMMUTABLE_KPI_DELETE_FORBIDDEN`) và yêu cầu chữ ký Chủ thể (`--approval-token CEO-SIG-...`) khi khóa sổ trên bản HO.
+
+---
+
+## [v6.5.2] - 2026-11-02
+
+### Bổ sung Mới (`Added`)
+- **Kỹ năng `#142` `rs-exec-task-dispatch-auto` (`skills/rs-exec-task-dispatch-auto/` · Phân khu `01-rs-exec`) & Quy trình Lệnh tắt `/rs-task-auto` (`workflows/rs-task-auto.md`):**
+  - Đóng gói chuẩn 5 Lớp Kép (`SKILL.md`, `.rs-skill-meta.json`, `scripts/rs_exec_task_dispatch_auto_tool.py`, `references/domain-canon.md`, `references/rosier-context-lock.md`, `assets/templates/output-template.md`, `evals/security-manifest.json`).
+  - Tích hợp **Bộ Phân Loại 4 Cổng (`4-Gate Task Dispatch Classifier`)** tự động phân định yêu cầu giao việc vào 3 phân hệ (`TODOLIST`, `WORK_PLAN`, `WORKFLOW_MISSION`) và ánh xạ trực tiếp sang bộ công cụ MCP (`todo_create`, `todo_create_from_template`, `todo_template_apply_group`, `work_plan_task_create`, `work_plan_subtask_create`, `work_plan_sheet_create`, `mission_create`, `members_search`).
+  - Tích hợp **Cổng Hỏi Lại Khử Mơ Hồ (`Interactive Clarification Gate`)**: khi câu lệnh giao việc thiếu kênh thực thi, thiếu đích chứa, thiếu nhân sự nhận việc hoặc thiếu khung thời gian, tự động trả về `status: "NEEDS_CLARIFICATION"` kèm mảng `clarifying_questions` (tối đa 3 câu trắc nghiệm) để Agent bật `ask_question` làm rõ trước khi khóa lệnh.
+  - Bổ sung định tuyến ưu tiên trong `core/rs_core_engine.py` cho các truy vấn liên quan tới `giao việc`, `tạo việc`, `tạo công việc`, `giao nhiệm vụ`, `todolist`, `nhóm mẫu`.
+
+---
+
+## [v6.5.1] - 2026-11-02
+
+### Bổ sung Mới (`Added`)
+- **Kỹ năng `#141` `rs-ops-pos-sales-sync` (`skills/rs-ops-pos-sales-sync/` · Phân khu `03-rs-ops`):**
+  - Đóng gói chuẩn 5 Lớp Kép (`SKILL.md`, `.rs-skill-meta.json`, `scripts/rs_ops_pos_sales_sync_tool.py`, `references/domain-canon.md`, `references/rosier-context-lock.md`, `assets/templates/output-template.md`, `evals/security-manifest.json`).
+  - Hỗ trợ đọc XML streaming (`zipfile` + `ElementTree.iterparse`) trực tiếp từ 1 file Excel `D05` duy nhất tại `01-operations/ops/cua-hang/d05-bao-cao-ban-hang/`, tự động tổng hợp đồng thời cả 3 tầng (`D06 daily_summary`, `D08 product_breakdown`, `D05 ipos_sale_lines`) và nạp nguyên tử (`BEGIN ... COMMIT`) lên Cơ sở dữ liệu Trung tâm kèm đối soát 5 bảng.
+  - Tích hợp định tuyến ưu tiên trong `core/rs_core_engine.py` cho các truy vấn liên quan tới `d05`, `d06`, `d08`, `báo cáo bán hàng`, `dữ liệu bán hàng`.
+
+---
 
 ## [v6.5.0] - 2026-10-30
 
