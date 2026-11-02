@@ -6,7 +6,7 @@ source_files:
   - RS-OS-180-CONTROL-CENTER.html
   - scripts/verify_rs_ho_ecosystem.py
 source_hashes:
-  bin/control-app: sha256:bb86ecb24c15beae
+  bin/control-app: sha256:b07795c8514a65f4
   RS-OS-180-CONTROL-CENTER.html: sha256:4ca73badcb6623fa
   scripts/verify_rs_ho_ecosystem.py: sha256:449a765f00d3b866
 ---

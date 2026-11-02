@@ -386,6 +386,8 @@ from core.rs_core_engine import (  # noqa: E402
 )
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
 
+HO_CLI_VERSION = "6.5.0-ho.1"
+
 VALID_HO_ROLES = {
     "ho_ops_supply": {
         "security_zone": "INTERNAL_PRIVILEGED",
@@ -1637,6 +1639,23 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                     if not any(f"`{ex}`" in ln or f"[{ex}]" in ln for ex in (EXCLUDED_SKILLS | EXCLUDED_WORKFLOWS | EXCLUDED_MCP_TOOLS))
                 ]
                 clean_doc = sanitize_ho_references("\n".join(filtered_lines)) + "\n"
+            elif doc_name == "CHANGELOG.md":
+                ho_changelog_header = (
+                    "# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)\n\n"
+                    "## [6.5.0-ho.1] - 2026-11-02\n\n"
+                    "### Bổ sung & Chuẩn hóa Bảo mật Khối HO (`Added & Security`)\n"
+                    "- **Tách Kho Kỹ Năng Độc Lập Cho Nhân Sự Khối Văn Phòng HO (`HO_STAFF_SAFE_EDITION` · `178` hợp phần):**\n"
+                    "  - Cắt bỏ `16` kỹ năng đặc quyền CEO/HĐQT/M&A và Core/System-evolution, giữ lại `126` HO Skills chuyên môn cho 6 Khối Phòng Ban HO.\n"
+                    "  - Cắt bỏ `2` quy trình nhịp sinh học riêng của CEO (`07:30` & `22:30`), giữ lại `28` HO Workflows.\n"
+                    "  - Cắt bỏ `2` mô-đun MCP đặc quyền và `2` công cụ ghi đè Database/xuất sổ cái thuế, giữ lại `8` Mô-đun / `24` Safe MCP Tools khóa cứng ở chế độ `HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation = False`).\n"
+                    "  - Xóa bỏ hoàn toàn lệnh `reset-db` và `seed` trong `./bin/control-app`, `./bin/rs-control` và `scripts/rs_os_control_tool.py`.\n"
+                    "- **Chế Độ Auto Mặc Định (`Zero-Command Auto` · `rules/rs-ho-auto-router.md`):**\n"
+                    "  - Bổ sung Rule `always_on` giúp nhân sự HO chỉ cần đặt câu hỏi tiếng Việt tự nhiên, hệ thống tự động chọn bộ Skill hoặc bật `ask_question` (1-3 câu hỏi trắc nghiệm theo 6 Khối Phòng Ban HO, chặn leo thang `--role chain_ceo`).\n"
+                    "- **Cơ Chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`):**\n"
+                    "  - Bổ sung `scripts/build_and_sync_ho_repo.py`, `scripts/rs_ho_auto_updater.py`, `./install.sh --enable-auto-update` và `.github/workflows/periodic-ho-verify-and-sync.yml`.\n\n"
+                    "---\n\n"
+                )
+                clean_doc = ho_changelog_header + sanitize_ho_references("\n".join(lines[5:])) + "\n"
             else:
                 clean_doc = sanitize_ho_references("\n".join(lines)) + "\n"
             (target_dir / doc_name).write_text(clean_doc, encoding="utf-8")

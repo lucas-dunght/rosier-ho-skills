@@ -1,8 +1,20 @@
-# Nhật Ký Phát Hành Hệ Sinh Thái Kỹ Năng Nội Bộ Rosier (`RS-OS 200`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)
 
-Mọi thay đổi kiến trúc, danh mục kỹ năng và công cụ điều phối của Hệ sinh thái `RS-OS 200` đều được ghi nhận và kiểm chứng mã băm SHA-256 tại tài liệu này.
+## [6.5.0-ho.1] - 2026-11-02
+
+### Bổ sung & Chuẩn hóa Bảo mật Khối HO (`Added & Security`)
+- **Tách Kho Kỹ Năng Độc Lập Cho Nhân Sự Khối Văn Phòng HO (`HO_STAFF_SAFE_EDITION` · `178` hợp phần):**
+  - Cắt bỏ `16` kỹ năng đặc quyền CEO/HĐQT/M&A và Core/System-evolution, giữ lại `126` HO Skills chuyên môn cho 6 Khối Phòng Ban HO.
+  - Cắt bỏ `2` quy trình nhịp sinh học riêng của CEO (`07:30` & `22:30`), giữ lại `28` HO Workflows.
+  - Cắt bỏ `2` mô-đun MCP đặc quyền và `2` công cụ ghi đè Database/xuất sổ cái thuế, giữ lại `8` Mô-đun / `24` Safe MCP Tools khóa cứng ở chế độ `HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation = False`).
+  - Xóa bỏ hoàn toàn lệnh `reset-db` và `seed` trong `./bin/control-app`, `./bin/rs-control` và `scripts/rs_os_control_tool.py`.
+- **Chế Độ Auto Mặc Định (`Zero-Command Auto` · `rules/rs-ho-auto-router.md`):**
+  - Bổ sung Rule `always_on` giúp nhân sự HO chỉ cần đặt câu hỏi tiếng Việt tự nhiên, hệ thống tự động chọn bộ Skill hoặc bật `ask_question` (1-3 câu hỏi trắc nghiệm theo 6 Khối Phòng Ban HO, chặn leo thang `--role chain_ceo`).
+- **Cơ Chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`):**
+  - Bổ sung `scripts/build_and_sync_ho_repo.py`, `scripts/rs_ho_auto_updater.py`, `./install.sh --enable-auto-update` và `.github/workflows/periodic-ho-verify-and-sync.yml`.
 
 ---
+
 
 ## [v6.5.0] - 2026-10-30
 

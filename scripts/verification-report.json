@@ -3,8 +3,8 @@
   "claim_label": "[OBSERVED: scripts/verify_rs_ho_ecosystem.py]",
   "edition": "HO_STAFF_SAFE_EDITION",
   "version": "6.5.0-ho.1",
-  "verified_at_utc": "2026-11-02T14:04:34.348868+00:00",
-  "elapsed_ms": 15980.67,
+  "verified_at_utc": "2026-11-02T14:36:41.855784+00:00",
+  "elapsed_ms": 15679.94,
   "summary": {
     "total_ho_ecosystem_items_verified": 178,
     "rs_ho_skills_verified": "126/126",

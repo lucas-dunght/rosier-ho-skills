@@ -4,7 +4,7 @@
   "version": "6.5.0-ho.1",
   "allow_db_mutation": false,
   "zero_command_auto_enabled": true,
-  "generated_at_utc": "2026-11-02T14:04:18.200654+00:00",
+  "generated_at_utc": "2026-11-02T14:35:51.720694+00:00",
   "counts": {
     "total_items": 178,
     "skills_count": 126,

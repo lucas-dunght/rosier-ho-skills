@@ -33,6 +33,8 @@ from core.rs_core_engine import (  # noqa: E402
 )
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
 
+HO_CLI_VERSION = "6.5.0-ho.1"
+
 VALID_HO_ROLES = {
     "ho_ops_supply": {
         "security_zone": "INTERNAL_PRIVILEGED",
