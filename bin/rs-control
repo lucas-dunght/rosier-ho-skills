@@ -32,8 +32,9 @@ from core.rs_core_engine import (  # noqa: E402
     self_test_all_divisions,
 )
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
+from scripts.rs_ho_setup_wizard import RosierHOSetupWizard  # noqa: E402
 
-HO_CLI_VERSION = "6.8.0-ho.1"
+HO_CLI_VERSION = "6.8.0-ho.2"
 
 VALID_HO_ROLES = {
     "ho_ops_supply": {
@@ -394,6 +395,62 @@ def handle_update(dry_run: bool, as_json: bool) -> int:
     return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
 
 
+def handle_check_update(force: bool, dry_run: bool, as_json: bool) -> int:
+    updater = RosierHOAutoUpdater(repo_root=SUITE_ROOT)
+    res = updater.check_for_updates(force=force, dry_run=dry_run)
+    res["subcommand"] = "check-update"
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
+def handle_setup(
+    subcommand: str,
+    role: str,
+    profile: str,
+    store_code: str,
+    workspace_dir: str,
+    ide_mcp_config: str,
+    set_env_items: List[str],
+    dry_run: bool,
+    as_json: bool,
+) -> int:
+    ws_path = Path(workspace_dir).expanduser().resolve() if workspace_dir else Path("/Users/tuandunghoang/work/rosier-ho-workspace")
+    ide_path = Path(ide_mcp_config).expanduser().resolve() if ide_mcp_config else None
+    env_overrides: Dict[str, str] = {}
+    for item in set_env_items or []:
+        if "=" in item:
+            k, v = item.split("=", 1)
+            env_overrides[k.strip()] = v.strip()
+    wizard = RosierHOSetupWizard(repo_root=SUITE_ROOT, workspace_dir=ws_path)
+    resolved_role = role or "ho_ops_supply"
+    resolved_store = store_code or "38197"
+    if subcommand == "setup-env":
+        res = wizard.provision_env(
+            role=resolved_role,
+            profile=profile,
+            store_code=resolved_store,
+            env_overrides=env_overrides,
+            dry_run=dry_run,
+        )
+    elif subcommand == "setup-mcp":
+        res = wizard.provision_mcp_config(
+            role=resolved_role,
+            store_code=resolved_store,
+            ide_mcp_config_path=ide_path,
+            dry_run=dry_run,
+        )
+    else:
+        res = wizard.run_full_setup(
+            role=resolved_role,
+            profile=profile,
+            store_code=resolved_store,
+            env_overrides=env_overrides,
+            ide_mcp_config_path=ide_path,
+            dry_run=dry_run,
+        )
+    res["subcommand"] = subcommand
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
 def handle_intent_route(
     mode: str,
     query: str,
@@ -456,11 +513,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         "subcommand",
         nargs="?",
         default="help",
-        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | update | help",
+        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | setup | check-update | update | help",
     )
     parser.add_argument("positional_query", nargs="?", default="", help="Optional positional query for rs-auto/advise/auto")
     parser.add_argument("--scenario", default="happy_path", help="Scenario name for verify")
     parser.add_argument("--role", default="", help="HO Department or Store role (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, store_owner_company, store_owner_hkd)")
+    parser.add_argument("--profile", default="", help="Optional HO skill profile override for setup")
+    parser.add_argument("--workspace-dir", default="", help="Optional target workspace path for setup")
+    parser.add_argument("--ide-mcp-config", default="", help="Optional IDE mcp_config.json path for setup")
+    parser.add_argument("--set-env", action="append", default=[], help="Optional KEY=VALUE token override for setup")
+    parser.add_argument("--force", action="store_true", help="Bypass 24h cache when checking updates")
     parser.add_argument("--domain", default="", help="Optional locked division code (01..12) after clarification")
     parser.add_argument("--deliverable", default="", help="Optional locked deliverable format (report, sop, media, advise_only)")
     parser.add_argument("--confirmed", action="store_true", help="Confirm user answered clarification questions to execute combo immediately")
@@ -499,7 +561,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         return handle_verify(args.scenario, bool(args.dry_run), as_json)
     if sub == "doctor":
         return handle_doctor(bool(args.dry_run), as_json)
-    if sub in ("update", "auto-update"):
+    if sub in ("setup", "setup-mcp", "setup-env"):
+        return handle_setup(
+            sub,
+            args.role or "ho_ops_supply",
+            args.profile,
+            args.store_code or "38197",
+            args.workspace_dir,
+            args.ide_mcp_config,
+            list(args.set_env or []),
+            bool(args.dry_run),
+            as_json,
+        )
+    if sub in ("check-update", "status-update"):
+        return handle_check_update(bool(args.force), bool(args.dry_run), as_json)
+    if sub in ("update", "auto-update", "self-update"):
         return handle_update(bool(args.dry_run), as_json)
     if sub in ("advise", "route"):
         return handle_intent_route(

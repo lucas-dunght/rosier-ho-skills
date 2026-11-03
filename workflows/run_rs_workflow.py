@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-RS-OS 200 · Trình Điều Phối & Kiểm Chứng 30 Quy Trình Liên Phòng Ban Rosier (workflows/run_rs_workflow.py)
-Executes or dry-runs any of the 30 rs-wf-* Cross-Functional Workflows with Actionable Errors.
+RS-OS 200 · Trình Điều Phối & Kiểm Chứng 28 Quy Trình Liên Phòng Ban Rosier (workflows/run_rs_workflow.py)
+Executes or dry-runs any of the 28 rs-wf-* Cross-Functional Workflows with Actionable Errors.
 """
 
 from __future__ import annotations
@@ -43,9 +43,20 @@ def emit_error(code: str, root_cause: str, next_command: str, dry_run: bool = Fa
     return 1
 
 
+def resolve_workflow_md_path(workflow_id: str) -> Path:
+    skill_md = SUITE_ROOT / "skills" / workflow_id / "SKILL.md"
+    if skill_md.exists():
+        return skill_md
+    legacy_md = WORKFLOWS_DIR / f"{workflow_id}.md"
+    if legacy_md.exists():
+        return legacy_md
+    bak_md = WORKFLOWS_DIR / f"{workflow_id}.md.bak"
+    return bak_md
+
+
 def run_workflow(workflow_id: str, dry_run: bool = False) -> Dict[str, Any]:
     spec_path = SPECS_DIR / f"{workflow_id}.json"
-    md_path = WORKFLOWS_DIR / f"{workflow_id}.md"
+    md_path = resolve_workflow_md_path(workflow_id)
     if not spec_path.exists() or not md_path.exists():
         raise FileNotFoundError(f"Workflow '{workflow_id}' not found in {SPECS_DIR}")
 
@@ -93,7 +104,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="RS-OS 200 Workflow Runner")
     parser.add_argument("--workflow", "-w", default="", help="Workflow ID (e.g. rs-wf-exec-monday-l10-ids)")
     parser.add_argument("--dry-run", action="store_true", help="Preview workflow execution without side effects")
-    parser.add_argument("--self-test", action="store_true", help="Verify all 30 rs-wf-* workflows")
+    parser.add_argument("--self-test", action="store_true", help="Verify all 28 rs-wf-* workflows")
     parser.add_argument("--json", action="store_true", help="Emit JSON output")
     args = parser.parse_args()
 

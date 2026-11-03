@@ -1,6 +1,14 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.8.0-ho.1`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.8.0-ho.2`)
 
-## [6.8.0-ho.1] - 2026-11-03
+## [6.8.0-ho.2] - 2026-11-03
+
+### Chuyển Đổi 30 Quy Trình Khối HO Sang Định Dạng `skills/<name>/SKILL.md` & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)
+- **Chuyển đổi `30` HO Workflows sang `skills/<name>/SKILL.md` (`migrate-workflows`)**:
+  - Tạo mới `29` skill quy trình (`skills/rs-task-auto/SKILL.md` + `28` `skills/rs-wf-*/SKILL.md`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/SKILL.md` 5 lớp; lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.
+  - Cắt bỏ tuyệt đối `2` quy trình riêng của CEO (`rs-wf-exec-0730-morning-pulse`, `rs-wf-exec-2230-evening-wrap`) trên cả `skills/` và `workflows/`.
+  - Đồng bộ `workflows/run_rs_workflow.py`, `scripts/verify_rs_ho_ecosystem.py`, `scripts/rs_profile_loader.py` và `references/features/FEAT-13-rs-wf-orchestrator.md` trỏ trực tiếp tới `skills/<wid>/SKILL.md`.
+- **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` & `.env.ho.example`)**:
+  - Xác thực 10 vai trò Khối HO/Điểm bán, cấp phát `.agent/.env` (`chmod 0600`) kèm `Token Scope Guard`, tự động đăng ký `8/8` Safe MCP Modules và tích hợp `./bin/rs-control setup | check-update | update`.
 
 ### Cải Tiến Cốt Lõi & Định Tuyến Thích Ứng Khối HO (`Enhanced & Cognitive Routing`)
 - **Bộ Định Tuyến Thích Ứng 10-Sao & Cầu Dao Tự Động Thực Thi (`High-Confidence Auto-Pass Gate` · `/rs-auto`):**

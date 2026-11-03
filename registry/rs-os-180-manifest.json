@@ -1,10 +1,10 @@
 {
   "ecosystem_name": "RS-OS HO Edition · Hệ Sinh Thái Kỹ Năng Nội Bộ Rosier Dành Cho Khối Văn Phòng HO",
   "edition": "HO_STAFF_SAFE_EDITION",
-  "version": "6.8.0-ho.1",
+  "version": "6.8.0-ho.2",
   "allow_db_mutation": false,
   "zero_command_auto_enabled": true,
-  "generated_at_utc": "2026-11-03T14:06:50.148376+00:00",
+  "generated_at_utc": "2026-11-03T14:50:26.295484+00:00",
   "counts": {
     "total_items": 189,
     "skills_count": 137,

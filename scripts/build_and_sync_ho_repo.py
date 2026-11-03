@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.8.0-ho.1"
+HO_VERSION = "6.8.0-ho.2"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -394,8 +394,9 @@ from core.rs_core_engine import (  # noqa: E402
     self_test_all_divisions,
 )
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
+from scripts.rs_ho_setup_wizard import RosierHOSetupWizard  # noqa: E402
 
-HO_CLI_VERSION = "6.8.0-ho.1"
+HO_CLI_VERSION = "6.8.0-ho.2"
 
 VALID_HO_ROLES = {
     "ho_ops_supply": {
@@ -756,6 +757,62 @@ def handle_update(dry_run: bool, as_json: bool) -> int:
     return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
 
 
+def handle_check_update(force: bool, dry_run: bool, as_json: bool) -> int:
+    updater = RosierHOAutoUpdater(repo_root=SUITE_ROOT)
+    res = updater.check_for_updates(force=force, dry_run=dry_run)
+    res["subcommand"] = "check-update"
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
+def handle_setup(
+    subcommand: str,
+    role: str,
+    profile: str,
+    store_code: str,
+    workspace_dir: str,
+    ide_mcp_config: str,
+    set_env_items: List[str],
+    dry_run: bool,
+    as_json: bool,
+) -> int:
+    ws_path = Path(workspace_dir).expanduser().resolve() if workspace_dir else Path("/Users/tuandunghoang/work/rosier-ho-workspace")
+    ide_path = Path(ide_mcp_config).expanduser().resolve() if ide_mcp_config else None
+    env_overrides: Dict[str, str] = {}
+    for item in set_env_items or []:
+        if "=" in item:
+            k, v = item.split("=", 1)
+            env_overrides[k.strip()] = v.strip()
+    wizard = RosierHOSetupWizard(repo_root=SUITE_ROOT, workspace_dir=ws_path)
+    resolved_role = role or "ho_ops_supply"
+    resolved_store = store_code or "38197"
+    if subcommand == "setup-env":
+        res = wizard.provision_env(
+            role=resolved_role,
+            profile=profile,
+            store_code=resolved_store,
+            env_overrides=env_overrides,
+            dry_run=dry_run,
+        )
+    elif subcommand == "setup-mcp":
+        res = wizard.provision_mcp_config(
+            role=resolved_role,
+            store_code=resolved_store,
+            ide_mcp_config_path=ide_path,
+            dry_run=dry_run,
+        )
+    else:
+        res = wizard.run_full_setup(
+            role=resolved_role,
+            profile=profile,
+            store_code=resolved_store,
+            env_overrides=env_overrides,
+            ide_mcp_config_path=ide_path,
+            dry_run=dry_run,
+        )
+    res["subcommand"] = subcommand
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
 def handle_intent_route(
     mode: str,
     query: str,
@@ -818,11 +875,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         "subcommand",
         nargs="?",
         default="help",
-        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | update | help",
+        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | setup | check-update | update | help",
     )
     parser.add_argument("positional_query", nargs="?", default="", help="Optional positional query for rs-auto/advise/auto")
     parser.add_argument("--scenario", default="happy_path", help="Scenario name for verify")
     parser.add_argument("--role", default="", help="HO Department or Store role (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, store_owner_company, store_owner_hkd)")
+    parser.add_argument("--profile", default="", help="Optional HO skill profile override for setup")
+    parser.add_argument("--workspace-dir", default="", help="Optional target workspace path for setup")
+    parser.add_argument("--ide-mcp-config", default="", help="Optional IDE mcp_config.json path for setup")
+    parser.add_argument("--set-env", action="append", default=[], help="Optional KEY=VALUE token override for setup")
+    parser.add_argument("--force", action="store_true", help="Bypass 24h cache when checking updates")
     parser.add_argument("--domain", default="", help="Optional locked division code (01..12) after clarification")
     parser.add_argument("--deliverable", default="", help="Optional locked deliverable format (report, sop, media, advise_only)")
     parser.add_argument("--confirmed", action="store_true", help="Confirm user answered clarification questions to execute combo immediately")
@@ -861,7 +923,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         return handle_verify(args.scenario, bool(args.dry_run), as_json)
     if sub == "doctor":
         return handle_doctor(bool(args.dry_run), as_json)
-    if sub in ("update", "auto-update"):
+    if sub in ("setup", "setup-mcp", "setup-env"):
+        return handle_setup(
+            sub,
+            args.role or "ho_ops_supply",
+            args.profile,
+            args.store_code or "38197",
+            args.workspace_dir,
+            args.ide_mcp_config,
+            list(args.set_env or []),
+            bool(args.dry_run),
+            as_json,
+        )
+    if sub in ("check-update", "status-update"):
+        return handle_check_update(bool(args.force), bool(args.dry_run), as_json)
+    if sub in ("update", "auto-update", "self-update"):
         return handle_update(bool(args.dry_run), as_json)
     if sub in ("advise", "route"):
         return handle_intent_route(
@@ -1032,8 +1108,9 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
             shutil.copy2(r_file, ws_rules_dir / r_file.name)
 
     active_skills = []
+    workflow_skill_ids = ["rs-task-auto"] + [w["id"] for w in manifest["workflows"]]
     if ws_skills_dir.resolve() != SKILLS_DIR.resolve():
-        selected_set = set(selected_ids)
+        selected_set = set(selected_ids) | set(workflow_skill_ids)
         for existing in list(ws_skills_dir.iterdir()):
             if existing.name.startswith("rs-") and existing.name not in selected_set:
                 if existing.is_symlink():
@@ -1047,6 +1124,11 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
                 if not dst.exists():
                     shutil.copytree(src, dst)
                 active_skills.append(sid)
+        for wsid in workflow_skill_ids:
+            src_w = SKILLS_DIR / wsid
+            dst_w = ws_skills_dir / wsid
+            if src_w.exists() and not dst_w.exists():
+                shutil.copytree(src_w, dst_w)
     else:
         active_skills = [sid for sid in selected_ids if (ws_skills_dir / sid).exists()]
 
@@ -1068,7 +1150,10 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
         encoding="utf-8",
     )
 
-    active_wfs = sorted([p.stem for p in ws_workflows_dir.glob("rs-wf-*.md")])
+    active_wfs = sorted([
+        w["id"] for w in manifest["workflows"]
+        if (ws_skills_dir / w["id"] / "SKILL.md").exists() or (ws_workflows_dir / f"{w['id']}.md").exists()
+    ])
 
     return {
         "status": "WORKSPACE_PROFILE_ACTIVATED",
@@ -1094,9 +1179,16 @@ def get_status(workspace_dir: Path) -> dict:
     ws_wfs_dir = ws_agent_dir / "workflows"
     ws_rs_skills = sorted([
         p.name for p in ws_skills_dir.iterdir()
-        if p.name.startswith("rs-") and (p.is_dir() or p.is_symlink())
+        if p.name.startswith("rs-")
+        and not p.name.startswith("rs-wf-")
+        and p.name != "rs-task-auto"
+        and (p.is_dir() or p.is_symlink())
     ]) if ws_skills_dir.exists() else []
-    ws_rs_wfs = sorted([p.stem for p in ws_wfs_dir.glob("rs-wf-*.md")]) if ws_wfs_dir.exists() else []
+    ws_rs_wfs = sorted([
+        w["id"] for w in manifest["workflows"]
+        if (ws_skills_dir.exists() and (ws_skills_dir / w["id"] / "SKILL.md").exists())
+        or (ws_wfs_dir.exists() and (ws_wfs_dir / f"{w['id']}.md").exists())
+    ])
 
     return {
         "status": "OK",
@@ -1144,13 +1236,16 @@ if __name__ == "__main__":
 def build_ho_install_sh() -> str:
     return '''#!/usr/bin/env bash
 # ==============================================================================
-# RS-OS HO Edition (v6.8.0-ho.1) · Trình Cài Đặt & Kích Hoạt Tự Cập Nhật Cho Nhân Sự Khối HO
+# RS-OS HO Edition (v6.8.0-ho.2) · Trình Cài Đặt, Cấu Hình MCP/Token & Tự Cập Nhật Cho Nhân Sự Khối HO
 # Hỗ trợ:
-#   1. Cài đặt Cô lập vào Workspace kèm bật Tự động cập nhật định kỳ 24h (Khuyên dùng):
-#      ./install.sh --workspace /path/to/ho-workspace [--profile ho-all-126] [--enable-auto-update]
-#   2. Kiểm tra trạng thái & cập nhật ngay:
-#      ./install.sh --status [--workspace /path/to/ho-workspace]
+#   1. Cài đặt Cô lập vào Workspace + Khởi tạo .agent/.env (chmod 600) + Đăng ký 8 MCP + Bật Auto-Update 24h:
+#      ./install.sh --workspace /path/to/ho-workspace [--role ho_ops_supply] [--profile ho-all-126] [--enable-auto-update]
+#   2. Chạy riêng trình thuật sĩ cấu hình MCP & Token (hoặc gộp vào IDE):
+#      ./install.sh --setup --workspace /path/to/ho-workspace --role ho_ops_supply [--ide-mcp-config ~/.gemini/antigravity/mcp_config.json]
+#   3. Kiểm tra cập nhật thủ công hoặc kéo bản mới ngay lập tức:
+#      ./install.sh --check-update
 #      ./install.sh --update-now
+#      ./install.sh --status [--workspace /path/to/ho-workspace]
 # ==============================================================================
 
 set -euo pipefail
@@ -1158,7 +1253,9 @@ set -euo pipefail
 SUITE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODE="workspace"
 WORKSPACE_DIR="/Users/tuandunghoang/work/rosier-ho-workspace"
+ROLE="ho_ops_supply"
 PROFILE="ho-all-126"
+IDE_MCP_CONFIG=""
 ENABLE_AUTO_UPDATE=1
 
 usage() {
@@ -1167,11 +1264,15 @@ Usage: ./install.sh [OPTIONS]
 
 Options:
   --workspace <path>       Install isolated inside <path>/.agent/ (and link .agents -> .agent)
+  --role <ho_role>         HO Department role (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, ho_cskh_omni, internal_staff, store_owner_company, store_owner_hkd, store_manager)
   --profile <name>         HO Skill profile (ho-all-126, ho-core-35, ho-ops-supply, ho-fin-hr, ho-academy-kb, ho-growth-media, ho-omni-dmz)
+  --setup                  Run First-Run MCP & Token Setup Wizard (.agent/.env chmod 600 + .mcp.json 8 Safe MCP modules)
+  --ide-mcp-config <path>  Optional path to IDE mcp_config.json for non-destructive merge of the 8 HO MCP servers
   --enable-auto-update     Enable daily 24h periodic auto-update from GitHub (default: enabled)
   --disable-auto-update    Disable periodic background schedule
+  --check-update           Check GitHub immediately for new HO skill updates (bypasses 24h cache)
   --update-now             Pull latest updates from GitHub immediately and sync workspaces
-  --status                 Show installation and auto-update status
+  --status                 Show installation, MCP/token setup, and auto-update status
   -h, --help               Show this help message
 EOF
 }
@@ -1179,12 +1280,23 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --workspace)
-      MODE="workspace"
       WORKSPACE_DIR="$2"
+      shift 2
+      ;;
+    --role)
+      ROLE="$2"
       shift 2
       ;;
     --profile)
       PROFILE="$2"
+      shift 2
+      ;;
+    --setup)
+      MODE="setup"
+      shift
+      ;;
+    --ide-mcp-config)
+      IDE_MCP_CONFIG="$2"
       shift 2
       ;;
     --enable-auto-update)
@@ -1193,6 +1305,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --disable-auto-update)
       ENABLE_AUTO_UPDATE=0
+      shift
+      ;;
+    --check-update)
+      MODE="check-update"
       shift
       ;;
     --update-now)
@@ -1215,13 +1331,28 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ "${MODE}" == "check-update" ]]; then
+  python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" check --force --json
+  exit 0
+fi
+
 if [[ "${MODE}" == "update-now" ]]; then
   python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" pull --json
   exit 0
 fi
 
+if [[ "${MODE}" == "setup" ]]; then
+  if [[ -n "${IDE_MCP_CONFIG}" ]]; then
+    python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --ide-mcp-config "${IDE_MCP_CONFIG}" --json
+  else
+    python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --json
+  fi
+  exit 0
+fi
+
 if [[ "${MODE}" == "status" ]]; then
   python3 "${SUITE_DIR}/scripts/rs_profile_loader.py" status --workspace-dir "${WORKSPACE_DIR}"
+  python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" verify --workspace-dir "${WORKSPACE_DIR}" --json
   python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" status --json
   exit 0
 fi
@@ -1232,6 +1363,8 @@ rsync -a --delete \\
   --exclude '.worktrees' \\
   --exclude '.DS_Store' \\
   --exclude '__pycache__' \\
+  --exclude '.env' \\
+  --exclude 'mcp_config.json' \\
   "${SUITE_DIR}/" "${WORKSPACE_DIR}/.agent/"
 
 if [[ -L "${WORKSPACE_DIR}/.agents" || ! -e "${WORKSPACE_DIR}/.agents" ]]; then
@@ -1239,6 +1372,12 @@ if [[ -L "${WORKSPACE_DIR}/.agents" || ! -e "${WORKSPACE_DIR}/.agents" ]]; then
 fi
 
 python3 "${WORKSPACE_DIR}/.agent/scripts/rs_profile_loader.py" activate "${PROFILE}" --target workspace --workspace-dir "${WORKSPACE_DIR}"
+
+if [[ -n "${IDE_MCP_CONFIG}" ]]; then
+  python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --ide-mcp-config "${IDE_MCP_CONFIG}" --json
+else
+  python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --json
+fi
 
 if [[ "${ENABLE_AUTO_UPDATE}" -eq 1 ]]; then
   python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" install-schedule --workspace-dir "${WORKSPACE_DIR}" --json
@@ -1290,8 +1429,9 @@ def build_ho_readme() -> str:
 
 Hệ sinh thái **`189` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
 - **`137` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Hệ sinh thái 8 Kỹ năng Sáng tạo Học liệu & Nhà máy Khóa học NotebookLM MCP (`#144..#151`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
-- **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows`)**: Chuẩn hóa tác chiến hàng ngày, hàng tuần và hàng tháng tại văn phòng HO.
+- **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows` đã chuyển đổi sang `skills/<name>/SKILL.md`)**: Toàn bộ `30` quy trình Khối HO (`01` `rs-auto` bảo toàn, `01` `rs-task-auto` và `28` quy trình `rs-wf-*`, đã cắt bỏ `2` quy trình riêng của CEO) được chuẩn hóa sang định dạng Skill hiện đại `skills/<name>/SKILL.md` kèm lưu trữ an toàn `workflows/<name>.md.bak`.
 - **`24` Công cụ Kết nối Dữ liệu An toàn (`rs-mcp-*` trong `8` Mô-đun MCP)**: Khóa cứng ở chế độ **`HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation: false`)**. Cắt bỏ hoàn toàn quyền sửa/xóa trực tiếp Database gốc (`reset-db`, `seed`, `business-upsert`, `tax-ledger-export`).
+- **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` + `.env.ho.example`)**: Tự động xác thực vai trò phòng ban HO, khởi tạo `.agent/.env` (`chmod 0600`) với cổng chặn Token đặc quyền (`Token Scope Guard`), tự động đăng ký đủ `8/8` Safe MCP Modules vào `.mcp.json` / `.agent/mcp_config.json` và chạy Smoke Test `8/8` MCP ngay khi cài đặt.
 - **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto` 10-Star Adaptive Router & High-Confidence Auto-Pass Gate)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Nhận diện tự động danh bạ nhân sự HO (`HO_PERSONNEL_DIRECTORY`), mở rộng động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES`), tự động kích hoạt Cầu Dao 0-Click Auto-Pass khi độ tin cậy >= 85.0% phi phá hủy và sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng phòng ban khi nội dung thực sự thiếu dữ kiện cốt lõi.
 - **Cơ chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`)**: Tự động đồng bộ bản mới từ kho gốc đã lọc quyền CEO và tự động kéo bản cập nhật mới về máy nhân sự HO định kỳ mỗi `24 giờ` (kèm cơ chế lưu nhãn cứu hộ `Rescue Ref` và tự động `Rollback` nếu lỗi).
 
@@ -1435,20 +1575,55 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
         )
         rs_auto_md.write_text(sanitize_ho_references(txt), encoding="utf-8")
 
-    # 2. Copy and sanitize retained 28 HO workflows + workflows/run_rs_workflow.py
+    # 2. Migrate and sanitize retained 30 HO workflows (rs-auto, rs-task-auto + 28 rs-wf-*) into skills/<name>/SKILL.md + workflows/<name>.md.bak
     wf_dst = target_dir / "workflows"
     if wf_dst.exists():
         shutil.rmtree(wf_dst)
     (wf_dst / "specs").mkdir(parents=True, exist_ok=True)
 
+    # Copy rs-task-auto skill (migrated workflow) + archive rs-auto.md.bak & rs-task-auto.md.bak
+    src_task_auto_skill = upstream_dir / "skills" / "rs-task-auto" / "SKILL.md"
+    if src_task_auto_skill.exists():
+        dst_task_auto_dir = skills_dst / "rs-task-auto"
+        dst_task_auto_dir.mkdir(parents=True, exist_ok=True)
+        (dst_task_auto_dir / "SKILL.md").write_text(
+            sanitize_ho_references(src_task_auto_skill.read_text(encoding="utf-8")),
+            encoding="utf-8",
+        )
+    for meta_wf_name in ("rs-auto", "rs-task-auto"):
+        src_bak = upstream_dir / "workflows" / f"{meta_wf_name}.md.bak"
+        if not src_bak.exists():
+            src_bak = upstream_dir / "workflows" / f"{meta_wf_name}.md"
+        if src_bak.exists():
+            (wf_dst / f"{meta_wf_name}.md.bak").write_text(
+                sanitize_ho_references(src_bak.read_text(encoding="utf-8")),
+                encoding="utf-8",
+            )
+
     updated_wf_manifest_entries: List[Dict[str, Any]] = []
     for w in retained_workflows:
         wid = w["id"]
-        src_md = upstream_dir / "workflows" / f"{wid}.md"
-        dst_md = wf_dst / f"{wid}.md"
-        md_clean = sanitize_ho_references(src_md.read_text(encoding="utf-8"))
-        dst_md.write_text(md_clean, encoding="utf-8")
-        md_sha16 = hashlib.sha256(md_clean.encode("utf-8")).hexdigest()[:16]
+        src_skill_md = upstream_dir / "skills" / wid / "SKILL.md"
+        src_bak_md = upstream_dir / "workflows" / f"{wid}.md.bak"
+        src_legacy_md = upstream_dir / "workflows" / f"{wid}.md"
+
+        raw_skill_md = (
+            src_skill_md.read_text(encoding="utf-8")
+            if src_skill_md.exists()
+            else (src_bak_md if src_bak_md.exists() else src_legacy_md).read_text(encoding="utf-8")
+        )
+        skill_md_clean = sanitize_ho_references(raw_skill_md)
+        dst_wf_skill_dir = skills_dst / wid
+        dst_wf_skill_dir.mkdir(parents=True, exist_ok=True)
+        (dst_wf_skill_dir / "SKILL.md").write_text(skill_md_clean, encoding="utf-8")
+        md_sha16 = hashlib.sha256(skill_md_clean.encode("utf-8")).hexdigest()[:16]
+
+        raw_bak_md = (
+            src_bak_md.read_text(encoding="utf-8")
+            if src_bak_md.exists()
+            else (src_legacy_md if src_legacy_md.exists() else src_skill_md).read_text(encoding="utf-8")
+        )
+        (wf_dst / f"{wid}.md.bak").write_text(sanitize_ho_references(raw_bak_md), encoding="utf-8")
 
         src_spec = upstream_dir / "workflows" / "specs" / f"{wid}.json"
         spec_data = json.loads(sanitize_ho_references(src_spec.read_text(encoding="utf-8")))
@@ -1467,7 +1642,13 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
         updated_wf_manifest_entries.append(w_copy)
 
     wf_runner_src = (upstream_dir / "workflows" / "run_rs_workflow.py").read_text(encoding="utf-8")
-    wf_runner_clean = sanitize_ho_references(wf_runner_src).replace("== 30", f"== {len(retained_workflows)}").replace("/30", f"/{len(retained_workflows)}")
+    wf_runner_clean = (
+        sanitize_ho_references(wf_runner_src)
+        .replace("== 30", f"== {len(retained_workflows)}")
+        .replace("/30", f"/{len(retained_workflows)}")
+        .replace("30 Quy Trình", f"{len(retained_workflows)} Quy Trình")
+        .replace("30 rs-wf-*", f"{len(retained_workflows)} rs-wf-*")
+    )
     wf_runner_path = wf_dst / "run_rs_workflow.py"
     wf_runner_path.write_text(wf_runner_clean, encoding="utf-8")
     wf_runner_path.chmod(wf_runner_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
@@ -1677,6 +1858,13 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                 ho_changelog_header = (
                     f"# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v{HO_VERSION}`)\n\n"
                     f"## [{HO_VERSION}] - 2026-11-03\n\n"
+                    "### Chuyển Đổi 30 Quy Trình Khối HO Sang Định Dạng `skills/<name>/SKILL.md` & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)\n"
+                    "- **Chuyển đổi `30` HO Workflows sang `skills/<name>/SKILL.md` (`migrate-workflows`)**:\n"
+                    "  - Tạo mới `29` skill quy trình (`skills/rs-task-auto/SKILL.md` + `28` `skills/rs-wf-*/SKILL.md`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/SKILL.md` 5 lớp; lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.\n"
+                    "  - Cắt bỏ tuyệt đối `2` quy trình riêng của CEO (`rs-wf-exec-0730-morning-pulse`, `rs-wf-exec-2230-evening-wrap`) trên cả `skills/` và `workflows/`.\n"
+                    "  - Đồng bộ `workflows/run_rs_workflow.py`, `scripts/verify_rs_ho_ecosystem.py`, `scripts/rs_profile_loader.py` và `references/features/FEAT-13-rs-wf-orchestrator.md` trỏ trực tiếp tới `skills/<wid>/SKILL.md`.\n"
+                    "- **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` & `.env.ho.example`)**:\n"
+                    "  - Xác thực 10 vai trò Khối HO/Điểm bán, cấp phát `.agent/.env` (`chmod 0600`) kèm `Token Scope Guard`, tự động đăng ký `8/8` Safe MCP Modules và tích hợp `./bin/rs-control setup | check-update | update`.\n\n"
                     "### Cải Tiến Cốt Lõi & Định Tuyến Thích Ứng Khối HO (`Enhanced & Cognitive Routing`)\n"
                     "- **Bộ Định Tuyến Thích Ứng 10-Sao & Cầu Dao Tự Động Thực Thi (`High-Confidence Auto-Pass Gate` · `/rs-auto`):**\n"
                     "  - Tự động nhận diện danh bạ nhân sự Khối Văn phòng Hội Sở HO (`HO_PERSONNEL_DIRECTORY` gồm Lâm, Ân, Hưng, Yến, Phương Anh, Linh, Tân, Huy, Kế toán Tổng hợp) qua regex ranh giới từ tiếng Việt chuẩn xác, tự động khóa pháp nhân `CHAIN_HEADQUARTERS_CTCP` và thỏa mãn Trục 1 (`axis_1_entity_clear = True`).\n"

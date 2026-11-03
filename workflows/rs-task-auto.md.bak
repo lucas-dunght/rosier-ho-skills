@@ -1,0 +1,26 @@
+---
+description: "Lệnh điều phối giao việc tự động 3 phân hệ (/rs-task-auto · Todolist, Kế hoạch, Quy trình). Tự động chọn công cụ phù hợp hoặc bật hộp thoại hỏi lại trắc nghiệm 1-3 câu khi yêu cầu giao việc còn mơ hồ."
+---
+
+# 🎯 Quy Trình Lệnh Tắt `/rs-task-auto` (`Autonomous 3-Channel Task Dispatcher`)
+
+Khi người dùng gọi `/rs-task-auto` (hoặc yêu cầu tạo/giao việc cho nhân sự), hãy thực hiện chính xác trình tự sau:
+
+1. **Bước 1 · Chạy Bộ Phân Loại 4 Cổng (`4-Gate Task Dispatch Classifier`):**
+   ```bash
+   python3 .agent/skills/rs-exec-task-dispatch-auto/scripts/rs_exec_task_dispatch_auto_tool.py dispatch \
+     --query "<nguyên văn yêu cầu giao việc của người dùng>" --json
+   ```
+
+2. **Bước 2 · Xử Lý Cổng Hỏi Lại Khử Mơ Hồ (`Interactive Clarification Gate`):**
+   - Kiểm tra trường `"needs_clarification"` trong JSON trả về:
+     - **Nếu `"needs_clarification": true` (`"status": "NEEDS_CLARIFICATION"`):**
+       - **DỪNG LẠI NGAY** và gọi tool **`ask_question`** truyền mảng `"clarifying_questions"` (tối đa `1-3` câu hỏi trắc nghiệm để làm rõ: Phân hệ `Todolist` / `Kế hoạch` / `Quy trình`, Đích chứa, Nhân sự nhận việc, hoặc Khung thời gian).
+       - Sau khi người dùng trả lời, chạy lại CLI với các cờ đã khóa (`--channel`, `--task-name`, `--assignees`, `--date` / `--date-start` `--date-end`, `--plan-keyword`, `--group-keyword`, `--workflow-keyword`, `--confirmed`) để lấy `mcp_execution_plan` hoàn chỉnh.
+     - **Nếu `"needs_clarification": false` (`"status": "READY_TO_DISPATCH"`):**
+       - Chuyển thẳng sang Bước 3.
+
+3. **Bước 3 · Thực Thi Công Cụ MCP Đích & Tuân Thủ Kỷ Luật Hiển Thị:**
+   - Gọi các tool tra cứu trong `pre_lookup_tools` (như `members_search`, `todolist_list_templates`, `todo_template_list_groups`, `work_plan_list`, `workflow_list`) nếu cần lấy thông tin thực tế trên hệ thống.
+   - Thực thi tool ghi trong `target_mcp_tool` (`todo_create`, `todo_create_from_template`, `todo_template_apply_group`, `work_plan_task_create`, `work_plan_subtask_create`, `work_plan_sheet_create`, `mission_create`) với `confirmed=true` sau khi người dùng đã xác nhận thông số.
+   - **Kỷ luật hiển thị bắt buộc:** Không hiển thị ID thô; không hiển thị email (trừ khi trùng tên); trong Kế hoạch luôn dùng từ **"nhóm công việc"**; giữ nguyên văn tên công việc của người dùng.

@@ -23,13 +23,19 @@ Tài liệu hướng dẫn thực hiện 3 tác vụ quan trọng nhất khi tri
    cd ~/projects/rosier-ho-skills
    ```
 
-2. Chạy trình cài đặt `./install.sh` với hồ sơ phòng ban HO tương ứng (ví dụ `ho-all-126` cho toàn bộ Khối HO hoặc `ho-ops-supply` cho Khối Vận Hành & Cung Ứng) và bật tự động cập nhật 24h:
+2. Chạy trình cài đặt `./install.sh` với vai trò phòng ban HO (`--role`), hồ sơ kỹ năng (`--profile`) tương ứng (ví dụ `ho-all-126` hoặc `ho-ops-supply` cho Khối Vận Hành & Cung Ứng) và bật tự động cập nhật 24h. Trình cài đặt tự động khởi tạo `<workspace>/.agent/.env` (`chmod 600` từ `.env.ho.example`) và đăng ký đủ `8` mô-đun MCP an toàn tại `<workspace>/.mcp.json`:
 
    ```bash
-   ./install.sh --workspace ~/work/rosier-ho-workspace --profile ho-all-126 --enable-auto-update
+   ./install.sh --workspace ~/work/rosier-ho-workspace --role ho_ops_supply --profile ho-all-126 --enable-auto-update
    ```
 
-   Kết quả hiển thị xác nhận đã liên kết `126` HO Skills, `28` HO Workflows, Rule `always_on` (`rules/rs-ho-auto-router.md`) và cài đặt lịch `LaunchAgents` hàng ngày lúc `08:00`.
+   Khi cần cấu hình lại Token phòng ban HO hoặc gộp không ghi đè `8` mô-đun MCP vào cấu hình IDE, chạy:
+
+   ```bash
+   ./bin/rs-control setup --workspace-dir ~/work/rosier-ho-workspace --role ho_ops_supply --json
+   ```
+
+   Kết quả hiển thị xác nhận đã liên kết `131` HO Skills, `28` HO Workflows, Rule `always_on` (`rules/rs-ho-auto-router.md`), khởi tạo `.agent/.env` (`0600`), đăng ký `8` mô-đun MCP và cài đặt lịch `LaunchAgents` hàng ngày lúc `08:00`.
 
 3. Chạy thử một yêu cầu công việc qua bộ định tuyến tự động `/rs-auto`:
 

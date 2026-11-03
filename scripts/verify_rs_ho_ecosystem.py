@@ -122,14 +122,32 @@ def check_white_label_purity(root_dir: Path) -> Dict[str, Any]:
 def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any]:
     """Verify HO Privilege Pruning, Zero DB Mutation, Zero-Command Auto Router, and Periodic Auto-Updater."""
     disk_skills = {p.name for p in SKILLS_DIR.iterdir() if p.is_dir()} if SKILLS_DIR.exists() else set()
-    disk_workflows = {p.stem for p in WORKFLOWS_DIR.glob("rs-wf-*.md")} if WORKFLOWS_DIR.exists() else set()
+    disk_workflows = (
+        {p.stem for p in WORKFLOWS_DIR.glob("rs-wf-*.md")}
+        | {p.name[:-7] for p in WORKFLOWS_DIR.glob("rs-wf-*.md.bak")}
+        | {p.name for p in SKILLS_DIR.iterdir() if p.is_dir() and p.name.startswith("rs-wf-")}
+    ) if WORKFLOWS_DIR.exists() else set()
     disk_mcp_modules = {p.name for p in MCP_DIR.iterdir() if p.is_dir()} if MCP_DIR.exists() else set()
     manifest_mcp_tools = {t["id"] for t in manifest.get("mcp_tools", [])}
 
-    leaked_skills = sorted(disk_skills & EXCLUDED_SKILLS)
+    leaked_skills = sorted(disk_skills & (EXCLUDED_SKILLS | EXCLUDED_WORKFLOWS))
     leaked_workflows = sorted(disk_workflows & EXCLUDED_WORKFLOWS)
     leaked_mcp_modules = sorted(disk_mcp_modules & EXCLUDED_MCP_MODULES)
     leaked_mcp_tools = sorted(manifest_mcp_tools & EXCLUDED_MCP_TOOLS)
+
+    expected_migrated_wfs = ["rs-auto", "rs-task-auto"] + [w["id"] for w in manifest.get("workflows", [])]
+    migrated_wf_skills_found = [
+        wid for wid in expected_migrated_wfs if (SKILLS_DIR / wid / "SKILL.md").exists()
+    ]
+    archived_wf_bak_found = [
+        wid for wid in expected_migrated_wfs if (WORKFLOWS_DIR / f"{wid}.md.bak").exists()
+    ]
+    legacy_wf_md_remaining = sorted(p.name for p in WORKFLOWS_DIR.glob("*.md")) if WORKFLOWS_DIR.exists() else []
+    migrated_workflows_verified = (
+        len(migrated_wf_skills_found) == 30
+        and len(archived_wf_bak_found) == 30
+        and len(legacy_wf_md_remaining) == 0
+    )
 
     rs_ctrl = SUITE_ROOT / "bin" / "rs-control"
     # 1. Verify reset-db is blocked
@@ -246,6 +264,17 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         and bom_ho_approve_data.get("error", {}).get("code") == "HO_CEO_APPROVAL_REQUIRED"
     )
 
+    # 8. Verify First-Run HO MCP & Token Setup Wizard (scripts/rs_ho_setup_wizard.py --self-test --json)
+    setup_wizard_script = SUITE_ROOT / "scripts" / "rs_ho_setup_wizard.py"
+    sw_proc = subprocess.run(
+        [sys.executable, str(setup_wizard_script), "--self-test", "--json"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    sw_data = json.loads(sw_proc.stdout) if sw_proc.stdout.strip() else {}
+    setup_wizard_verified = sw_proc.returncode == 0 and sw_data.get("status") == "PASS"
+
     passed = (
         len(leaked_skills) == 0
         and len(leaked_workflows) == 0
@@ -259,6 +288,8 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         and auto_updater_verified
         and bom_delete_blocked
         and bom_ho_ceo_approval_blocked
+        and setup_wizard_verified
+        and migrated_workflows_verified
     )
     return {
         "status": "PASS" if passed else "FAIL",
@@ -274,6 +305,10 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         "periodic_auto_updater_verified": auto_updater_verified,
         "bom_immutable_delete_blocked": bom_delete_blocked,
         "bom_ho_ceo_approval_blocked": bom_ho_ceo_approval_blocked,
+        "ho_setup_wizard_verified": setup_wizard_verified,
+        "migrated_ho_workflow_skills_verified": f"{len(migrated_wf_skills_found)}/30",
+        "archived_workflow_bak_files_verified": f"{len(archived_wf_bak_found)}/30",
+        "legacy_workflow_md_remaining": legacy_wf_md_remaining,
     }
 
 
@@ -340,7 +375,9 @@ def verify_all() -> Dict[str, Any]:
     known_mcp_ids = {m["id"] for m in manifest["mcp_tools"]}
     for w in manifest["workflows"]:
         wid = w["id"]
-        md_path = WORKFLOWS_DIR / f"{wid}.md"
+        skill_md_path = SKILLS_DIR / wid / "SKILL.md"
+        legacy_md_path = WORKFLOWS_DIR / f"{wid}.md"
+        md_path = skill_md_path if skill_md_path.exists() else legacy_md_path
         spec_path = WORKFLOWS_DIR / "specs" / f"{wid}.json"
         if not md_path.exists() or not spec_path.exists():
             wf_failures.append({"workflow_id": wid, "error": "missing_workflow_files"})
