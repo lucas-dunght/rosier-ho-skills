@@ -1,4 +1,4 @@
-# 🌿 Cẩm Nang Tổng Hợp & Hướng Dẫn Sử Dụng Nhanh Hệ Sinh Thái 207 Hợp Phần Nội Bộ Rosier (RS-OS 200 v6.7.0)
+# 🌿 Cẩm Nang Tổng Hợp & Hướng Dẫn Sử Dụng Nhanh Hệ Sinh Thái 207 Hợp Phần Nội Bộ Rosier (RS-OS 200 v6.8.0)
 
 - **Mã Tài Liệu Tri Thức:** `4084ffbe-44fc-8106-8a9a-fe1fb7db4f2e`
 - **Trang Cha (Parent):** `Kho Biểu Mẫu, SOP & Tài Nguyên` (`02a4ffbe44fc82cb9bdf016f1b729447`) thuộc Hub 1 `ROSIER BUSINESS` (`15e4ffbe44fc8390be0601a8074420d9`)
@@ -6,7 +6,7 @@
 ---
 
 <callout icon="🌿" color="green_bg">
-<b>Tóm tắt Điều hành (Executive Summary):</b> <b>Hệ Sinh Thái Kỹ Năng Độc Quyền Nội Bộ Rosier (<code>RS-OS 200 v6.7.0</code>)</b> là bộ <b>207 hợp phần chuẩn mã <code>rs-*</code></b> (gồm <b>147 Kỹ năng <code>rs-*</code></b> chia theo 12 Phân khu + <b>30 Quy trình Liên phòng ban <code>rs-wf-*</code></b> kèm lệnh tự trị <code>/rs-auto</code> + <b>30 Công cụ Kết nối Dữ liệu <code>rs-mcp-*</code></b> trong 10 Mô-đun MCP). Toàn bộ hệ sinh thái được chuẩn hóa <b>100% Thuần Vai Trò &amp; Chức Năng</b> (không phụ thuộc tên cá nhân, tên phần mềm bên thứ ba hay địa danh đường phố), đóng gói thành thư viện chuẩn (<code>skills-lib/rs-os-suite</code> + kho GitHub Private <code>rosier-skills</code>) và cài đặt cô lập 100% trong <b><code>rosier-workspace</code></b>.
+<b>Tóm tắt Điều hành (Executive Summary):</b> <b>Hệ Sinh Thái Kỹ Năng Độc Quyền Nội Bộ Rosier (<code>RS-OS 200 v6.8.0</code>)</b> là bộ <b>213 hợp phần chuẩn mã <code>rs-*</code></b> (gồm <b>147 Kỹ năng <code>rs-*</code></b> chia theo 12 Phân khu + <b>30 Quy trình Liên phòng ban <code>rs-wf-*</code></b> kèm lệnh tự trị <code>/rs-auto</code> + <b>30 Công cụ Kết nối Dữ liệu <code>rs-mcp-*</code></b> trong 10 Mô-đun MCP). Toàn bộ hệ sinh thái được chuẩn hóa <b>100% Thuần Vai Trò &amp; Chức Năng</b> (không phụ thuộc tên cá nhân, tên phần mềm bên thứ ba hay địa danh đường phố), đóng gói thành thư viện chuẩn (<code>skills-lib/rs-os-suite</code> + kho GitHub Private <code>rosier-skills</code>) và cài đặt cô lập 100% trong <b><code>rosier-workspace</code></b>.
 </callout>
 
 <table-of-contents color="gray" />
@@ -496,3 +496,10 @@ Mọi vai trò chức danh và AI Agent khi vận hành bộ kỹ năng <code>RS
 - **Danh mục tổng tra cứu 205 hợp phần:** `INDEX-RS-200.md` và `skills.json`
 - **Bản đồ tính năng có mã băm SHA-256 (`16/16 Features`):** `references/features/README.md`
 - **Bảng điều khiển trực quan HTML v3.3:** `RS-OS-180-CONTROL-CENTER.html`
+
+| `146` | `rs-kb-notebooklm-slide-studio` | `flagship` | `02-rs-kb-lms` | Xưởng Thiết Kế & Tinh Chỉnh Từng Trang Slide Chuẩn Rosier v3.3 Bằng NotebookLM (`studio_revise` + `.pptx`/`.pdf`) |
+| `147` | `rs-kb-notebooklm-video-studio` | `flagship` | `02-rs-kb-lms` | Xưởng Sản Xuất Video Clip Bài Giảng & Explainer Chuẩn Rosier v3.3 Bằng NotebookLM (`.mp4` + `3s Hook`) |
+| `148` | `rs-kb-notebooklm-podcast-studio` | `flagship` | `02-rs-kb-lms` | Xưởng Sản Xuất Podcast Đối Thoại & Radio Nội Bộ 4 Chế Độ Bằng NotebookLM (`.m4a` + `100% Số Đọc Bằng Chữ`) |
+| `149` | `rs-kb-notebooklm-visual-quiz-pack` | `flagship` | `02-rs-kb-lms` | Xưởng Học Liệu Trực Quan & Khảo Thí 4-Trong-1 Bằng NotebookLM (`Infographic .png` + `Mind Map Mermaid` + `Flashcards` + `Bloom Quiz`) |
+| `150` | `rs-lms-notebooklm-course-builder` | `flagship` | `02-rs-kb-lms` | Nhà Máy Đóng Gói & Xuất Bản Khóa Học Đa Phương Tiện 6 Mũi Từ NotebookLM Lên `Rosier LMS` (`lms_upsert_curriculum_tree`) |
+| `151` | `rs-kb-notebooklm-cross-briefing` | `flagship` | `02-rs-kb-lms` | Tổ Hợp Truy Vấn Liên Sổ Tay (`cross_notebook_query`), Xuất Bảng Excel (`.xlsx`) & Đồng Bộ Google Docs/Sheets |

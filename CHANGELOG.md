@@ -1,35 +1,56 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.7.0-ho.1`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.8.0-ho.2`)
 
-## [6.7.0-ho.1] - 2026-11-03
+## [6.8.0-ho.2] - 2026-11-03
 
-### Bổ sung Mới & Quản Trị Sổ Cái Bất Biến (`Added & Security`)
-- **Trình Thuật Sĩ Cấu Hình MCP & Token Ban Đầu + Kiểm Tra Cập Nhật Thủ Công (`scripts/rs_ho_setup_wizard.py`, `.env.ho.example`, `./install.sh --setup`, `./bin/rs-control setup` · Issue #5):**
-  - Tự động khởi tạo `<workspace>/.agent/.env` (`chmod 600`) theo vai trò phòng ban HO (`--role`), chặn cứng vai trò `chain_ceo` (`HO_CEO_ROLE_FORBIDDEN`), chặn Token đặc quyền quản trị (`CEO_MASTER_`, `DB_ADMIN_`) và chặn cờ ghi đè Database (`HO_PRIVILEGED_TOKEN_OR_DB_WRITE_FORBIDDEN`).
-  - Tự động sinh cấu hình `8` mô-đun MCP an toàn (`HO_SAFE_READ_AND_DRAFT`, `allow_db_mutation=false`) tại `<workspace>/.mcp.json` và `<workspace>/.agent/mcp_config.json` (hỗ trợ gộp không ghi đè vào cấu hình IDE qua `--ide-mcp-config`), kèm Smoke Test `8/8` và lệnh kiểm tra bản cập nhật thủ công `./install.sh --check-update` / `./bin/rs-control check-update`.
-- **Sổ Cái BOM Bất Biến Theo Ngày Tháng & Luồng Phê Duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO` · `core/bom_temporal_ledger.json` · PR #4):**
-  - Cấm tuyệt đối lệnh xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`); mọi thay đổi định mức đều tạo phiên bản mới theo `effective_from` (`YYYY-MM-DD`) và tự động đóng kỳ bản cũ `effective_to = D - 1 day` (`SUPERSEDED_ARCHIVED`).
-  - Thực thi luồng phê duyệt 3 Chốt độc lập: Chốt 1 (`rnd_lead` · `bom-create` / `bom-update`), Chốt 2 (`supply_chain` · `bom-verify-supply`), Chốt 3 (`chain_ceo` · `bom-approve`). Tại kho Khối HO (`rosier-ho-skills`), chặn cứng lệnh `bom-approve` trực tiếp nếu không có mã biên lai chữ ký số `--approval-token CEO-SIG-...` (`HO_CEO_APPROVAL_REQUIRED`).
-  - Liên thông truy vấn điểm thời gian `bom-as-of` với `rs-supply-pos-erp-blindcount`, `rs-supply-cost-variance-alert`, `rs-fin-drink-unit-economics` và `/rs-auto`.
-- **Đồng Bộ Bộ Đôi NotebookLM MCP (`#144` & `#145`) & Động Cơ KPI Tháng (`#143` · `183` hợp phần):**
-  - Bổ sung `rs-kb-notebooklm-research-studio`, `rs-kb-notebooklm-prompt-architect` và `rs-hr-monthly-kpi-engine` ở chế độ an toàn Khối HO (`HO_SAFE_READ_AND_DRAFT`).
+### Chuyển Đổi 30 Quy Trình Khối HO Sang Định Dạng `skills/<name>/SKILL.md` & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)
+- **Chuyển đổi `30` HO Workflows sang `skills/<name>/SKILL.md` (`migrate-workflows`)**:
+  - Tạo mới `29` skill quy trình (`skills/rs-task-auto/SKILL.md` + `28` `skills/rs-wf-*/SKILL.md`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/SKILL.md` 5 lớp; lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.
+  - Cắt bỏ tuyệt đối `2` quy trình riêng của CEO (`rs-wf-exec-0730-morning-pulse`, `rs-wf-exec-2230-evening-wrap`) trên cả `skills/` và `workflows/`.
+  - Đồng bộ `workflows/run_rs_workflow.py`, `scripts/verify_rs_ho_ecosystem.py`, `scripts/rs_profile_loader.py` và `references/features/FEAT-13-rs-wf-orchestrator.md` trỏ trực tiếp tới `skills/<wid>/SKILL.md`.
+- **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` & `.env.ho.example`)**:
+  - Xác thực 10 vai trò Khối HO/Điểm bán, cấp phát `.agent/.env` (`chmod 0600`) kèm `Token Scope Guard`, tự động đăng ký `8/8` Safe MCP Modules và tích hợp `./bin/rs-control setup | check-update | update`.
 
----
-
-## [6.5.0-ho.1] - 2026-11-02
-
-### Bổ sung & Chuẩn hóa Bảo mật Khối HO (`Added & Security`)
-- **Tách Kho Kỹ Năng Độc Lập Cho Nhân Sự Khối Văn Phòng HO (`HO_STAFF_SAFE_EDITION` · `178` hợp phần):**
-  - Cắt bỏ `16` kỹ năng đặc quyền CEO/HĐQT/M&A và Core/System-evolution, giữ lại `126` HO Skills chuyên môn cho 6 Khối Phòng Ban HO.
-  - Cắt bỏ `2` quy trình nhịp sinh học riêng của CEO (`07:30` & `22:30`), giữ lại `28` HO Workflows.
-  - Cắt bỏ `2` mô-đun MCP đặc quyền và `2` công cụ ghi đè Database/xuất sổ cái thuế, giữ lại `8` Mô-đun / `24` Safe MCP Tools khóa cứng ở chế độ `HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation = False`).
-  - Xóa bỏ hoàn toàn lệnh `reset-db` và `seed` trong `./bin/control-app`, `./bin/rs-control` và `scripts/rs_os_control_tool.py`.
-- **Chế Độ Auto Mặc Định (`Zero-Command Auto` · `rules/rs-ho-auto-router.md`):**
-  - Bổ sung Rule `always_on` giúp nhân sự HO chỉ cần đặt câu hỏi tiếng Việt tự nhiên, hệ thống tự động chọn bộ Skill hoặc bật `ask_question` (1-3 câu hỏi trắc nghiệm theo 6 Khối Phòng Ban HO, chặn leo thang `--role chain_ceo`).
-- **Cơ Chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`):**
-  - Bổ sung `scripts/build_and_sync_ho_repo.py`, `scripts/rs_ho_auto_updater.py`, `./install.sh --enable-auto-update` và `.github/workflows/periodic-ho-verify-and-sync.yml`.
+### Cải Tiến Cốt Lõi & Định Tuyến Thích Ứng Khối HO (`Enhanced & Cognitive Routing`)
+- **Bộ Định Tuyến Thích Ứng 10-Sao & Cầu Dao Tự Động Thực Thi (`High-Confidence Auto-Pass Gate` · `/rs-auto`):**
+  - Tự động nhận diện danh bạ nhân sự Khối Văn phòng Hội Sở HO (`HO_PERSONNEL_DIRECTORY` gồm Lâm, Ân, Hưng, Yến, Phương Anh, Linh, Tân, Huy, Kế toán Tổng hợp) qua regex ranh giới từ tiếng Việt chuẩn xác, tự động khóa pháp nhân `CHAIN_HEADQUARTERS_CTCP` và thỏa mãn Trục 1 (`axis_1_entity_clear = True`).
+  - Mở rộng bảng nhận diện động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES` gồm chấm kpi, chấm lại kpi, tạo kpi mục tiêu, tính lương 3p, kiểm kê mù, đặt hàng b2b, dòng tiền 13 tuần), tự động định hình sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).
+  - **Cầu Dao 0-Click Auto-Pass:** Khi độ tin cậy kỹ năng >= 85.0% và là lệnh phi phá hủy, hệ thống kích hoạt chế độ tự động thực thi với giả định hợp lý (`[DERIVED]`), không ngắt quãng người dùng qua popup khi đã đủ dữ kiện thực thi.
+  - **Cổng Khử Mơ Hồ Động Theo Chuyên Môn Phân Khu:** Đối với câu lệnh thực sự thiếu dữ kiện cốt lõi (< 85%), sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng khối phòng ban (HR/KPI hỏi phân loại nhân sự HO vs Điểm bán; Tài chính hỏi pháp nhân đối soát; Vận hành hỏi Kho Tổng vs Điểm bán; tuyệt đối không còn các tùy chọn lạc đề).
+### Bổ Sung 6 Hệ Thống Sáng Tạo Đa Phương Tiện NotebookLM & Nhà Máy Học Viện LMS (`#146..#151` · `02-rs-kb-lms`)
+- **`#146 rs-kb-notebooklm-slide-studio`**: Thiết kế bộ Slide chuẩn thương hiệu v3.3 (`detailed_deck` / `presenter_slides`) và tinh chỉnh từng trang qua `studio_revise`.
+- **`#147 rs-kb-notebooklm-video-studio`**: Sản xuất Video đào tạo `.mp4` với 10 phong cách thị giác và khóa 100% số đọc bằng chữ tiếng Việt.
+- **`#148 rs-kb-notebooklm-podcast-studio`**: Sản xuất Podcast đối thoại 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) cho Radio giao ca.
+- **`#149 rs-kb-notebooklm-visual-quiz-pack`**: Tổ hợp học liệu 4-trong-1 (`infographic .png` + `mind_map` biên dịch sang `Mermaid` + `flashcards` + `quiz` 4 bậc thang Bloom `30/30/25/15`).
+- **`#150 rs-lms-notebooklm-course-builder`**: Cầu nối 6 mũi tự động đóng gói học liệu NotebookLM thành JSON chuẩn cho `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` (chế độ `HO_SAFE_READ_AND_DRAFT` yêu cầu mã phê duyệt trước khi `publish-live`).
+- **`#151 rs-kb-notebooklm-cross-briefing`**: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), xuất bảng Excel (`.xlsx`), đồng bộ Google Docs/Sheets và `pipeline` tự động.
+- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`189` hợp phần: `137` HO Skills + `28` HO Workflows + `24` Safe MCP Tools):**
+  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) và duy trì 0 đặc quyền CEO, 0 thao tác ghi/xóa trực tiếp Database gốc.
 
 ---
 
+  - `#147 rs-kb-notebooklm-video-studio`: Sản xuất Video Explainer/Brief `.mp4` tiêm sẵn `video_style_prompt` chuẩn Build Luxury Minimal v3.3 kèm Móc câu 3 giây đầu và chuyển đổi số sang chữ tiếng Việt.
+  - `#148 rs-kb-notebooklm-podcast-studio`: Sản xuất Podcast/Radio nội bộ 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) với khóa chuyển đổi 100% số viết bằng chữ tiếng Việt đọc tự nhiên.
+  - `#149 rs-kb-notebooklm-visual-quiz-pack`: Tổ hợp 4-trong-1 gồm `Infographic .png` (3 khổ × 11 phong cách), `Mind Map .json` biên dịch tự động sang sơ đồ `Mermaid`, `Flashcards` và ngân hàng `Quiz` chuẩn 4 bậc thang Bloom (`30/30/25/15`).
+  - `#150 rs-lms-notebooklm-course-builder`: Dây chuyền Liên thông Tự động 6 Mũi (`6-Modality Auto-Bridge`) gom trọn bộ học liệu từ NotebookLM và biên dịch khớp 100% schema `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` của MCP `rosier-lms`.
+  - `#151 rs-kb-notebooklm-cross-briefing`: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), bóc tách tài liệu phi cấu trúc thành bảng Excel `.xlsx` (`data_table_xlsx`), xuất thẳng sang Google Docs/Sheets và lưu `pipeline` định kỳ.
+
+# Nhật Ký Phát Hành Hệ Sinh Thái Kỹ Năng Nội Bộ Rosier (`RS-OS 200`)
+
+Mọi thay đổi kiến trúc, danh mục kỹ năng và công cụ điều phối của Hệ sinh thái `RS-OS 200` đều được ghi nhận và kiểm chứng mã băm SHA-256 tại tài liệu này.
+
+---
+
+## [v6.8.0] - 2026-11-03
+
+### Bổ sung & Nâng cấp Mới (`Added & Improved`)
+- **Cổng Khử Mơ Hồ Động 10 Sao & Cầu Dao Tự Động Thực Thi (`Adaptive Cognitive Router & Auto-Pass Gate` · `/rs-auto`):**
+  - **Tự động nhận diện Danh bạ Nhân sự Khối Văn phòng Hội sở (HO):** Bóc tách chính xác các nhân sự chủ chốt (`Lâm`, `Ân`, `Hưng`, `Yến`, `Phương Anh`, `Linh`, `Tân`, `Huy`, `Kế toán Tổng hợp`) bằng biểu thức chính quy ranh giới từ tiếng Việt (`word-boundary lookbehind/lookahead`), tự động khóa mô hình chủ thể `CHAIN_HEADQUARTERS_CTCP` và thỏa mãn Trục 1 (`axis_1_entity_clear = True`).
+  - **Mở rộng Động từ Hành động Thực thi (`ACTION_DELIVERABLE_RULES`):** Nhận diện các cặp hành động thường gặp (`chấm kpi`, `chấm lại kpi`, `tạo kpi mục tiêu`, `tính lương 3p`, `kiểm kê mù`, `đặt hàng b2b`, `dòng tiền 13 tuần`) để tự động định vị định dạng sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).
+  - **Cầu Dao Tự Động Thực Thi Độ Tin Cậy Cao (`High-Confidence Auto-Pass Gate`):** Khi độ tin cậy kỹ năng `>= 85.0%` và câu lệnh phi phá hủy, hệ thống tự động suy luận các tham số ngầm định hợp lý (`[DERIVED]`), bỏ qua popup hỏi lại và thực thi tất định ngay lập tức (`status: "EXECUTED_OK"` / `"DRY_RUN_OK"`), không làm gián đoạn trải nghiệm của người dùng.
+  - **Sinh Câu Hỏi Trắc Nghiệm ĐỘNG 100% Theo Chuyên Môn (`Dynamic Contextual Clarification`):** Khi câu lệnh thực sự thiếu dữ liệu cốt lõi (`< 85%`), các câu hỏi trắc nghiệm được sinh động chuẩn xác theo phân khu nghiệp vụ liên quan (ví dụ: HR/KPI hỏi về nhân sự HO vs Quán; Tài chính hỏi về tài khoản đối soát vs P&L; Vận hành hỏi về Kho Tổng vs Quán nhượng quyền; loại bỏ hoàn toàn các lựa chọn vô lý như Video LMS/SOP cho bài toán HR/Tài chính).
+- **Cập nhật Bộ Kiểm thử TDD Toàn diện:** Thêm các trường hợp kiểm thử tự động cho câu lệnh CEO thực tế, câu lệnh mơ hồ HR và Tài chính trong `self_test_all_divisions()`.
+
+---
 
 ## [v6.7.0] - 2026-11-03
 

@@ -1,6 +1,6 @@
 ---
 trigger: always_on
-description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.5.0-ho.1)
+description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.8.0-ho.1)
 ---
 
 # Quy Tắc Điều Phối Tự Động Mặc Định & Cổng Hỏi Lại Khử Mơ Hồ Dành Cho Nhân Sự Khối HO (`rosier-ho-skills`)
@@ -10,8 +10,10 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
      ```bash
      ./.agent/bin/rs-control rs-auto "<câu hỏi nguyên văn của nhân sự HO>" --json
      ```
+   - **Cầu Dao Tự Động Thực Thi (High-Confidence Auto-Pass Gate >= 85%):**
+     - Khi độ tin cậy kỹ năng đạt từ 85% trở lên và là lệnh tác chiến phi phá hủy (chấm KPI, tính lương, tra cứu dòng tiền, đặt hàng...), hệ thống tự động kích hoạt `0-Click Auto-Pass` với tham số ngầm định hợp lý (`[DERIVED]`), thực thi trực tiếp không ngắt quãng người dùng qua popup.
    - **Nếu kết quả trả về `needs_clarification: true` (`status == "NEEDS_CLARIFICATION"`):**
-     - Agent **DỪNG LẠI NGAY** (không tự đoán mò) và gọi công cụ **`ask_question`** hiển thị mảng `clarifying_questions` (`1–3` câu hỏi trắc nghiệm ngắn gọn về: *1. Khối Phòng Ban HO / Mô hình Điểm bán*, *2. Trọng tâm nghiệp vụ*, *3. Định dạng sản phẩm đầu ra*).
+     - Agent **DỪNG LẠI NGAY** (không tự đoán mò) và gọi công cụ **`ask_question`** hiển thị mảng `clarifying_questions` (`1–3` câu hỏi trắc nghiệm ngữ cảnh động chuẩn xác theo nghiệp vụ phòng ban, tuyệt đối không hỏi lan man ngoài phạm vi).
    - **Ngay sau khi nhân sự chọn đáp án (hoặc khi `needs_clarification: false` ngay từ đầu):**
      - Agent gọi lại `./.agent/bin/rs-control rs-auto "<câu hỏi>" --role <vai_trò_HO> --domain <mã_phân_khu> --deliverable <định_dạng> --confirmed --json`, đọc `SKILL.md` của tổ hợp kỹ năng được chọn trong `recommended_combo` và thực thi trọn vẹn cho nhân sự.
 

@@ -1,58 +1,38 @@
 ---
 name: rs-hr-jd-offer-composer
-description: "Soạn Bản Mô Tả Công Việc (JD) & Thư Mời Nhận Việc Chuẩn Thương Hiệu (Phân khu 06: Nhân Sự 3P, Tuyển Dụng, Vận Hành Nhân Sự Quán & Pháp Lý (rs-hr-* & rs-legal-*)). Kỹ năng độc quyền chuẩn 5 Lớp Kép thuộc hệ sinh thái nội bộ RS-OS 200 của Rosier Fresh Tea & Coffee. Hỗ trợ song song Nhân sự HO/Cửa hàng (Mode A: Human Co-Pilot) và Hệ thống AI Agent 4 Tầng (Mode B: Autonomous Agent). Tích hợp công cụ CLI tất định scripts/rs_hr_jd_offer_composer_tool.py (--dry-run, --json, Actionable Error), Kỷ luật Kiểm chứng 4 Nhãn ([OBSERVED]/[DERIVED]/[PRIOR]/[ASSUMED]), bộ lọc khử mùi AI 3 vòng nội bộ và khóa ngữ cảnh sống 25 điểm bán / 3 mô hình chủ thể pháp nhân / 2 Kho Tri Thức Nội Bộ của Rosier Fresh Tea & Coffee."
-version: "6.4.0"
-layer: "bundled_tactical"
-division: "06-rs-hr-legal"
-security_zone: "INTERNAL_PRIVILEGED"
+description: "Soạn thảo Bản Mô tả Công việc (JD), Thư mời Nhận việc (Offer Letter), Hợp đồng Lao động 3P (HĐLĐ), Phụ lục Lương 3P và Thỏa thuận Bảo mật 360 độ (NDA & IP theo Luật số 91/2025/QH15) chuẩn 100% Times New Roman."
+metadata:
+  version: "6.5.0"
+  division: "06-rs-hr-legal"
+  skill_code: "#056"
+  security_zone: "INTERNAL_PRIVILEGED"
+  allowed_notion_hubs:
+    - "15e4ffbe44fc8390be0601a8074420d9"
+    - "3194ffbe44fc809b8851fead4da48f48"
 ---
 
-# 🏛️ `rs-hr-jd-offer-composer` · Soạn Bản Mô Tả Công Việc (JD) & Thư Mời Nhận Việc Chuẩn Thương Hiệu
+# rs-hr-jd-offer-composer · Hệ Soạn Thảo JD, Thư Mời Nhận Việc & Hợp Đồng Lao Động 3P Tích Hợp Bảo Mật 360 Độ (`HĐLĐ 3P & NDA`)
 
-> **Ecosystem ID:** `RS-OS-200 #068` · **Layer:** `bundled_tactical` · **Division:** `Phân khu 06: Nhân Sự 3P, Tuyển Dụng, Vận Hành Nhân Sự Quán & Pháp Lý (rs-hr-* & rs-legal-*)`
-> **Security Zone:** `INTERNAL_PRIVILEGED` · **Allowed Knowledge Hub:** `ROSIER_BUSINESS (15e4ffbe44fc8390be0601a8074420d9)`
-> **Internal Lineage:** `job-description-architect + offer-letter` · **Standard:** `RS-OS 200 Proprietary Standard`
+## 1. Mục tiêu Điều hành & Phạm vi Áp dụng
+- **Mã định danh:** `rs-hr-jd-offer-composer` (`#056` · Phân khu `06-rs-hr-legal` · Cấp bảo mật `INTERNAL_PRIVILEGED`).
+- **Tích hợp Tam Giác Chủ Thể (`3-Tier Ownership Triad`):**
+  - Tách bạch rõ pháp nhân ký kết Hợp đồng Lao động giữa Khối Văn phòng Điều hành & Kho Tổng (`CTCP` · `MST: 0110045807`), Cụm `03` Cửa hàng Công ty (`CHH` mã `38197`, `46880`, `87024` thuộc `Cty TNHH`) và đội ngũ nhân sự tại `22` Điểm bán Nhượng quyền (`CHNQ`).
+  - **Khóa Ngữ cảnh Cứng:** Chặn tuyệt đối mọi thao tác tạo văn bản nhân sự cho `02` mã điểm bán đã đóng cửa vĩnh viễn (`115953` và `106192`).
 
----
+## 2. Cấu Trúc Chuẩn Bộ Hồ Sơ Hợp Đồng Lao Động 3P & Bảo Mật 360 Độ (`.docx`)
+1. **Cơ cấu Đãi ngộ `3P` (`Pay for Position, Person, Performance`):**
+   - **`P1` (`Lương Vị trí`):** Theo khung ngạch bậc chuẩn của vị trí công việc và thời gian làm việc thực tế.
+   - **`P2` (`Thưởng Năng lực Học viện Đào tạo LMS`):** Chỉ giải ngân khi nhân sự đạt `100%` tiến độ bài học và vượt qua kỳ sát hạch (`Green Tick`) trên hệ thống Học viện LMS.
+   - **`P3` (`Thưởng Hiệu suất KPR/KPI Tháng`):** Tính theo tỷ lệ hoàn thành bảng `KPI` tháng đã được khóa (`LOCKED_ACTIVE`) và nghiệm thu (`FINALIZED_FOR_3P`) qua `rs-hr-monthly-kpi-engine`.
+2. **Cơ chế Bảo mật 3 Chiều Bắt buộc (`Luật Bảo vệ Dữ liệu Cá nhân số 91/2025/QH15`):**
+   - **Chiều 1 · Bảo vệ Bí mật Kinh doanh & Sở hữu Trí tuệ của Công ty:** Bảo mật vô thời hạn đối với công thức pha chế, định mức nguyên vật liệu (`BOM`), quy trình vận hành chuẩn (`SOP`), danh sách nhà cung cấp và dữ liệu đối tác nhượng quyền.
+   - **Chiều 2 · Bảo mật Chéo 360 Độ giữa Toàn thể Nhân sự:** Nghiêm cấm tự ý tiết lộ, so sánh, bàn tán mức lương thưởng `3P` (`P1`, `P2`, `P3`) của bản thân hoặc tìm hiểu, chụp ảnh, tiết lộ thu nhập và hồ sơ cá nhân của đồng nghiệp. Vi phạm là căn cứ giảm trừ thưởng hiệu suất `P3-3(-)` và xử lý kỷ luật.
+   - **Chiều 3 · Cam kết Bảo vệ Dữ liệu Cá nhân Song phương:** Công ty cam kết bảo mật hồ sơ cá nhân, tài khoản ngân hàng, mã số thuế, BHXH và kết quả `KPI` của Người lao động theo `Luật số 91/2025/QH15` và `Điều 38 Bộ luật Dân sự 2015`; đồng thời ghi nhận sự đồng thuận của Người lao động cho phép xử lý dữ liệu phục vụ quản trị nội bộ, cơ quan Thuế, BHXH, ngân hàng chi lương và lưu trữ tối thiểu `10` năm theo Luật Kế toán.
+3. **Quy chuẩn Chế bản `.docx` (`100% Times New Roman` & `0 Errors`):**
+   - Phối hợp cùng `rs-office-docx-enterprise` ép `100%` phông chữ `Times New Roman` (`w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs`) và kiểm định bằng `officecli validate` (`0 errors`).
 
-## 1. Language, Claim Discipline & 3-Pass De-AI Rule (`Chuẩn Nội Bộ Rosier`)
-
-- **Default Output Language (100% Natural Vietnamese):** Always communicate with the user and deliver all analytical reports, SOPs, scripts, storyboards, financial tables, and executive recommendations in **natural, practitioner-grade Vietnamese** (unless the user explicitly requests English).
-- **Rosier 4-Label Claim Discipline:**
-  - Tag every factual or quantitative statement with `[OBSERVED: path:line]`, `[DERIVED]`, `[PRIOR]`, or `[ASSUMED]`. Never fabricate metrics or file paths.
-- **Zero AI-Slop & 3-Pass De-AI Proofreading (`rs-meta-deslop-3pass` + Rosier v3.3 Red List + Text Constraint Loop):**
-  - **Pass 1 (Factual & Context Audit):** Verify every store code (`25 active stores`: `3 CHH` under Company-Owned Store Model · `38197`, `46880`, `87024` + `22 CHNQ` under Franchise / Household Business Model; permanently block closed stores `115953` & `106192`).
-  - **Pass 2 (Eliminate 6 Categories of Vietnamese AI-isms & Red List):** Strip robotic clichés (*"Trong bối cảnh hiện nay"*, *"Tóm lại"*, *"Không phải là ... mà là ..."*, *"Không chỉ ... mà còn ..."*, *"Nâng cao đáng kể"*, *"Tận dụng tối đa"*, *"Bức tranh toàn cảnh"*) and 100% of Rosier Red List superlatives (*"siêu phẩm"*, *"đỉnh cao"*, *"tuyệt hảo"*, *"thần thánh"*, *"cực phẩm"*, *"chấn động"*).
-  - **Pass 3 (Practitioner Rhythm & Text Constraint Loop):** Enforce `0` em-dashes, `0` comma-before-và, standard double quotes `"..."` (never `「」`), Vietnamese currency (`₫`, `nghìn`, `triệu`, `tỷ`), and Rosier Design System v3.3 tokens (`#FFFCF7` Sour Cream canvas, `#497A49` Artisan Green, `#111111` Obsidian).
-
----
-
-## 2. Dual-Use Execution Protocol (`Mode A: Human Co-Pilot` × `Mode B: Autonomous Agent`)
-
-### 👤 Mode A: Human Co-Pilot (For Rosier Roles: Trưởng Bộ Phận Hành Chính Nhân Sự, CEO Toàn Chuỗi (CTCP), Chủ Cửa Hàng Mô Hình Công Ty (Cty TNHH), Chủ Cửa Hàng Mô Hình Hộ Kinh Doanh (HKD), 25 Cửa Hàng Trưởng (CHT))
-1. **Step 1 · Context & Gate Verification:**
-   - Read [`references/rosier-context-lock.md`](references/rosier-context-lock.md) and [`references/domain-canon.md`](references/domain-canon.md).
-   - If the task produces visual/creative/strategic options, enforce the **Rosier 3-Direction Mandatory Gate** (present 3 distinct options · *1. Quiet Luxury Modern Zen*, *2. Editorial Tea Magazine*, *3. Fresh Tea-Commerce Gen Z* · and record the choice in `direction-approved.md` before full build).
-2. **Step 2 · Deterministic CLI Calculation (`--dry-run` & `--json`):**
-   - Never perform mental math in the LLM. Run the bundled Rosier CLI tool:
-     ```bash
-     python3 scripts/rs_hr_jd_offer_composer_tool.py calc --input payload.json --dry-run --json
-     python3 scripts/rs_hr_jd_offer_composer_tool.py calc --input payload.json --json
-     python3 scripts/rs_hr_jd_offer_composer_tool.py audit --text "Draft Vietnamese text..." --json
-     ```
-3. **Step 3 · Deliverable Packaging:**
-   - Format the output using [`assets/templates/output-template.md`](assets/templates/output-template.md) and verify `< 30%` AI footprint score via `audit`.
-
-### 🤖 Mode B: Autonomous Agent (For 6. Core-HR, HERMES)
-1. **Zero-Turn Deterministic Invocation & Live Control Lever:**
-   ```bash
-   python3 scripts/rs_hr_jd_offer_composer_tool.py --self-test --json
-   ./bin/control-app verify --scenario rs-hr-jd-offer-composer --json
-   ```
-2. **Air-Gap & Security Enforcement:**
-   - Enforce [`evals/security-manifest.json`](evals/security-manifest.json). When `security_zone == "PUBLIC_DMZ_SAFE"`, never access `ROSIER_BUSINESS` (`15e4ffbe44fc8390be0601a8074420d9`) and strip 100% of `cogs`, `salary_3p`, and `net_profit`.
-
----
-
-## 3. Bundled Reference Playbooks & Internal Engines
-  - `references/domain-canon.md` & `references/rosier-context-lock.md`
+## 3. Công cụ Thực thi Độc lập (`CLI & Verification`)
+```bash
+python3 .agent/skills/rs-hr-jd-offer-composer/scripts/rs_hr_jd_offer_composer_tool.py --self-test --json
+python3 .agent/skills/rs-hr-jd-offer-composer/scripts/rs_hr_jd_offer_composer_tool.py calc --input '{"store_code": "38197"}' --dry-run --json
+```

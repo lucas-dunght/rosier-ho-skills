@@ -1,59 +1,56 @@
 ---
 name: rs-office-docx-enterprise
-description: "Soạn Thảo Văn Bản, Hợp Đồng & Báo Cáo Word (.docx) Chuẩn Thương Hiệu (Phân khu 10: Kỹ Thuật Hệ Thống AI, Bảo Mật SkillSpector & Siêu Tiện Ích Văn Phòng (rs-eng-* & rs-office-*)). Kỹ năng độc quyền chuẩn 5 Lớp Kép thuộc hệ sinh thái nội bộ RS-OS 200 của Rosier Fresh Tea & Coffee. Hỗ trợ song song Nhân sự HO/Cửa hàng (Mode A: Human Co-Pilot) và Hệ thống AI Agent 4 Tầng (Mode B: Autonomous Agent). Tích hợp công cụ CLI tất định scripts/rs_office_docx_enterprise_tool.py (--dry-run, --json, Actionable Error), Kỷ luật Kiểm chứng 4 Nhãn ([OBSERVED]/[DERIVED]/[PRIOR]/[ASSUMED]), bộ lọc khử mùi AI 3 vòng nội bộ và khóa ngữ cảnh sống 25 điểm bán / 3 mô hình chủ thể pháp nhân / 2 Kho Tri Thức Nội Bộ của Rosier Fresh Tea & Coffee."
-version: "6.4.0"
-layer: "flagship"
-division: "10-rs-eng-office"
-security_zone: "INTERNAL_PRIVILEGED"
+description: "Soạn thảo và kiểm định văn bản pháp lý, Hợp đồng Nhượng quyền, Phụ lục 03 bên, Hợp đồng Nguyên tắc Mua bán Nguyên vật liệu (HĐNTMBNL), Hợp đồng Thuê mặt bằng và Hợp đồng Lao động 3P (.docx) chuẩn OpenXML 100% Times New Roman và 0 lỗi Schema."
+metadata:
+  version: "6.5.0"
+  division: "10-rs-eng-office"
+  skill_code: "#116"
+  security_zone: "INTERNAL_PRIVILEGED"
+  allowed_notion_hubs:
+    - "15e4ffbe44fc8390be0601a8074420d9"
+    - "3194ffbe44fc809b8851fead4da48f48"
 ---
 
-# 🏛️ `rs-office-docx-enterprise` · Soạn Thảo Văn Bản, Hợp Đồng & Báo Cáo Word (.docx) Chuẩn Thương Hiệu
+# rs-office-docx-enterprise · Kiến Trúc Sư Văn Bản Pháp Lý & Hợp Đồng Doanh Nghiệp (`.docx` OpenXML `100% Times New Roman`)
 
-> **Ecosystem ID:** `RS-OS-200 #116` · **Layer:** `flagship` · **Division:** `Phân khu 10: Kỹ Thuật Hệ Thống AI, Bảo Mật SkillSpector & Siêu Tiện Ích Văn Phòng (rs-eng-* & rs-office-*)`
-> **Security Zone:** `INTERNAL_PRIVILEGED` · **Allowed Knowledge Hub:** `ROSIER_BUSINESS (15e4ffbe44fc8390be0601a8074420d9)`
-> **Internal Lineage:** `docx-enterprise-author` · **Standard:** `RS-OS 200 Proprietary Standard`
+## 1. Mục tiêu Điều hành & Phạm vi Áp dụng
+- **Mã định danh:** `rs-office-docx-enterprise` (`#116` · Phân khu `10-rs-eng-office` · Cấp bảo mật `INTERNAL_PRIVILEGED`).
+- **Vai trò cốt lõi:** Cung cấp công cụ chế bản và kiểm định kỹ thuật OpenXML (`.docx`) cho toàn bộ hệ thống văn bản quản trị và hồ sơ pháp lý thuộc Tam Giác Chủ Thể Chuỗi F&B (`CTCP` · `03 CHH` · `22 CHNQ`).
+- **Khóa Ngữ cảnh Cứng:** Chặn tuyệt đối mọi thao tác tạo văn bản cho `02` mã điểm bán đã đóng cửa vĩnh viễn (`115953` và `106192`).
 
----
-
-## 1. Language, Claim Discipline & 3-Pass De-AI Rule (`Chuẩn Nội Bộ Rosier`)
-
-- **Default Output Language (100% Natural Vietnamese):** Always communicate with the user and deliver all analytical reports, SOPs, scripts, storyboards, financial tables, and executive recommendations in **natural, practitioner-grade Vietnamese** (unless the user explicitly requests English).
-- **Rosier 4-Label Claim Discipline:**
-  - Tag every factual or quantitative statement with `[OBSERVED: path:line]`, `[DERIVED]`, `[PRIOR]`, or `[ASSUMED]`. Never fabricate metrics or file paths.
-- **Zero AI-Slop & 3-Pass De-AI Proofreading (`rs-meta-deslop-3pass` + Rosier v3.3 Red List + Text Constraint Loop):**
-  - **Pass 1 (Factual & Context Audit):** Verify every store code (`25 active stores`: `3 CHH` under Company-Owned Store Model · `38197`, `46880`, `87024` + `22 CHNQ` under Franchise / Household Business Model; permanently block closed stores `115953` & `106192`).
-  - **Pass 2 (Eliminate 6 Categories of Vietnamese AI-isms & Red List):** Strip robotic clichés (*"Trong bối cảnh hiện nay"*, *"Tóm lại"*, *"Không phải là ... mà là ..."*, *"Không chỉ ... mà còn ..."*, *"Nâng cao đáng kể"*, *"Tận dụng tối đa"*, *"Bức tranh toàn cảnh"*) and 100% of Rosier Red List superlatives (*"siêu phẩm"*, *"đỉnh cao"*, *"tuyệt hảo"*, *"thần thánh"*, *"cực phẩm"*, *"chấn động"*).
-  - **Pass 3 (Practitioner Rhythm & Text Constraint Loop):** Enforce `0` em-dashes, `0` comma-before-và, standard double quotes `"..."` (never `「」`), Vietnamese currency (`₫`, `nghìn`, `triệu`, `tỷ`), and Rosier Design System v3.3 tokens (`#FFFCF7` Sour Cream canvas, `#497A49` Artisan Green, `#111111` Obsidian).
-
----
-
-## 2. Dual-Use Execution Protocol (`Mode A: Human Co-Pilot` × `Mode B: Autonomous Agent`)
-
-### 👤 Mode A: Human Co-Pilot (For Rosier Roles: CEO Toàn Chuỗi, Đội Ngũ Kỹ Thuật Hệ Thống & Khối Văn Phòng HO)
-1. **Step 1 · Context & Gate Verification:**
-   - Read [`references/rosier-context-lock.md`](references/rosier-context-lock.md) and [`references/domain-canon.md`](references/domain-canon.md).
-   - If the task produces visual/creative/strategic options, enforce the **Rosier 3-Direction Mandatory Gate** (present 3 distinct options · *1. Quiet Luxury Modern Zen*, *2. Editorial Tea Magazine*, *3. Fresh Tea-Commerce Gen Z* · and record the choice in `direction-approved.md` before full build).
-2. **Step 2 · Deterministic CLI Calculation (`--dry-run` & `--json`):**
-   - Never perform mental math in the LLM. Run the bundled Rosier CLI tool:
-     ```bash
-     python3 scripts/rs_office_docx_enterprise_tool.py calc --input payload.json --dry-run --json
-     python3 scripts/rs_office_docx_enterprise_tool.py calc --input payload.json --json
-     python3 scripts/rs_office_docx_enterprise_tool.py audit --text "Draft Vietnamese text..." --json
+## 2. Quy Chuẩn Phông Chữ `100% Times New Roman` Trên Mọi Hợp Đồng & Hồ Sơ Pháp Lý (`.docx`)
+1. **Phạm vi bắt buộc `100% Times New Roman`:**
+   - Áp dụng cho toàn bộ **Hợp đồng Nhượng quyền Thương mại (`HĐNQTM`)**, **Phụ lục Hợp đồng `03` bên chuyển giao**, **Hợp đồng Nguyên tắc Mua bán Nguyên vật liệu (`HĐNTMBNL`)**, **Biên bản Thanh lý Hợp đồng (`BBTL`)**, **Hợp đồng Thuê mặt bằng**, **Hợp đồng Lao động (`HĐLĐ`)**, **Phụ lục Lương `3P` & `JD`**, **Thỏa thuận Bảo mật & Sở hữu Trí tuệ (`NDA & IP`)** và **Công văn / Quyết định Hành chính (`Nghị định 30/2020/NĐ-CP`)**.
+2. **Cơ chế Khóa Phông chữ 4 Thuộc tính OpenXML (`4-Attribute Font Lock`):**
+   - Khi sinh tệp bằng `python-docx` hoặc `officecli`, bắt buộc thiết lập đồng bộ trên cả `word/styles.xml` (`w:docDefaults`, `Normal`, `List Bullet`, `Table Grid`) và từng `w:rPr` trong `word/document.xml`:
+     ```xml
+     <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="Times New Roman" w:cs="Times New Roman"/>
      ```
-3. **Step 3 · Deliverable Packaging:**
-   - Format the output using [`assets/templates/output-template.md`](assets/templates/output-template.md) and verify `< 30%` AI footprint score via `audit`.
-   - **Labor Contract & Legal `.docx` Typography Lock (`100% Times New Roman`):** Every Labor Contract (`HĐLĐ`), Contract Appendix (`JD`, `3P`), Confidentiality & IP Agreement (`NDA & IP`), Internal Rules Commitment, and HR Decision generated in `.docx` format MUST use `100% Times New Roman` across all body paragraphs, tables, headers, and footers (`w:rFonts` set to `"Times New Roman"` for `w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs`) and include the 360-degree confidentiality & Law No. 91/2025/QH15 personal data protection clauses.
+   - **Hậu xử lý XML bắt buộc (`Post-Save XML Normalization`):** Sau khi gọi `doc.save()`, bắt buộc chạy hàm chuẩn hóa trực tiếp các tệp `word/*.xml` trong gói `.docx` để xóa sạch các thuộc tính phông chữ theo chủ đề (`w:asciiTheme`, `w:hAnsiTheme`, `w:eastAsiaTheme`, `w:cstheme`) và ép `100%` thẻ `<w:rFonts>` về `Times New Roman`, tuyệt đối không để sót `Arial`, `Calibri` hoặc `Aptos`.
 
-### 🤖 Mode B: Autonomous Agent (For 0. Core-Eng, HERMES, Khối Văn Phòng Trung Tâm (HO))
-1. **Zero-Turn Deterministic Invocation & Live Control Lever:**
-   ```bash
-   python3 scripts/rs_office_docx_enterprise_tool.py --self-test --json
-   ./bin/control-app verify --scenario rs-office-docx-enterprise --json
-   ```
-2. **Air-Gap & Security Enforcement:**
-   - Enforce [`evals/security-manifest.json`](evals/security-manifest.json). When `security_zone == "PUBLIC_DMZ_SAFE"`, never access `ROSIER_BUSINESS` (`15e4ffbe44fc8390be0601a8074420d9`) and strip 100% of `cogs`, `salary_3p`, and `net_profit`.
+## 3. Quy Tắc Thứ Tự Thẻ OpenXML Bắt Buộc Để Đạt `0 Errors` Khi Chạy `officecli validate`
+Khi can thiệp cây XML (`lxml` / `oxml`) trong `python-docx`, trình sinh bắt buộc tuân thủ `4` quy tắc thứ tự Schema OpenXML (`ISO/IEC 29500`):
+1. **Quy tắc 1 · Thuộc tính `w:val="clear"` trong thẻ `<w:shd>`:**
+   - Mọi thẻ tô màu nền ô bảng (`<w:shd>`) bắt buộc phải có đủ `3` thuộc tính: `w:val="clear"`, `w:color="auto"` và `w:fill="HEX_COLOR"`. Nếu thiếu `w:val="clear"`, trình kiểm định OpenXML sẽ báo lỗi `Shading attribute val is missing`.
+2. **Quy tắc 2 · Thứ tự lề ô bảng trong `<w:tcMar>` và `<w:tblCellMar>`:**
+   - Thứ tự các thẻ con bắt buộc phải xếp đúng trình tự: `w:top` -> `w:left` -> `w:bottom` -> `w:right` (tuyệt đối không xếp `top -> bottom -> left -> right`).
+3. **Quy tắc 3 · Vị trí thẻ `<w:vAlign>` trong `<w:tcPr>`:**
+   - Trong thuộc tính ô bảng `<w:tcPr>`, trình tự bắt buộc là: `<w:tcW>` -> `<w:tcBorders>` -> `<w:shd>` -> `<w:tcMar>` -> `<w:vAlign>`. Thẻ `<w:vAlign>` bắt buộc phải nằm **sau** `<w:tcMar>`.
+4. **Quy tắc 4 · Vị trí thẻ `<w:tblBorders>` và `<w:tblCellMar>` trong `<w:tblPr>`:**
+   - Trong thuộc tính bảng `<w:tblPr>`, thẻ `<w:tblBorders>` và `<w:tblCellMar>` bắt buộc phải chèn **trước** thẻ `<w:tblLook>` (sử dụng `tblLook.addprevious(...)` nếu `<w:tblLook>` đã tồn tại).
 
----
+## 4. Cổng Kiểm Định 4 Bước Bắt Buộc Trước Khi Nghiệm Thu Tệp `.docx`
+Mọi tệp `.docx` sinh ra chỉ được phép bàn giao khi vượt qua đủ `4` bước kiểm chứng sống:
+1. **Bước 1 (`OpenXML Schema Gate`):** Chạy `officecli validate <file.docx>` đạt kết quả `0 errors found - document is valid`.
+2. **Bước 2 (`100% Times New Roman XML Audit`):** Quét toàn bộ `word/document.xml`, `word/styles.xml`, `word/header*.xml`, `word/footer*.xml` đảm bảo `100%` thuộc tính `ascii`, `hAnsi`, `eastAsia`, `cs` là `Times New Roman`.
+3. **Bước 3 (`Zero Placeholder & Legal Clause Audit`):** Quét văn bản đảm bảo không còn ký tự giữ chỗ (`[...]`, `{{...}}`, `___`) đối với hợp đồng ký kết thực tế của điểm bán; đồng thời đủ `12 Điều + Phụ lục 01` đối với `HĐNTMBNL 2026`.
+4. **Bước 4 (`Rosier 3-Pass De-AI & Text Constraint Gate`):** Chạy `rs_auto_tool.py audit` đảm bảo `0` dấu gạch ngang dài (`em-dash`), `0` lỗi dấu phẩy đặt trước liên từ nối cùng `0%` văn phong máy móc.
 
-## 3. Bundled Reference Playbooks & Internal Engines
-  - `references/domain-canon.md` & `references/rosier-context-lock.md`
+## 5. Công cụ Thực thi Độc lập (`CLI & Verification`)
+```bash
+# Tự kiểm định trình chuẩn hóa OpenXML
+python3 .agent/skills/rs-office-docx-enterprise/scripts/rs_office_docx_enterprise_tool.py --self-test --json
+
+# Kiểm định trực tiếp tệp .docx vừa tạo
+officecli validate <duong_dan_file.docx>
+```

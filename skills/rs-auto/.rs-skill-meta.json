@@ -3,8 +3,8 @@
   "repo": "rosier-os/rs-os-200-suite",
   "organization": "Rosier Fresh Tea & Coffee",
   "subdir": "skills/rs-auto",
-  "version": "6.5.0",
-  "commit": "rs_auto_clarify_v650",
+  "version": "6.8.0",
+  "commit": "rs_auto_adaptive_clarify_v680",
   "installed_at": "2026-10-30",
   "last_checked": "2026-10-30"
 }

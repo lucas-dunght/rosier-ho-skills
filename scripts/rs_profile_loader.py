@@ -111,8 +111,9 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
             shutil.copy2(r_file, ws_rules_dir / r_file.name)
 
     active_skills = []
+    workflow_skill_ids = ["rs-task-auto"] + [w["id"] for w in manifest["workflows"]]
     if ws_skills_dir.resolve() != SKILLS_DIR.resolve():
-        selected_set = set(selected_ids)
+        selected_set = set(selected_ids) | set(workflow_skill_ids)
         for existing in list(ws_skills_dir.iterdir()):
             if existing.name.startswith("rs-") and existing.name not in selected_set:
                 if existing.is_symlink():
@@ -126,6 +127,11 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
                 if not dst.exists():
                     shutil.copytree(src, dst)
                 active_skills.append(sid)
+        for wsid in workflow_skill_ids:
+            src_w = SKILLS_DIR / wsid
+            dst_w = ws_skills_dir / wsid
+            if src_w.exists() and not dst_w.exists():
+                shutil.copytree(src_w, dst_w)
     else:
         active_skills = [sid for sid in selected_ids if (ws_skills_dir / sid).exists()]
 
@@ -147,7 +153,10 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
         encoding="utf-8",
     )
 
-    active_wfs = sorted([p.stem for p in ws_workflows_dir.glob("rs-wf-*.md")])
+    active_wfs = sorted([
+        w["id"] for w in manifest["workflows"]
+        if (ws_skills_dir / w["id"] / "SKILL.md").exists() or (ws_workflows_dir / f"{w['id']}.md").exists()
+    ])
 
     return {
         "status": "WORKSPACE_PROFILE_ACTIVATED",
@@ -173,9 +182,16 @@ def get_status(workspace_dir: Path) -> dict:
     ws_wfs_dir = ws_agent_dir / "workflows"
     ws_rs_skills = sorted([
         p.name for p in ws_skills_dir.iterdir()
-        if p.name.startswith("rs-") and (p.is_dir() or p.is_symlink())
+        if p.name.startswith("rs-")
+        and not p.name.startswith("rs-wf-")
+        and p.name != "rs-task-auto"
+        and (p.is_dir() or p.is_symlink())
     ]) if ws_skills_dir.exists() else []
-    ws_rs_wfs = sorted([p.stem for p in ws_wfs_dir.glob("rs-wf-*.md")]) if ws_wfs_dir.exists() else []
+    ws_rs_wfs = sorted([
+        w["id"] for w in manifest["workflows"]
+        if (ws_skills_dir.exists() and (ws_skills_dir / w["id"] / "SKILL.md").exists())
+        or (ws_wfs_dir.exists() and (ws_wfs_dir / f"{w['id']}.md").exists())
+    ])
 
     return {
         "status": "OK",

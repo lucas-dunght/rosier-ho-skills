@@ -34,7 +34,7 @@ from core.rs_core_engine import (  # noqa: E402
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
 from scripts.rs_ho_setup_wizard import RosierHOSetupWizard  # noqa: E402
 
-HO_CLI_VERSION = "6.7.0-ho.2"
+HO_CLI_VERSION = "6.8.0-ho.2"
 
 VALID_HO_ROLES = {
     "ho_ops_supply": {

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# RS-OS HO Edition (v6.7.0-ho.2) · Trình Cài Đặt, Cấu Hình MCP/Token & Tự Cập Nhật Cho Nhân Sự Khối HO
+# RS-OS HO Edition (v6.8.0-ho.2) · Trình Cài Đặt, Cấu Hình MCP/Token & Tự Cập Nhật Cho Nhân Sự Khối HO
 # Hỗ trợ:
 #   1. Cài đặt Cô lập vào Workspace + Khởi tạo .agent/.env (chmod 600) + Đăng ký 8 MCP + Bật Auto-Update 24h:
 #      ./install.sh --workspace /path/to/ho-workspace [--role ho_ops_supply] [--profile ho-all-126] [--enable-auto-update]

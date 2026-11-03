@@ -1,0 +1,33 @@
+---
+description: "Lệnh điều phối tự động thông minh nội bộ Rosier (/rs-auto). Chỉ cần nhập yêu cầu công việc, Agent sẽ tự động chấm điểm độ rõ ràng 3 trục: nếu chưa rõ sẽ hỏi trắc nghiệm 1-3 câu để làm rõ, nếu đã rõ sẽ tự động lắp ghép Tổ hợp 4 Lớp (Execution + Persona Tam Giác Chủ Thể + Workflow/MCP + De-AI Gate) và thực thi ngay."
+---
+
+# 🚀 Quy Trình Lệnh Tắt `/rs-auto` (`Ambiguity-Aware Autonomous Skill Router`)
+
+Khi người dùng gọi `/rs-auto` kèm theo nội dung yêu cầu, hãy thực hiện chính xác trình tự sau:
+
+1. **Bước 1 · Phân tích Yêu cầu & Kiểm tra Cổng Mơ Hồ 3 Trục:**
+   Chạy lệnh CLI kiểm tra yêu cầu của người dùng:
+   ```bash
+   ./.agent/bin/rs-control rs-auto "<yêu cầu của người dùng>" --json
+   ```
+
+2. **Bước 2 · Xử lý Cổng Hỏi Lại Khử Mơ Hồ (`Interactive Clarification Gate`):**
+   - Kiểm tra trường `"needs_clarification"` trong JSON trả về:
+     - **Nếu `"needs_clarification": true` (`"status": "NEEDS_CLARIFICATION"`):**
+       - **DỪNG LẠI NGAY** và gọi tool **`ask_question`** với đúng danh sách câu hỏi trong trường `"clarifying_questions"` (tối đa `1–3` câu hỏi trắc nghiệm về: Mô hình Chủ thể Pháp nhân/Điểm bán, Trọng tâm Phân khu Nghiệp vụ, hoặc Định dạng Đầu ra).
+       - Sau khi người dùng chọn đáp án, chạy lại lệnh với các tham số đã khóa và cờ `--confirmed`:
+         ```bash
+         ./.agent/bin/rs-control rs-auto "<yêu cầu của người dùng>" \
+           --role <chain_ceo|store_owner_company|store_owner_hkd> \
+           --domain <01..12> \
+           --deliverable <report|sop|media|advise_only> \
+           --confirmed --json
+         ```
+     - **Nếu `"needs_clarification": false` (`"status": "EXECUTED_OK"`):**
+       - Chuyển thẳng sang Bước 3 mà không làm phiền người dùng.
+
+3. **Bước 3 · Nạp Tổ Hợp Kỹ Năng 4 Lớp Đã Khóa & Thực Thi:**
+   - Đọc tệp `SKILL.md` của các kỹ năng trong `recommended_combo.layer_1_execution_skills` và cố vấn tư duy chủ thể trong `recommended_combo.layer_2_persona_counsel` (trong `.agent/skills/<skill_id>/SKILL.md`).
+   - Kết hợp dữ liệu tính toán tất định `[DERIVED]` từ `auto_execution_receipts` để tạo sản phẩm hoàn chỉnh theo yêu cầu.
+   - Kiểm tra văn bản qua bộ lọc 3 vòng `rs-meta-deslop-3pass` (`0` dấu gạch ngang dài, `0` dấu phẩy trước chữ và, `0` từ cấm Red List v3.3) trước khi xuất kết quả cho người dùng.

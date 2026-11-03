@@ -11,4 +11,5 @@ __pycache__/
 venv/
 .worktrees/
 *.bak
+!workflows/*.md.bak
 .ho-update-state.json

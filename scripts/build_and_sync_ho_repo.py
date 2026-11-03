@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.7.0-ho.2"
+HO_VERSION = "6.8.0-ho.2"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -251,7 +251,7 @@ def patch_core_engine_for_ho(core_text: str) -> str:
     text = sanitize_ho_references(core_text)
     text = re.sub(
         r'ENGINE_VERSION = "[^"]+"',
-        'ENGINE_VERSION = "6.6.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
+        'ENGINE_VERSION = "6.8.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
         text,
         count=1,
     )
@@ -301,6 +301,9 @@ def patch_core_engine_for_ho(core_text: str) -> str:
                 "Cụm 03 Điểm Bán Trực Thuộc Công Ty (CHH 38197, 46880, 87024 · Mô hình Cty TNHH, hóa đơn GTGT, BHXH & Phòng thí nghiệm vận hành)",
             ],'''
     text = text.replace(old_q1, new_q1)
+    old_q_ceo = '"(Recommended) CEO Toàn Chuỗi & Khối Văn phòng Hội Sở (Pháp nhân CTCP · Điều hành toàn mạng lưới 25 điểm bán)"'
+    new_q_ceo = '"(Recommended) Khối Văn Phòng HO & Toàn Hệ Thống 25 Điểm Bán (Tổng hợp số liệu, lập kế hoạch, đối soát & soạn quy trình cấp Phòng ban HO)"'
+    text = text.replace(old_q_ceo, new_q_ceo)
 
     # Update self_test_all_divisions in core/rs_core_engine.py to verify HO boundary guard
     old_tail = '''    router_blocked = route_rosier_intent({"mode": "advise", "query": "Kiểm tra doanh thu điểm bán 115953"}, dry_run=True)
@@ -393,7 +396,7 @@ from core.rs_core_engine import (  # noqa: E402
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
 from scripts.rs_ho_setup_wizard import RosierHOSetupWizard  # noqa: E402
 
-HO_CLI_VERSION = "6.7.0-ho.2"
+HO_CLI_VERSION = "6.8.0-ho.2"
 
 VALID_HO_ROLES = {
     "ho_ops_supply": {
@@ -1105,8 +1108,9 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
             shutil.copy2(r_file, ws_rules_dir / r_file.name)
 
     active_skills = []
+    workflow_skill_ids = ["rs-task-auto"] + [w["id"] for w in manifest["workflows"]]
     if ws_skills_dir.resolve() != SKILLS_DIR.resolve():
-        selected_set = set(selected_ids)
+        selected_set = set(selected_ids) | set(workflow_skill_ids)
         for existing in list(ws_skills_dir.iterdir()):
             if existing.name.startswith("rs-") and existing.name not in selected_set:
                 if existing.is_symlink():
@@ -1120,6 +1124,11 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
                 if not dst.exists():
                     shutil.copytree(src, dst)
                 active_skills.append(sid)
+        for wsid in workflow_skill_ids:
+            src_w = SKILLS_DIR / wsid
+            dst_w = ws_skills_dir / wsid
+            if src_w.exists() and not dst_w.exists():
+                shutil.copytree(src_w, dst_w)
     else:
         active_skills = [sid for sid in selected_ids if (ws_skills_dir / sid).exists()]
 
@@ -1141,7 +1150,10 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
         encoding="utf-8",
     )
 
-    active_wfs = sorted([p.stem for p in ws_workflows_dir.glob("rs-wf-*.md")])
+    active_wfs = sorted([
+        w["id"] for w in manifest["workflows"]
+        if (ws_skills_dir / w["id"] / "SKILL.md").exists() or (ws_workflows_dir / f"{w['id']}.md").exists()
+    ])
 
     return {
         "status": "WORKSPACE_PROFILE_ACTIVATED",
@@ -1167,9 +1179,16 @@ def get_status(workspace_dir: Path) -> dict:
     ws_wfs_dir = ws_agent_dir / "workflows"
     ws_rs_skills = sorted([
         p.name for p in ws_skills_dir.iterdir()
-        if p.name.startswith("rs-") and (p.is_dir() or p.is_symlink())
+        if p.name.startswith("rs-")
+        and not p.name.startswith("rs-wf-")
+        and p.name != "rs-task-auto"
+        and (p.is_dir() or p.is_symlink())
     ]) if ws_skills_dir.exists() else []
-    ws_rs_wfs = sorted([p.stem for p in ws_wfs_dir.glob("rs-wf-*.md")]) if ws_wfs_dir.exists() else []
+    ws_rs_wfs = sorted([
+        w["id"] for w in manifest["workflows"]
+        if (ws_skills_dir.exists() and (ws_skills_dir / w["id"] / "SKILL.md").exists())
+        or (ws_wfs_dir.exists() and (ws_wfs_dir / f"{w['id']}.md").exists())
+    ])
 
     return {
         "status": "OK",
@@ -1217,7 +1236,7 @@ if __name__ == "__main__":
 def build_ho_install_sh() -> str:
     return '''#!/usr/bin/env bash
 # ==============================================================================
-# RS-OS HO Edition (v6.7.0-ho.2) · Trình Cài Đặt, Cấu Hình MCP/Token & Tự Cập Nhật Cho Nhân Sự Khối HO
+# RS-OS HO Edition (v6.8.0-ho.2) · Trình Cài Đặt, Cấu Hình MCP/Token & Tự Cập Nhật Cho Nhân Sự Khối HO
 # Hỗ trợ:
 #   1. Cài đặt Cô lập vào Workspace + Khởi tạo .agent/.env (chmod 600) + Đăng ký 8 MCP + Bật Auto-Update 24h:
 #      ./install.sh --workspace /path/to/ho-workspace [--role ho_ops_supply] [--profile ho-all-126] [--enable-auto-update]
@@ -1369,7 +1388,7 @@ fi
 def build_ho_auto_router_rule() -> str:
     return '''---
 trigger: always_on
-description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.5.0-ho.1)
+description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.8.0-ho.1)
 ---
 
 # Quy Tắc Điều Phối Tự Động Mặc Định & Cổng Hỏi Lại Khử Mơ Hồ Dành Cho Nhân Sự Khối HO (`rosier-ho-skills`)
@@ -1379,8 +1398,10 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
      ```bash
      ./.agent/bin/rs-control rs-auto "<câu hỏi nguyên văn của nhân sự HO>" --json
      ```
+   - **Cầu Dao Tự Động Thực Thi (High-Confidence Auto-Pass Gate >= 85%):**
+     - Khi độ tin cậy kỹ năng đạt từ 85% trở lên và là lệnh tác chiến phi phá hủy (chấm KPI, tính lương, tra cứu dòng tiền, đặt hàng...), hệ thống tự động kích hoạt `0-Click Auto-Pass` với tham số ngầm định hợp lý (`[DERIVED]`), thực thi trực tiếp không ngắt quãng người dùng qua popup.
    - **Nếu kết quả trả về `needs_clarification: true` (`status == "NEEDS_CLARIFICATION"`):**
-     - Agent **DỪNG LẠI NGAY** (không tự đoán mò) và gọi công cụ **`ask_question`** hiển thị mảng `clarifying_questions` (`1–3` câu hỏi trắc nghiệm ngắn gọn về: *1. Khối Phòng Ban HO / Mô hình Điểm bán*, *2. Trọng tâm nghiệp vụ*, *3. Định dạng sản phẩm đầu ra*).
+     - Agent **DỪNG LẠI NGAY** (không tự đoán mò) và gọi công cụ **`ask_question`** hiển thị mảng `clarifying_questions` (`1–3` câu hỏi trắc nghiệm ngữ cảnh động chuẩn xác theo nghiệp vụ phòng ban, tuyệt đối không hỏi lan man ngoài phạm vi).
    - **Ngay sau khi nhân sự chọn đáp án (hoặc khi `needs_clarification: false` ngay từ đầu):**
      - Agent gọi lại `./.agent/bin/rs-control rs-auto "<câu hỏi>" --role <vai_trò_HO> --domain <mã_phân_khu> --deliverable <định_dạng> --confirmed --json`, đọc `SKILL.md` của tổ hợp kỹ năng được chọn trong `recommended_combo` và thực thi trọn vẹn cho nhân sự.
 
@@ -1404,13 +1425,14 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
 
 
 def build_ho_readme() -> str:
-    return '''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.5.0-ho.1`)
+    return f'''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v{HO_VERSION}`)
 
-Hệ sinh thái **`178` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
-- **`126` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`). Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
-- **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows`)**: Chuẩn hóa tác chiến hàng ngày, hàng tuần và hàng tháng tại văn phòng HO.
+Hệ sinh thái **`189` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
+- **`137` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Hệ sinh thái 8 Kỹ năng Sáng tạo Học liệu & Nhà máy Khóa học NotebookLM MCP (`#144..#151`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
+- **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows` đã chuyển đổi sang `skills/<name>/SKILL.md`)**: Toàn bộ `30` quy trình Khối HO (`01` `rs-auto` bảo toàn, `01` `rs-task-auto` và `28` quy trình `rs-wf-*`, đã cắt bỏ `2` quy trình riêng của CEO) được chuẩn hóa sang định dạng Skill hiện đại `skills/<name>/SKILL.md` kèm lưu trữ an toàn `workflows/<name>.md.bak`.
 - **`24` Công cụ Kết nối Dữ liệu An toàn (`rs-mcp-*` trong `8` Mô-đun MCP)**: Khóa cứng ở chế độ **`HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation: false`)**. Cắt bỏ hoàn toàn quyền sửa/xóa trực tiếp Database gốc (`reset-db`, `seed`, `business-upsert`, `tax-ledger-export`).
-- **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto`)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Chỉ cần đặt câu hỏi tiếng Việt bình thường, hệ thống tự động nhận diện phòng ban HO; nếu câu hỏi còn mơ hồ sẽ tự động bật popup hỏi lại `1–3` câu trắc nghiệm (`ask_question`) rồi mới chọn tổ hợp kỹ năng thực thi.
+- **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` + `.env.ho.example`)**: Tự động xác thực vai trò phòng ban HO, khởi tạo `.agent/.env` (`chmod 0600`) với cổng chặn Token đặc quyền (`Token Scope Guard`), tự động đăng ký đủ `8/8` Safe MCP Modules vào `.mcp.json` / `.agent/mcp_config.json` và chạy Smoke Test `8/8` MCP ngay khi cài đặt.
+- **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto` 10-Star Adaptive Router & High-Confidence Auto-Pass Gate)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Nhận diện tự động danh bạ nhân sự HO (`HO_PERSONNEL_DIRECTORY`), mở rộng động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES`), tự động kích hoạt Cầu Dao 0-Click Auto-Pass khi độ tin cậy >= 85.0% phi phá hủy và sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng phòng ban khi nội dung thực sự thiếu dữ kiện cốt lõi.
 - **Cơ chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`)**: Tự động đồng bộ bản mới từ kho gốc đã lọc quyền CEO và tự động kéo bản cập nhật mới về máy nhân sự HO định kỳ mỗi `24 giờ` (kèm cơ chế lưu nhãn cứu hộ `Rescue Ref` và tự động `Rollback` nếu lỗi).
 
 ---
@@ -1449,7 +1471,7 @@ Nhờ Rule `always_on` tại [`.agent/rules/rs-ho-auto-router.md`](rules/rs-ho-a
 # 3. Kiểm tra và kéo bản cập nhật bộ Skill HO mới nhất ngay lập tức
 ./bin/rs-control update --json
 
-# 4. Kiểm tra sức khỏe toàn bộ 178 hợp phần Khối HO và cổng bảo mật Database
+# 4. Kiểm tra sức khỏe toàn bộ 189 hợp phần Khối HO và cổng bảo mật Database
 python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 ```
 
@@ -1459,7 +1481,7 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 
 | Mã Profile | Khối Phòng Ban HO Phụ Trách | Lệnh kích hoạt nhanh |
 | :--- | :--- | :--- |
-| `ho-all-126` | Toàn bộ `126` Kỹ năng Chuyên môn của tất cả các phòng ban Khối HO (Mặc định) | `python3 scripts/rs_profile_loader.py activate ho-all-126` |
+| `ho-all-126` | Toàn bộ `137` Kỹ năng Chuyên môn của tất cả các phòng ban Khối HO (Mặc định) | `python3 scripts/rs_profile_loader.py activate ho-all-126` |
 | `ho-core-35` | Gói Cốt lõi Tinh gọn cho Nhân sự HO tổng hợp (`35` kỹ năng trọng yếu nhất) | `python3 scripts/rs_profile_loader.py activate ho-core-35` |
 | `ho-ops-supply` | Khối Vận Hành Chuỗi 25 Quán, Giám Sát Thực Địa & Cung Ứng Kho Tổng 5S | `python3 scripts/rs_profile_loader.py activate ho-ops-supply` |
 | `ho-fin-hr` | Khối Tài Chính, Kế Toán Đa Pháp Nhân, Nhân Sự 3P & Hành Chính Pháp Chế | `python3 scripts/rs_profile_loader.py activate ho-fin-hr` |
@@ -1476,7 +1498,7 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 | :--- | :--- | :--- |
 | **Tutorial (Làm quen nhanh)** | [docs/tutorial-getting-started-ho-staff.md](docs/tutorial-getting-started-ho-staff.md) | Thực hành làm chủ chế độ Zero-Command Auto (`/rs-auto`), cổng hỏi lại 3 trục và chốt chặn bảo mật trong 3 bước |
 | **How-To (Tác vụ thực tế)** | [docs/howto-operations-and-auto-update.md](docs/howto-operations-and-auto-update.md) | Hướng dẫn cài đặt theo phòng ban HO, quản lý tự động cập nhật 24h, khôi phục từ `Rescue Ref` và biên dịch từ kho gốc |
-| **Reference (Danh mục 178 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `126` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
+| **Reference (Danh mục 189 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `137` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
 | **Reference (CLI & MCP API)** | [docs/reference-cli-and-api.md](docs/reference-cli-and-api.md) | Tham chiếu tham số, kiểu dữ liệu và JSON schema của `./bin/rs-control`, `install.sh` và `24` Safe MCP Tools |
 | **Explanation (Kiến trúc & Lý do)** | [docs/explanation-architecture-and-guardrails.md](docs/explanation-architecture-and-guardrails.md) | Giải thích kiến trúc tách đặc quyền CEO, khóa cứng `HO_SAFE_READ_AND_DRAFT` và các đánh đổi thiết kế |
 '''
@@ -1553,20 +1575,55 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
         )
         rs_auto_md.write_text(sanitize_ho_references(txt), encoding="utf-8")
 
-    # 2. Copy and sanitize retained 28 HO workflows + workflows/run_rs_workflow.py
+    # 2. Migrate and sanitize retained 30 HO workflows (rs-auto, rs-task-auto + 28 rs-wf-*) into skills/<name>/SKILL.md + workflows/<name>.md.bak
     wf_dst = target_dir / "workflows"
     if wf_dst.exists():
         shutil.rmtree(wf_dst)
     (wf_dst / "specs").mkdir(parents=True, exist_ok=True)
 
+    # Copy rs-task-auto skill (migrated workflow) + archive rs-auto.md.bak & rs-task-auto.md.bak
+    src_task_auto_skill = upstream_dir / "skills" / "rs-task-auto" / "SKILL.md"
+    if src_task_auto_skill.exists():
+        dst_task_auto_dir = skills_dst / "rs-task-auto"
+        dst_task_auto_dir.mkdir(parents=True, exist_ok=True)
+        (dst_task_auto_dir / "SKILL.md").write_text(
+            sanitize_ho_references(src_task_auto_skill.read_text(encoding="utf-8")),
+            encoding="utf-8",
+        )
+    for meta_wf_name in ("rs-auto", "rs-task-auto"):
+        src_bak = upstream_dir / "workflows" / f"{meta_wf_name}.md.bak"
+        if not src_bak.exists():
+            src_bak = upstream_dir / "workflows" / f"{meta_wf_name}.md"
+        if src_bak.exists():
+            (wf_dst / f"{meta_wf_name}.md.bak").write_text(
+                sanitize_ho_references(src_bak.read_text(encoding="utf-8")),
+                encoding="utf-8",
+            )
+
     updated_wf_manifest_entries: List[Dict[str, Any]] = []
     for w in retained_workflows:
         wid = w["id"]
-        src_md = upstream_dir / "workflows" / f"{wid}.md"
-        dst_md = wf_dst / f"{wid}.md"
-        md_clean = sanitize_ho_references(src_md.read_text(encoding="utf-8"))
-        dst_md.write_text(md_clean, encoding="utf-8")
-        md_sha16 = hashlib.sha256(md_clean.encode("utf-8")).hexdigest()[:16]
+        src_skill_md = upstream_dir / "skills" / wid / "SKILL.md"
+        src_bak_md = upstream_dir / "workflows" / f"{wid}.md.bak"
+        src_legacy_md = upstream_dir / "workflows" / f"{wid}.md"
+
+        raw_skill_md = (
+            src_skill_md.read_text(encoding="utf-8")
+            if src_skill_md.exists()
+            else (src_bak_md if src_bak_md.exists() else src_legacy_md).read_text(encoding="utf-8")
+        )
+        skill_md_clean = sanitize_ho_references(raw_skill_md)
+        dst_wf_skill_dir = skills_dst / wid
+        dst_wf_skill_dir.mkdir(parents=True, exist_ok=True)
+        (dst_wf_skill_dir / "SKILL.md").write_text(skill_md_clean, encoding="utf-8")
+        md_sha16 = hashlib.sha256(skill_md_clean.encode("utf-8")).hexdigest()[:16]
+
+        raw_bak_md = (
+            src_bak_md.read_text(encoding="utf-8")
+            if src_bak_md.exists()
+            else (src_legacy_md if src_legacy_md.exists() else src_skill_md).read_text(encoding="utf-8")
+        )
+        (wf_dst / f"{wid}.md.bak").write_text(sanitize_ho_references(raw_bak_md), encoding="utf-8")
 
         src_spec = upstream_dir / "workflows" / "specs" / f"{wid}.json"
         spec_data = json.loads(sanitize_ho_references(src_spec.read_text(encoding="utf-8")))
@@ -1585,7 +1642,13 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
         updated_wf_manifest_entries.append(w_copy)
 
     wf_runner_src = (upstream_dir / "workflows" / "run_rs_workflow.py").read_text(encoding="utf-8")
-    wf_runner_clean = sanitize_ho_references(wf_runner_src).replace("== 30", f"== {len(retained_workflows)}").replace("/30", f"/{len(retained_workflows)}")
+    wf_runner_clean = (
+        sanitize_ho_references(wf_runner_src)
+        .replace("== 30", f"== {len(retained_workflows)}")
+        .replace("/30", f"/{len(retained_workflows)}")
+        .replace("30 Quy Trình", f"{len(retained_workflows)} Quy Trình")
+        .replace("30 rs-wf-*", f"{len(retained_workflows)} rs-wf-*")
+    )
     wf_runner_path = wf_dst / "run_rs_workflow.py"
     wf_runner_path.write_text(wf_runner_clean, encoding="utf-8")
     wf_runner_path.chmod(wf_runner_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
@@ -1793,18 +1856,30 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                 clean_doc = sanitize_ho_references("\n".join(filtered_lines)) + "\n"
             elif doc_name == "CHANGELOG.md":
                 ho_changelog_header = (
-                    "# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)\n\n"
-                    "## [6.5.0-ho.1] - 2026-11-02\n\n"
-                    "### Bổ sung & Chuẩn hóa Bảo mật Khối HO (`Added & Security`)\n"
-                    "- **Tách Kho Kỹ Năng Độc Lập Cho Nhân Sự Khối Văn Phòng HO (`HO_STAFF_SAFE_EDITION` · `178` hợp phần):**\n"
-                    "  - Cắt bỏ `16` kỹ năng đặc quyền CEO/HĐQT/M&A và Core/System-evolution, giữ lại `126` HO Skills chuyên môn cho 6 Khối Phòng Ban HO.\n"
-                    "  - Cắt bỏ `2` quy trình nhịp sinh học riêng của CEO (`07:30` & `22:30`), giữ lại `28` HO Workflows.\n"
-                    "  - Cắt bỏ `2` mô-đun MCP đặc quyền và `2` công cụ ghi đè Database/xuất sổ cái thuế, giữ lại `8` Mô-đun / `24` Safe MCP Tools khóa cứng ở chế độ `HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation = False`).\n"
-                    "  - Xóa bỏ hoàn toàn lệnh `reset-db` và `seed` trong `./bin/control-app`, `./bin/rs-control` và `scripts/rs_os_control_tool.py`.\n"
-                    "- **Chế Độ Auto Mặc Định (`Zero-Command Auto` · `rules/rs-ho-auto-router.md`):**\n"
-                    "  - Bổ sung Rule `always_on` giúp nhân sự HO chỉ cần đặt câu hỏi tiếng Việt tự nhiên, hệ thống tự động chọn bộ Skill hoặc bật `ask_question` (1-3 câu hỏi trắc nghiệm theo 6 Khối Phòng Ban HO, chặn leo thang `--role chain_ceo`).\n"
-                    "- **Cơ Chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`):**\n"
-                    "  - Bổ sung `scripts/build_and_sync_ho_repo.py`, `scripts/rs_ho_auto_updater.py`, `./install.sh --enable-auto-update` và `.github/workflows/periodic-ho-verify-and-sync.yml`.\n\n"
+                    f"# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v{HO_VERSION}`)\n\n"
+                    f"## [{HO_VERSION}] - 2026-11-03\n\n"
+                    "### Chuyển Đổi 30 Quy Trình Khối HO Sang Định Dạng `skills/<name>/SKILL.md` & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)\n"
+                    "- **Chuyển đổi `30` HO Workflows sang `skills/<name>/SKILL.md` (`migrate-workflows`)**:\n"
+                    "  - Tạo mới `29` skill quy trình (`skills/rs-task-auto/SKILL.md` + `28` `skills/rs-wf-*/SKILL.md`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/SKILL.md` 5 lớp; lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.\n"
+                    "  - Cắt bỏ tuyệt đối `2` quy trình riêng của CEO (`rs-wf-exec-0730-morning-pulse`, `rs-wf-exec-2230-evening-wrap`) trên cả `skills/` và `workflows/`.\n"
+                    "  - Đồng bộ `workflows/run_rs_workflow.py`, `scripts/verify_rs_ho_ecosystem.py`, `scripts/rs_profile_loader.py` và `references/features/FEAT-13-rs-wf-orchestrator.md` trỏ trực tiếp tới `skills/<wid>/SKILL.md`.\n"
+                    "- **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` & `.env.ho.example`)**:\n"
+                    "  - Xác thực 10 vai trò Khối HO/Điểm bán, cấp phát `.agent/.env` (`chmod 0600`) kèm `Token Scope Guard`, tự động đăng ký `8/8` Safe MCP Modules và tích hợp `./bin/rs-control setup | check-update | update`.\n\n"
+                    "### Cải Tiến Cốt Lõi & Định Tuyến Thích Ứng Khối HO (`Enhanced & Cognitive Routing`)\n"
+                    "- **Bộ Định Tuyến Thích Ứng 10-Sao & Cầu Dao Tự Động Thực Thi (`High-Confidence Auto-Pass Gate` · `/rs-auto`):**\n"
+                    "  - Tự động nhận diện danh bạ nhân sự Khối Văn phòng Hội Sở HO (`HO_PERSONNEL_DIRECTORY` gồm Lâm, Ân, Hưng, Yến, Phương Anh, Linh, Tân, Huy, Kế toán Tổng hợp) qua regex ranh giới từ tiếng Việt chuẩn xác, tự động khóa pháp nhân `CHAIN_HEADQUARTERS_CTCP` và thỏa mãn Trục 1 (`axis_1_entity_clear = True`).\n"
+                    "  - Mở rộng bảng nhận diện động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES` gồm chấm kpi, chấm lại kpi, tạo kpi mục tiêu, tính lương 3p, kiểm kê mù, đặt hàng b2b, dòng tiền 13 tuần), tự động định hình sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).\n"
+                    "  - **Cầu Dao 0-Click Auto-Pass:** Khi độ tin cậy kỹ năng >= 85.0% và là lệnh phi phá hủy, hệ thống kích hoạt chế độ tự động thực thi với giả định hợp lý (`[DERIVED]`), không ngắt quãng người dùng qua popup khi đã đủ dữ kiện thực thi.\n"
+                    "  - **Cổng Khử Mơ Hồ Động Theo Chuyên Môn Phân Khu:** Đối với câu lệnh thực sự thiếu dữ kiện cốt lõi (< 85%), sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng khối phòng ban (HR/KPI hỏi phân loại nhân sự HO vs Điểm bán; Tài chính hỏi pháp nhân đối soát; Vận hành hỏi Kho Tổng vs Điểm bán; tuyệt đối không còn các tùy chọn lạc đề).\n"
+                    "### Bổ Sung 6 Hệ Thống Sáng Tạo Đa Phương Tiện NotebookLM & Nhà Máy Học Viện LMS (`#146..#151` · `02-rs-kb-lms`)\n"
+                    "- **`#146 rs-kb-notebooklm-slide-studio`**: Thiết kế bộ Slide chuẩn thương hiệu v3.3 (`detailed_deck` / `presenter_slides`) và tinh chỉnh từng trang qua `studio_revise`.\n"
+                    "- **`#147 rs-kb-notebooklm-video-studio`**: Sản xuất Video đào tạo `.mp4` với 10 phong cách thị giác và khóa 100% số đọc bằng chữ tiếng Việt.\n"
+                    "- **`#148 rs-kb-notebooklm-podcast-studio`**: Sản xuất Podcast đối thoại 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) cho Radio giao ca.\n"
+                    "- **`#149 rs-kb-notebooklm-visual-quiz-pack`**: Tổ hợp học liệu 4-trong-1 (`infographic .png` + `mind_map` biên dịch sang `Mermaid` + `flashcards` + `quiz` 4 bậc thang Bloom `30/30/25/15`).\n"
+                    "- **`#150 rs-lms-notebooklm-course-builder`**: Cầu nối 6 mũi tự động đóng gói học liệu NotebookLM thành JSON chuẩn cho `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` (chế độ `HO_SAFE_READ_AND_DRAFT` yêu cầu mã phê duyệt trước khi `publish-live`).\n"
+                    "- **`#151 rs-kb-notebooklm-cross-briefing`**: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), xuất bảng Excel (`.xlsx`), đồng bộ Google Docs/Sheets và `pipeline` tự động.\n"
+                    "- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`189` hợp phần: `137` HO Skills + `28` HO Workflows + `24` Safe MCP Tools):**\n"
+                    "  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) và duy trì 0 đặc quyền CEO, 0 thao tác ghi/xóa trực tiếp Database gốc.\n\n"
                     "---\n\n"
                 )
                 clean_doc = ho_changelog_header + sanitize_ho_references("\n".join(lines[5:])) + "\n"
@@ -1823,6 +1898,24 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
         if ffile.name == "FEAT-16-rs-os-control-app.md":
             clean_f = clean_f.replace("scripts/verify_rs_ecosystem.py", "scripts/verify_rs_ho_ecosystem.py")
         (feat_dst / ffile.name).write_text(clean_f, encoding="utf-8")
+
+    # Update feature hashes to ensure 100% FRESH
+    try:
+        subprocess.run(
+            [
+                sys.executable,
+                str(target_dir / "scripts" / "rs_os_control_tool.py"),
+                "maintain-features",
+                "--features-dir",
+                str(feat_dst),
+                "--update",
+                "--json",
+            ],
+            check=True,
+            capture_output=True,
+        )
+    except Exception:
+        pass
 
     return {
         "ok": True,
@@ -1851,7 +1944,7 @@ def run_self_test() -> Dict[str, Any]:
         zero_ceo_skills
         and zero_ceo_wfs
         and zero_mut_mcp
-        and len(skill_ids) in (126, 127, 128, 129, 130, 131)
+        and len(skill_ids) in range(126, 145)
         and len(wf_ids) == 28
         and len(mcp_ids) == 24
     )

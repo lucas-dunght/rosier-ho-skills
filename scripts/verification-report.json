@@ -2,12 +2,12 @@
   "status": "PASS",
   "claim_label": "[OBSERVED: scripts/verify_rs_ho_ecosystem.py]",
   "edition": "HO_STAFF_SAFE_EDITION",
-  "version": "6.7.0-ho.2",
-  "verified_at_utc": "2026-11-03T07:23:22.774160+00:00",
-  "elapsed_ms": 16561.37,
+  "version": "6.8.0-ho.2",
+  "verified_at_utc": "2026-11-03T14:50:46.951919+00:00",
+  "elapsed_ms": 19620.24,
   "summary": {
-    "total_ho_ecosystem_items_verified": 183,
-    "rs_ho_skills_verified": "131/131",
+    "total_ho_ecosystem_items_verified": 189,
+    "rs_ho_skills_verified": "137/137",
     "rs_ho_persona_skills_verified": "11/11",
     "rs_ho_workflows_verified": "28/28",
     "rs_ho_mcp_modules_verified": "8/8",
@@ -47,7 +47,10 @@
     "periodic_auto_updater_verified": true,
     "bom_immutable_delete_blocked": true,
     "bom_ho_ceo_approval_blocked": true,
-    "ho_setup_wizard_verified": true
+    "ho_setup_wizard_verified": true,
+    "migrated_ho_workflow_skills_verified": "30/30",
+    "archived_workflow_bak_files_verified": "30/30",
+    "legacy_workflow_md_remaining": []
   },
   "failures": {
     "skills": [],

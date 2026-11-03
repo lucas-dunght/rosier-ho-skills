@@ -1,4 +1,4 @@
-# 🏛️ DANH MỤC TỔNG THỂ HỆ SINH THÁI KỸ NĂNG ĐỘC QUYỀN NỘI BỘ ROSIER 207 HỢP PHẦN (`RS-OS 200 v6.7.0`)
+# 🏛️ DANH MỤC TỔNG THỂ HỆ SINH THÁI KỸ NĂNG ĐỘC QUYỀN NỘI BỘ ROSIER 207 HỢP PHẦN (`RS-OS 200 v6.8.0`)
 
 > **Tổng quy mô:** `207 Hợp phần chuẩn mã rs-*` (`147 rs-* Skills` + `30 rs-wf-* Workflows` kèm `/rs-auto` + `30 rs-mcp-* Tools` trong `10 Mô-đun MCP`)
 > **Kiến trúc nội bộ:** Chuẩn 5 Lớp Kép Rosier (`./bin/control-app`, `./bin/rs-control`, `Feature Map 16/16`, `Kỷ Luật Kiểm Chứng 4 Nhãn`, `Khử Mùi AI 3 Vòng`, `0 Constraint Violations`)
@@ -197,3 +197,10 @@
 | `197` | `rs-mcp-omni-owner-group-care` | `rs-mcp-omni-external` | Tiếp nhận câu hỏi và gửi thông báo vận hành đã chuẩn hóa vào nhóm trao đổi của 22 Chủ cửa hàng nhượng quyền. | `PUBLIC_DMZ_SAFE` |
 | `198` | `rs-mcp-omni-map-review-sync` | `rs-mcp-omni-external` | Thu thập và đăng phản hồi đánh giá của khách hàng trên Bản đồ số và Fanpage của 25 điểm bán. | `PUBLIC_DMZ_SAFE` |
 | `#143` | `rs-hr-monthly-kpi-engine` | `flagship` | Động Cơ Tự Động Tạo Mới KPI Đầu Tháng, Chấm Điểm KPI Cuối Tháng & Liên Thông Lương 3P | `hr-monthly-kpi-lifecycle-engine` | `INTERNAL_PRIVILEGED` |
+
+| `146` | `rs-kb-notebooklm-slide-studio` | `flagship` | `02-rs-kb-lms` | Xưởng Thiết Kế & Tinh Chỉnh Từng Trang Slide Chuẩn Rosier v3.3 Bằng NotebookLM (`studio_revise` + `.pptx`/`.pdf`) |
+| `147` | `rs-kb-notebooklm-video-studio` | `flagship` | `02-rs-kb-lms` | Xưởng Sản Xuất Video Clip Bài Giảng & Explainer Chuẩn Rosier v3.3 Bằng NotebookLM (`.mp4` + `3s Hook`) |
+| `148` | `rs-kb-notebooklm-podcast-studio` | `flagship` | `02-rs-kb-lms` | Xưởng Sản Xuất Podcast Đối Thoại & Radio Nội Bộ 4 Chế Độ Bằng NotebookLM (`.m4a` + `100% Số Đọc Bằng Chữ`) |
+| `149` | `rs-kb-notebooklm-visual-quiz-pack` | `flagship` | `02-rs-kb-lms` | Xưởng Học Liệu Trực Quan & Khảo Thí 4-Trong-1 Bằng NotebookLM (`Infographic .png` + `Mind Map Mermaid` + `Flashcards` + `Bloom Quiz`) |
+| `150` | `rs-lms-notebooklm-course-builder` | `flagship` | `02-rs-kb-lms` | Nhà Máy Đóng Gói & Xuất Bản Khóa Học Đa Phương Tiện 6 Mũi Từ NotebookLM Lên `Rosier LMS` (`lms_upsert_curriculum_tree`) |
+| `151` | `rs-kb-notebooklm-cross-briefing` | `flagship` | `02-rs-kb-lms` | Tổ Hợp Truy Vấn Liên Sổ Tay (`cross_notebook_query`), Xuất Bảng Excel (`.xlsx`) & Đồng Bộ Google Docs/Sheets |
