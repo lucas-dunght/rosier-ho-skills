@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# RS-OS HO Edition (v6.5.0-ho.1) · Trình Cài Đặt & Kích Hoạt Tự Cập Nhật Cho Nhân Sự Khối HO
+# RS-OS HO Edition (v6.8.0-ho.1) · Trình Cài Đặt & Kích Hoạt Tự Cập Nhật Cho Nhân Sự Khối HO
 # Hỗ trợ:
 #   1. Cài đặt Cô lập vào Workspace kèm bật Tự động cập nhật định kỳ 24h (Khuyên dùng):
 #      ./install.sh --workspace /path/to/ho-workspace [--profile ho-all-126] [--enable-auto-update]

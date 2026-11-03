@@ -2,7 +2,7 @@
   "_readme": "Machine-readable catalog of Rosier HO Skills Suite (RS-OS HO Edition · Khối Văn Phòng HO). Zero CEO privilege, Zero DB mutation, Zero-Command Auto Skill Router enabled.",
   "updated": "2026-11-03",
   "owner": "Ban Điều Hành Toàn Chuỗi · Rosier Fresh Tea & Coffee",
-  "ecosystem_version": "6.7.0-ho.1",
+  "ecosystem_version": "6.8.0-ho.1",
   "counts": {
     "total_items": 183,
     "skills": 131,

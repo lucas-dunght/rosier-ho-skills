@@ -1,13 +1,72 @@
-# 📚 CHUẨN MỰC NGÀNH & QUY TẮC TẤT ĐỊNH NỘI BỘ ROSIER (`RS-OS 200`) · `rs-office-docx-enterprise`
+# Quy Chuẩn Kỹ Thuật OpenXML & Trình Sinh Hợp Đồng · `rs-office-docx-enterprise` (`#116` · v6.5.0)
 
-- **Tên kỹ năng:** Soạn Thảo Văn Bản, Hợp Đồng & Báo Cáo Word (.docx) Chuẩn Thương Hiệu
-- **Phân khu:** Phân khu 10: Kỹ Thuật Hệ Thống AI, Bảo Mật SkillSpector & Siêu Tiện Ích Văn Phòng (rs-eng-* & rs-office-*)
-- **Hệ chuẩn quốc tế, nội bộ Rosier & pháp quy Việt Nam áp dụng:** AgentSkills Open Standard, SkillSpector Static Security Scan, Kernel Registry SOT v2.1 & 5 Consulting Data Report Styles.
-- **Vai trò chức danh chịu trách nhiệm chính:** CEO Toàn Chuỗi, Đội Ngũ Kỹ Thuật Hệ Thống & Khối Văn Phòng HO
-- **AI Agent thực thi:** 0. Core-Eng, HERMES, Khối Văn Phòng Trung Tâm (HO)
+## 1. Mẫu Code Chuẩn Hóa OpenXML (`Zero-Error python-docx Snippet`)
+```python
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+import zipfile, os, shutil, re
 
-## Quy Tắc Nghiệm Thu Định Lượng (`Definition of Done · DoD` & `Gate Files`)
-1. Mọi phép tính số học phải được chạy qua `scripts/rs_office_docx_enterprise_tool.py` và đính kèm mã băm `deterministic_sha256_16` cùng nhãn `[DERIVED]`.
-2. Đảm bảo tách bạch 100% dữ liệu giữa 3 mô hình chủ thể pháp nhân: `CTCP Toàn Chuỗi`, `Cty TNHH (3 CHH: 38197, 46880, 87024)` và `Hộ Kinh Doanh Nhượng Quyền (22 CHNQ)`.
-3. Văn phong báo cáo phải vượt qua kiểm định `python3 scripts/rs_office_docx_enterprise_tool.py audit --text "..."` (0% từ cấm Red List v3.3, 0% tật văn mẫu AI tiếng Việt trong 6 nhóm của `rs-meta-deslop-3pass`, 0 lỗi Constraint Loop).
-4. **Quy chuẩn Phông chữ Hợp đồng Lao động và Hồ sơ Pháp lý (`.docx`):** Toàn bộ Hợp đồng lao động (`HĐLĐ`), Phụ lục hợp đồng (`JD`, `3P`, điều chỉnh lương), Thỏa thuận bảo mật (`NDA & IP`), Bản cam kết nội quy và Quyết định nhân sự khi xuất bản sang định dạng Word (`.docx`) bắt buộc sử dụng đồng nhất `100%` phông chữ `Times New Roman` (`w:rFonts` cho `w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs`) trên mọi đoạn văn, bảng biểu, Header và Footer; đồng thời tích hợp cơ chế Bảo mật 360 độ và Bảo vệ dữ liệu cá nhân theo Luật số 91/2025/QH15.
+def set_cell_shading(cell, fill_hex: str):
+    tcPr = cell._tc.get_or_add_tcPr()
+    for old in tcPr.findall(qn("w:shd")):
+        tcPr.remove(old)
+    shd = OxmlElement("w:shd")
+    shd.set(qn("w:val"), "clear")
+    shd.set(qn("w:color"), "auto")
+    shd.set(qn("w:fill"), fill_hex)
+    tcMar = tcPr.find(qn("w:tcMar"))
+    vAlign = tcPr.find(qn("w:vAlign"))
+    if tcMar is not None:
+        tcMar.addprevious(shd)
+    elif vAlign is not None:
+        vAlign.addprevious(shd)
+    else:
+        tcPr.append(shd)
+
+def set_cell_margins(cell, top=110, bottom=110, left=150, right=150):
+    tcPr = cell._tc.get_or_add_tcPr()
+    for old in tcPr.findall(qn("w:tcMar")):
+        tcPr.remove(old)
+    tcMar = OxmlElement("w:tcMar")
+    # Thứ tự bắt buộc theo OpenXML Schema: top -> left -> bottom -> right
+    for side, val in (("top", top), ("left", left), ("bottom", bottom), ("right", right)):
+        node = OxmlElement(f"w:{side}")
+        node.set(qn("w:w"), str(val))
+        node.set(qn("w:type"), "dxa")
+        tcMar.append(node)
+    vAlign = tcPr.find(qn("w:vAlign"))
+    if vAlign is not None:
+        vAlign.addprevious(tcMar)
+    else:
+        tcPr.append(tcMar)
+
+def enforce_100pct_times_new_roman_xml(docx_path: str):
+    tmp_dir = docx_path + "_xml_norm"
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)
+    with zipfile.ZipFile(docx_path, "r") as zin:
+        zin.extractall(tmp_dir)
+    for root, _, files in os.walk(tmp_dir):
+        for fname in files:
+            if fname.endswith(".xml"):
+                fpath = os.path.join(root, fname)
+                with open(fpath, "r", encoding="utf-8") as f:
+                    xml = f.read()
+                xml = re.sub(r'\s+w:(asciiTheme|hAnsiTheme|eastAsiaTheme|cstheme)="[^"]*"', "", xml)
+                xml = re.sub(r'w:(ascii|hAnsi|eastAsia|cs)="[^"]*"', r'w:\1="Times New Roman"', xml)
+                with open(fpath, "w", encoding="utf-8") as f:
+                    f.write(xml)
+    with zipfile.ZipFile(docx_path, "w", zipfile.ZIP_DEFLATED) as zout:
+        for root, _, files in os.walk(tmp_dir):
+            for fname in files:
+                full_p = os.path.join(root, fname)
+                rel_p = os.path.relpath(full_p, tmp_dir)
+                zout.write(full_p, rel_p)
+    shutil.rmtree(tmp_dir)
+```
+
+## 2. Quy Chuẩn Trình Bày Trang In Hợp Đồng Pháp Lý (`.docx`)
+- **Khổ giấy:** `A4` (`210mm x 297mm`).
+- **Định lề chuẩn Nghị định 30/2020/NĐ-CP:** Lề trên `2,0 cm` · Lề dưới `2,0 cm` · Lề trái `2,8 cm` (chừa gáy đóng dấu giáp lai) · Lề phải `1,8 cm`.
+- **Phông chữ:** `100% Times New Roman`, cỡ chữ chính văn `11,5 pt` (hoặc `12 pt`), giãn dòng `1,18x` - `1,20x`, căn đều hai bên (`JUSTIFY`).
+- **Bảng chữ ký đại diện các bên:** Bắt buộc chừa khoảng trống ký đóng dấu tối thiểu `5` dòng trắng và kèm câu khóa trang cuối: *"Các Bên xác nhận đã đọc, hiểu rõ và thống nhất toàn bộ các điều khoản của Hợp đồng cùng Phụ lục kèm theo, đồng thời ký tên, đóng dấu dưới đây và ký nháy/đóng dấu giáp lai vào từng trang của Hợp đồng."*
