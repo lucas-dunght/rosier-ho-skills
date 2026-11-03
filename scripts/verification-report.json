@@ -3,8 +3,8 @@
   "claim_label": "[OBSERVED: scripts/verify_rs_ho_ecosystem.py]",
   "edition": "HO_STAFF_SAFE_EDITION",
   "version": "6.7.0-ho.1",
-  "verified_at_utc": "2026-11-03T05:27:11.634691+00:00",
-  "elapsed_ms": 19201.85,
+  "verified_at_utc": "2026-11-03T06:50:11.739617+00:00",
+  "elapsed_ms": 17094.66,
   "summary": {
     "total_ho_ecosystem_items_verified": 183,
     "rs_ho_skills_verified": "131/131",
@@ -44,7 +44,9 @@
     "auto_clarification_verified": true,
     "auto_execution_verified": true,
     "auto_rule_always_on_verified": true,
-    "periodic_auto_updater_verified": true
+    "periodic_auto_updater_verified": true,
+    "bom_immutable_delete_blocked": true,
+    "bom_ho_ceo_approval_blocked": true
   },
   "failures": {
     "skills": [],

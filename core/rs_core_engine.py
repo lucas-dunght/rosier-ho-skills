@@ -2236,13 +2236,13 @@ def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
         out["bom_action_result"] = execute_bom_lifecycle_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", False)),
+            is_ho_edition=bool(payload.get("is_ho_edition", True)),
         )
     if payload.get("nlm_action") or payload.get("archetype_id") or payload.get("archetype") or payload.get("slot_id") or payload.get("transcript"):
         out["notebooklm_action_result"] = execute_notebooklm_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", False)),
+            is_ho_edition=bool(payload.get("is_ho_edition", True)),
         )
     return out
 
@@ -3921,7 +3921,7 @@ def calc_division_06_hr_legal(payload: Dict[str, Any]) -> Dict[str, Any]:
         out["kpi_action_result"] = execute_kpi_lifecycle_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", False)),
+            is_ho_edition=bool(payload.get("is_ho_edition", True)),
         )
     return out
 

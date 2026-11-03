@@ -6,7 +6,7 @@ source_files:
   - skills/rs-persona-first-principles-truth/SKILL.md
   - skills/rs-persona-first-principles-truth/scripts/rs_persona_first_principles_truth_tool.py
 source_hashes:
-  core/rs_core_engine.py: sha256:b3988c8573af7651
+  core/rs_core_engine.py: sha256:2bc3b5d80eed99a2
   skills/rs-persona-first-principles-truth/SKILL.md: sha256:da6a26b66f82a5cc
   skills/rs-persona-first-principles-truth/scripts/rs_persona_first_principles_truth_tool.py: sha256:6266daddd2c00f06
 ---

@@ -8,7 +8,7 @@ source_files:
 source_hashes:
   bin/control-app: sha256:b07795c8514a65f4
   RS-OS-180-CONTROL-CENTER.html: sha256:4ca73badcb6623fa
-  scripts/verify_rs_ho_ecosystem.py: sha256:e9a46d2ad8191ab0
+  scripts/verify_rs_ho_ecosystem.py: sha256:9fb9cc6679ec1563
 ---
 
 # FEAT-16-rs-os-control-app · Đòn bẩy Tự Kiểm Chứng CLI (./bin/control-app) & Bảng Điều Khiển HTML v3.3
