@@ -1,4 +1,4 @@
-# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.7.0-ho.1`)
+# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.7.0-ho.2`)
 
 Hệ sinh thái **`183` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
 - **`131` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Bộ Đôi NotebookLM MCP (`#144` & `#145`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
@@ -16,11 +16,15 @@ Hệ sinh thái **`183` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân s
 gh repo clone rosier-ho-skills ~/projects/rosier-ho-skills
 cd ~/projects/rosier-ho-skills
 
-# Bước 2: Cài đặt cô lập vào Workspace làm việc của nhân sự HO và bật lịch Tự động cập nhật 24h
-./install.sh --workspace ~/work/rosier-ho-workspace --profile ho-all-126 --enable-auto-update
+# Bước 2: Cài đặt cô lập vào Workspace, khởi tạo .agent/.env (chmod 600) + .mcp.json (8 Safe MCP) và bật lịch Auto-Update 24h
+./install.sh --workspace ~/work/rosier-ho-workspace --role ho_ops_supply --profile ho-all-126 --enable-auto-update
 
-# Bước 3: Kiểm tra trạng thái cài đặt và lịch cập nhật tự động
+# Bước 3: (Tùy chọn) Gộp cấu hình 8 MCP servers an toàn vào IDE và nạp Token phòng ban HO
+./install.sh --setup --workspace ~/work/rosier-ho-workspace --role ho_ops_supply
+
+# Bước 4: Kiểm tra trạng thái cài đặt, cấu hình MCP/Token và kiểm tra bản cập nhật mới
 ./install.sh --status --workspace ~/work/rosier-ho-workspace
+./install.sh --check-update
 ```
 
 ---

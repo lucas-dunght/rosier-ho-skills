@@ -1,10 +1,10 @@
-# Rosier HO Skills Suite · Hướng Dẫn Điều Phối Agent (`CLAUDE.md` · `v6.7.0-ho.1`)
+# Rosier HO Skills Suite · Hướng Dẫn Điều Phối Agent (`CLAUDE.md` · `v6.7.0-ho.2`)
 
-Tài liệu ngữ cảnh dành cho AI Agent vận hành trong kho kỹ năng **Khối Văn Phòng HO Rosier (`rosier-ho-skills` · `v6.7.0-ho.1` · `HO_STAFF_SAFE_EDITION`)**.
+Tài liệu ngữ cảnh dành cho AI Agent vận hành trong kho kỹ năng **Khối Văn Phòng HO Rosier (`rosier-ho-skills` · `v6.7.0-ho.2` · `HO_STAFF_SAFE_EDITION`)**.
 
 ## 1. Bối Cảnh Hệ Thống & Phạm Vi Quyền Hạn (`183` Hợp Phần)
 
-- **Phiên bản chuẩn:** `6.7.0-ho.1` (`HO_STAFF_SAFE_EDITION`)
+- **Phiên bản chuẩn:** `6.7.0-ho.2` (`HO_STAFF_SAFE_EDITION`)
 - **Quy mô:** `183` hợp phần = `131` HO Skills (`skills/rs-*`) + `28` HO Workflows (`workflows/rs-wf-*`) + `24` Safe MCP Tools trong `8` Mô-đun MCP (`mcp-modules/rs-mcp-*`).
 - **6 Khối Phòng Ban HO:**
   1. Khối Vận Hành Chuỗi 25 Điểm Bán (`03-rs-ops` · `3` CHH công ty `38197`, `46880`, `87024` + `22` CHNQ nhượng quyền)

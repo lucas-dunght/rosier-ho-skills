@@ -246,6 +246,17 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         and bom_ho_approve_data.get("error", {}).get("code") == "HO_CEO_APPROVAL_REQUIRED"
     )
 
+    # 8. Verify First-Run HO MCP & Token Setup Wizard (scripts/rs_ho_setup_wizard.py --self-test --json)
+    setup_wizard_script = SUITE_ROOT / "scripts" / "rs_ho_setup_wizard.py"
+    sw_proc = subprocess.run(
+        [sys.executable, str(setup_wizard_script), "--self-test", "--json"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    sw_data = json.loads(sw_proc.stdout) if sw_proc.stdout.strip() else {}
+    setup_wizard_verified = sw_proc.returncode == 0 and sw_data.get("status") == "PASS"
+
     passed = (
         len(leaked_skills) == 0
         and len(leaked_workflows) == 0
@@ -259,6 +270,7 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         and auto_updater_verified
         and bom_delete_blocked
         and bom_ho_ceo_approval_blocked
+        and setup_wizard_verified
     )
     return {
         "status": "PASS" if passed else "FAIL",
@@ -274,6 +286,7 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         "periodic_auto_updater_verified": auto_updater_verified,
         "bom_immutable_delete_blocked": bom_delete_blocked,
         "bom_ho_ceo_approval_blocked": bom_ho_ceo_approval_blocked,
+        "ho_setup_wizard_verified": setup_wizard_verified,
     }
 
 

@@ -3,6 +3,9 @@
 ## [6.7.0-ho.1] - 2026-11-03
 
 ### Bổ sung Mới & Quản Trị Sổ Cái Bất Biến (`Added & Security`)
+- **Trình Thuật Sĩ Cấu Hình MCP & Token Ban Đầu + Kiểm Tra Cập Nhật Thủ Công (`scripts/rs_ho_setup_wizard.py`, `.env.ho.example`, `./install.sh --setup`, `./bin/rs-control setup` · Issue #5):**
+  - Tự động khởi tạo `<workspace>/.agent/.env` (`chmod 600`) theo vai trò phòng ban HO (`--role`), chặn cứng vai trò `chain_ceo` (`HO_CEO_ROLE_FORBIDDEN`), chặn Token đặc quyền quản trị (`CEO_MASTER_`, `DB_ADMIN_`) và chặn cờ ghi đè Database (`HO_PRIVILEGED_TOKEN_OR_DB_WRITE_FORBIDDEN`).
+  - Tự động sinh cấu hình `8` mô-đun MCP an toàn (`HO_SAFE_READ_AND_DRAFT`, `allow_db_mutation=false`) tại `<workspace>/.mcp.json` và `<workspace>/.agent/mcp_config.json` (hỗ trợ gộp không ghi đè vào cấu hình IDE qua `--ide-mcp-config`), kèm Smoke Test `8/8` và lệnh kiểm tra bản cập nhật thủ công `./install.sh --check-update` / `./bin/rs-control check-update`.
 - **Sổ Cái BOM Bất Biến Theo Ngày Tháng & Luồng Phê Duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO` · `core/bom_temporal_ledger.json` · PR #4):**
   - Cấm tuyệt đối lệnh xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`); mọi thay đổi định mức đều tạo phiên bản mới theo `effective_from` (`YYYY-MM-DD`) và tự động đóng kỳ bản cũ `effective_to = D - 1 day` (`SUPERSEDED_ARCHIVED`).
   - Thực thi luồng phê duyệt 3 Chốt độc lập: Chốt 1 (`rnd_lead` · `bom-create` / `bom-update`), Chốt 2 (`supply_chain` · `bom-verify-supply`), Chốt 3 (`chain_ceo` · `bom-approve`). Tại kho Khối HO (`rosier-ho-skills`), chặn cứng lệnh `bom-approve` trực tiếp nếu không có mã biên lai chữ ký số `--approval-token CEO-SIG-...` (`HO_CEO_APPROVAL_REQUIRED`).

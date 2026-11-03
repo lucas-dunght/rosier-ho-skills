@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.7.0-ho.1"
+HO_VERSION = "6.7.0-ho.2"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -391,8 +391,9 @@ from core.rs_core_engine import (  # noqa: E402
     self_test_all_divisions,
 )
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
+from scripts.rs_ho_setup_wizard import RosierHOSetupWizard  # noqa: E402
 
-HO_CLI_VERSION = "6.7.0-ho.1"
+HO_CLI_VERSION = "6.7.0-ho.2"
 
 VALID_HO_ROLES = {
     "ho_ops_supply": {
@@ -753,6 +754,62 @@ def handle_update(dry_run: bool, as_json: bool) -> int:
     return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
 
 
+def handle_check_update(force: bool, dry_run: bool, as_json: bool) -> int:
+    updater = RosierHOAutoUpdater(repo_root=SUITE_ROOT)
+    res = updater.check_for_updates(force=force, dry_run=dry_run)
+    res["subcommand"] = "check-update"
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
+def handle_setup(
+    subcommand: str,
+    role: str,
+    profile: str,
+    store_code: str,
+    workspace_dir: str,
+    ide_mcp_config: str,
+    set_env_items: List[str],
+    dry_run: bool,
+    as_json: bool,
+) -> int:
+    ws_path = Path(workspace_dir).expanduser().resolve() if workspace_dir else Path("/Users/tuandunghoang/work/rosier-ho-workspace")
+    ide_path = Path(ide_mcp_config).expanduser().resolve() if ide_mcp_config else None
+    env_overrides: Dict[str, str] = {}
+    for item in set_env_items or []:
+        if "=" in item:
+            k, v = item.split("=", 1)
+            env_overrides[k.strip()] = v.strip()
+    wizard = RosierHOSetupWizard(repo_root=SUITE_ROOT, workspace_dir=ws_path)
+    resolved_role = role or "ho_ops_supply"
+    resolved_store = store_code or "38197"
+    if subcommand == "setup-env":
+        res = wizard.provision_env(
+            role=resolved_role,
+            profile=profile,
+            store_code=resolved_store,
+            env_overrides=env_overrides,
+            dry_run=dry_run,
+        )
+    elif subcommand == "setup-mcp":
+        res = wizard.provision_mcp_config(
+            role=resolved_role,
+            store_code=resolved_store,
+            ide_mcp_config_path=ide_path,
+            dry_run=dry_run,
+        )
+    else:
+        res = wizard.run_full_setup(
+            role=resolved_role,
+            profile=profile,
+            store_code=resolved_store,
+            env_overrides=env_overrides,
+            ide_mcp_config_path=ide_path,
+            dry_run=dry_run,
+        )
+    res["subcommand"] = subcommand
+    return emit(res, as_json=as_json, exit_code=0 if res.get("ok") else 1)
+
+
 def handle_intent_route(
     mode: str,
     query: str,
@@ -815,11 +872,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         "subcommand",
         nargs="?",
         default="help",
-        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | update | help",
+        help="Subcommand: auth | flag | dom | screenshot | perf | verify | doctor | advise | auto | rs-auto | route | setup | check-update | update | help",
     )
     parser.add_argument("positional_query", nargs="?", default="", help="Optional positional query for rs-auto/advise/auto")
     parser.add_argument("--scenario", default="happy_path", help="Scenario name for verify")
     parser.add_argument("--role", default="", help="HO Department or Store role (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, store_owner_company, store_owner_hkd)")
+    parser.add_argument("--profile", default="", help="Optional HO skill profile override for setup")
+    parser.add_argument("--workspace-dir", default="", help="Optional target workspace path for setup")
+    parser.add_argument("--ide-mcp-config", default="", help="Optional IDE mcp_config.json path for setup")
+    parser.add_argument("--set-env", action="append", default=[], help="Optional KEY=VALUE token override for setup")
+    parser.add_argument("--force", action="store_true", help="Bypass 24h cache when checking updates")
     parser.add_argument("--domain", default="", help="Optional locked division code (01..12) after clarification")
     parser.add_argument("--deliverable", default="", help="Optional locked deliverable format (report, sop, media, advise_only)")
     parser.add_argument("--confirmed", action="store_true", help="Confirm user answered clarification questions to execute combo immediately")
@@ -858,7 +920,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         return handle_verify(args.scenario, bool(args.dry_run), as_json)
     if sub == "doctor":
         return handle_doctor(bool(args.dry_run), as_json)
-    if sub in ("update", "auto-update"):
+    if sub in ("setup", "setup-mcp", "setup-env"):
+        return handle_setup(
+            sub,
+            args.role or "ho_ops_supply",
+            args.profile,
+            args.store_code or "38197",
+            args.workspace_dir,
+            args.ide_mcp_config,
+            list(args.set_env or []),
+            bool(args.dry_run),
+            as_json,
+        )
+    if sub in ("check-update", "status-update"):
+        return handle_check_update(bool(args.force), bool(args.dry_run), as_json)
+    if sub in ("update", "auto-update", "self-update"):
         return handle_update(bool(args.dry_run), as_json)
     if sub in ("advise", "route"):
         return handle_intent_route(
@@ -1141,13 +1217,16 @@ if __name__ == "__main__":
 def build_ho_install_sh() -> str:
     return '''#!/usr/bin/env bash
 # ==============================================================================
-# RS-OS HO Edition (v6.5.0-ho.1) · Trình Cài Đặt & Kích Hoạt Tự Cập Nhật Cho Nhân Sự Khối HO
+# RS-OS HO Edition (v6.7.0-ho.2) · Trình Cài Đặt, Cấu Hình MCP/Token & Tự Cập Nhật Cho Nhân Sự Khối HO
 # Hỗ trợ:
-#   1. Cài đặt Cô lập vào Workspace kèm bật Tự động cập nhật định kỳ 24h (Khuyên dùng):
-#      ./install.sh --workspace /path/to/ho-workspace [--profile ho-all-126] [--enable-auto-update]
-#   2. Kiểm tra trạng thái & cập nhật ngay:
-#      ./install.sh --status [--workspace /path/to/ho-workspace]
+#   1. Cài đặt Cô lập vào Workspace + Khởi tạo .agent/.env (chmod 600) + Đăng ký 8 MCP + Bật Auto-Update 24h:
+#      ./install.sh --workspace /path/to/ho-workspace [--role ho_ops_supply] [--profile ho-all-126] [--enable-auto-update]
+#   2. Chạy riêng trình thuật sĩ cấu hình MCP & Token (hoặc gộp vào IDE):
+#      ./install.sh --setup --workspace /path/to/ho-workspace --role ho_ops_supply [--ide-mcp-config ~/.gemini/antigravity/mcp_config.json]
+#   3. Kiểm tra cập nhật thủ công hoặc kéo bản mới ngay lập tức:
+#      ./install.sh --check-update
 #      ./install.sh --update-now
+#      ./install.sh --status [--workspace /path/to/ho-workspace]
 # ==============================================================================
 
 set -euo pipefail
@@ -1155,7 +1234,9 @@ set -euo pipefail
 SUITE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODE="workspace"
 WORKSPACE_DIR="/Users/tuandunghoang/work/rosier-ho-workspace"
+ROLE="ho_ops_supply"
 PROFILE="ho-all-126"
+IDE_MCP_CONFIG=""
 ENABLE_AUTO_UPDATE=1
 
 usage() {
@@ -1164,11 +1245,15 @@ Usage: ./install.sh [OPTIONS]
 
 Options:
   --workspace <path>       Install isolated inside <path>/.agent/ (and link .agents -> .agent)
+  --role <ho_role>         HO Department role (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, ho_cskh_omni, internal_staff, store_owner_company, store_owner_hkd, store_manager)
   --profile <name>         HO Skill profile (ho-all-126, ho-core-35, ho-ops-supply, ho-fin-hr, ho-academy-kb, ho-growth-media, ho-omni-dmz)
+  --setup                  Run First-Run MCP & Token Setup Wizard (.agent/.env chmod 600 + .mcp.json 8 Safe MCP modules)
+  --ide-mcp-config <path>  Optional path to IDE mcp_config.json for non-destructive merge of the 8 HO MCP servers
   --enable-auto-update     Enable daily 24h periodic auto-update from GitHub (default: enabled)
   --disable-auto-update    Disable periodic background schedule
+  --check-update           Check GitHub immediately for new HO skill updates (bypasses 24h cache)
   --update-now             Pull latest updates from GitHub immediately and sync workspaces
-  --status                 Show installation and auto-update status
+  --status                 Show installation, MCP/token setup, and auto-update status
   -h, --help               Show this help message
 EOF
 }
@@ -1176,12 +1261,23 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --workspace)
-      MODE="workspace"
       WORKSPACE_DIR="$2"
+      shift 2
+      ;;
+    --role)
+      ROLE="$2"
       shift 2
       ;;
     --profile)
       PROFILE="$2"
+      shift 2
+      ;;
+    --setup)
+      MODE="setup"
+      shift
+      ;;
+    --ide-mcp-config)
+      IDE_MCP_CONFIG="$2"
       shift 2
       ;;
     --enable-auto-update)
@@ -1190,6 +1286,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --disable-auto-update)
       ENABLE_AUTO_UPDATE=0
+      shift
+      ;;
+    --check-update)
+      MODE="check-update"
       shift
       ;;
     --update-now)
@@ -1212,13 +1312,28 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ "${MODE}" == "check-update" ]]; then
+  python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" check --force --json
+  exit 0
+fi
+
 if [[ "${MODE}" == "update-now" ]]; then
   python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" pull --json
   exit 0
 fi
 
+if [[ "${MODE}" == "setup" ]]; then
+  if [[ -n "${IDE_MCP_CONFIG}" ]]; then
+    python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --ide-mcp-config "${IDE_MCP_CONFIG}" --json
+  else
+    python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --json
+  fi
+  exit 0
+fi
+
 if [[ "${MODE}" == "status" ]]; then
   python3 "${SUITE_DIR}/scripts/rs_profile_loader.py" status --workspace-dir "${WORKSPACE_DIR}"
+  python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" verify --workspace-dir "${WORKSPACE_DIR}" --json
   python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" status --json
   exit 0
 fi
@@ -1229,6 +1344,8 @@ rsync -a --delete \\
   --exclude '.worktrees' \\
   --exclude '.DS_Store' \\
   --exclude '__pycache__' \\
+  --exclude '.env' \\
+  --exclude 'mcp_config.json' \\
   "${SUITE_DIR}/" "${WORKSPACE_DIR}/.agent/"
 
 if [[ -L "${WORKSPACE_DIR}/.agents" || ! -e "${WORKSPACE_DIR}/.agents" ]]; then
@@ -1236,6 +1353,12 @@ if [[ -L "${WORKSPACE_DIR}/.agents" || ! -e "${WORKSPACE_DIR}/.agents" ]]; then
 fi
 
 python3 "${WORKSPACE_DIR}/.agent/scripts/rs_profile_loader.py" activate "${PROFILE}" --target workspace --workspace-dir "${WORKSPACE_DIR}"
+
+if [[ -n "${IDE_MCP_CONFIG}" ]]; then
+  python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --ide-mcp-config "${IDE_MCP_CONFIG}" --json
+else
+  python3 "${SUITE_DIR}/scripts/rs_ho_setup_wizard.py" setup --workspace-dir "${WORKSPACE_DIR}" --role "${ROLE}" --profile "${PROFILE}" --json
+fi
 
 if [[ "${ENABLE_AUTO_UPDATE}" -eq 1 ]]; then
   python3 "${SUITE_DIR}/scripts/rs_ho_auto_updater.py" install-schedule --workspace-dir "${WORKSPACE_DIR}" --json
