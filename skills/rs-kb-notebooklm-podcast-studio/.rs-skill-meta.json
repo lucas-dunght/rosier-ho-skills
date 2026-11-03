@@ -1,0 +1,10 @@
+{
+  "skill_id": "rs-kb-notebooklm-podcast-studio",
+  "version": "6.8.0",
+  "division": "02-rs-kb-lms",
+  "layer": "flagship",
+  "security_zone": "INTERNAL_PRIVILEGED",
+  "updated_at": "2026-11-03T13:50:00Z",
+  "author": "Ban Điều Hành Toàn Chuỗi · Rosier Fresh Tea & Coffee",
+  "standard": "rs-os-200-v6.8.0"
+}

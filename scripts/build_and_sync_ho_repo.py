@@ -1288,8 +1288,8 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
 def build_ho_readme() -> str:
     return f'''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v{HO_VERSION}`)
 
-Hệ sinh thái **`183` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
-- **`131` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Bộ Đôi NotebookLM MCP (`#144` & `#145`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
+Hệ sinh thái **`189` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
+- **`137` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Hệ sinh thái 8 Kỹ năng Sáng tạo Học liệu & Nhà máy Khóa học NotebookLM MCP (`#144..#151`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
 - **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows`)**: Chuẩn hóa tác chiến hàng ngày, hàng tuần và hàng tháng tại văn phòng HO.
 - **`24` Công cụ Kết nối Dữ liệu An toàn (`rs-mcp-*` trong `8` Mô-đun MCP)**: Khóa cứng ở chế độ **`HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation: false`)**. Cắt bỏ hoàn toàn quyền sửa/xóa trực tiếp Database gốc (`reset-db`, `seed`, `business-upsert`, `tax-ledger-export`).
 - **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto` 10-Star Adaptive Router & High-Confidence Auto-Pass Gate)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Nhận diện tự động danh bạ nhân sự HO (`HO_PERSONNEL_DIRECTORY`), mở rộng động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES`), tự động kích hoạt Cầu Dao 0-Click Auto-Pass khi độ tin cậy >= 85.0% phi phá hủy và sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng phòng ban khi nội dung thực sự thiếu dữ kiện cốt lõi.
@@ -1331,7 +1331,7 @@ Nhờ Rule `always_on` tại [`.agent/rules/rs-ho-auto-router.md`](rules/rs-ho-a
 # 3. Kiểm tra và kéo bản cập nhật bộ Skill HO mới nhất ngay lập tức
 ./bin/rs-control update --json
 
-# 4. Kiểm tra sức khỏe toàn bộ 183 hợp phần Khối HO và cổng bảo mật Database
+# 4. Kiểm tra sức khỏe toàn bộ 189 hợp phần Khối HO và cổng bảo mật Database
 python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 ```
 
@@ -1341,7 +1341,7 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 
 | Mã Profile | Khối Phòng Ban HO Phụ Trách | Lệnh kích hoạt nhanh |
 | :--- | :--- | :--- |
-| `ho-all-126` | Toàn bộ `131` Kỹ năng Chuyên môn của tất cả các phòng ban Khối HO (Mặc định) | `python3 scripts/rs_profile_loader.py activate ho-all-126` |
+| `ho-all-126` | Toàn bộ `137` Kỹ năng Chuyên môn của tất cả các phòng ban Khối HO (Mặc định) | `python3 scripts/rs_profile_loader.py activate ho-all-126` |
 | `ho-core-35` | Gói Cốt lõi Tinh gọn cho Nhân sự HO tổng hợp (`35` kỹ năng trọng yếu nhất) | `python3 scripts/rs_profile_loader.py activate ho-core-35` |
 | `ho-ops-supply` | Khối Vận Hành Chuỗi 25 Quán, Giám Sát Thực Địa & Cung Ứng Kho Tổng 5S | `python3 scripts/rs_profile_loader.py activate ho-ops-supply` |
 | `ho-fin-hr` | Khối Tài Chính, Kế Toán Đa Pháp Nhân, Nhân Sự 3P & Hành Chính Pháp Chế | `python3 scripts/rs_profile_loader.py activate ho-fin-hr` |
@@ -1358,7 +1358,7 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 | :--- | :--- | :--- |
 | **Tutorial (Làm quen nhanh)** | [docs/tutorial-getting-started-ho-staff.md](docs/tutorial-getting-started-ho-staff.md) | Thực hành làm chủ chế độ Zero-Command Auto (`/rs-auto`), cổng hỏi lại 3 trục và chốt chặn bảo mật trong 3 bước |
 | **How-To (Tác vụ thực tế)** | [docs/howto-operations-and-auto-update.md](docs/howto-operations-and-auto-update.md) | Hướng dẫn cài đặt theo phòng ban HO, quản lý tự động cập nhật 24h, khôi phục từ `Rescue Ref` và biên dịch từ kho gốc |
-| **Reference (Danh mục 183 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `131` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
+| **Reference (Danh mục 189 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `137` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
 | **Reference (CLI & MCP API)** | [docs/reference-cli-and-api.md](docs/reference-cli-and-api.md) | Tham chiếu tham số, kiểu dữ liệu và JSON schema của `./bin/rs-control`, `install.sh` và `24` Safe MCP Tools |
 | **Explanation (Kiến trúc & Lý do)** | [docs/explanation-architecture-and-guardrails.md](docs/explanation-architecture-and-guardrails.md) | Giải thích kiến trúc tách đặc quyền CEO, khóa cứng `HO_SAFE_READ_AND_DRAFT` và các đánh đổi thiết kế |
 '''
@@ -1683,8 +1683,15 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                     "  - Mở rộng bảng nhận diện động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES` gồm chấm kpi, chấm lại kpi, tạo kpi mục tiêu, tính lương 3p, kiểm kê mù, đặt hàng b2b, dòng tiền 13 tuần), tự động định hình sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).\n"
                     "  - **Cầu Dao 0-Click Auto-Pass:** Khi độ tin cậy kỹ năng >= 85.0% và là lệnh phi phá hủy, hệ thống kích hoạt chế độ tự động thực thi với giả định hợp lý (`[DERIVED]`), không ngắt quãng người dùng qua popup khi đã đủ dữ kiện thực thi.\n"
                     "  - **Cổng Khử Mơ Hồ Động Theo Chuyên Môn Phân Khu:** Đối với câu lệnh thực sự thiếu dữ kiện cốt lõi (< 85%), sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng khối phòng ban (HR/KPI hỏi phân loại nhân sự HO vs Điểm bán; Tài chính hỏi pháp nhân đối soát; Vận hành hỏi Kho Tổng vs Điểm bán; tuyệt đối không còn các tùy chọn lạc đề).\n"
-                    "- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`183` hợp phần):**\n"
-                    "  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, duy trì 0 đặc quyền CEO và 0 thao tác ghi/xóa trực tiếp Database gốc.\n\n"
+                    "### Bổ Sung 6 Hệ Thống Sáng Tạo Đa Phương Tiện NotebookLM & Nhà Máy Học Viện LMS (`#146..#151` · `02-rs-kb-lms`)\n"
+                    "- **`#146 rs-kb-notebooklm-slide-studio`**: Thiết kế bộ Slide chuẩn thương hiệu v3.3 (`detailed_deck` / `presenter_slides`) và tinh chỉnh từng trang qua `studio_revise`.\n"
+                    "- **`#147 rs-kb-notebooklm-video-studio`**: Sản xuất Video đào tạo `.mp4` với 10 phong cách thị giác và khóa 100% số đọc bằng chữ tiếng Việt.\n"
+                    "- **`#148 rs-kb-notebooklm-podcast-studio`**: Sản xuất Podcast đối thoại 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) cho Radio giao ca.\n"
+                    "- **`#149 rs-kb-notebooklm-visual-quiz-pack`**: Tổ hợp học liệu 4-trong-1 (`infographic .png` + `mind_map` biên dịch sang `Mermaid` + `flashcards` + `quiz` 4 bậc thang Bloom `30/30/25/15`).\n"
+                    "- **`#150 rs-lms-notebooklm-course-builder`**: Cầu nối 6 mũi tự động đóng gói học liệu NotebookLM thành JSON chuẩn cho `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` (chế độ `HO_SAFE_READ_AND_DRAFT` yêu cầu mã phê duyệt trước khi `publish-live`).\n"
+                    "- **`#151 rs-kb-notebooklm-cross-briefing`**: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), xuất bảng Excel (`.xlsx`), đồng bộ Google Docs/Sheets và `pipeline` tự động.\n"
+                    "- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`189` hợp phần: `137` HO Skills + `28` HO Workflows + `24` Safe MCP Tools):**\n"
+                    "  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) và duy trì 0 đặc quyền CEO, 0 thao tác ghi/xóa trực tiếp Database gốc.\n\n"
                     "---\n\n"
                 )
                 clean_doc = ho_changelog_header + sanitize_ho_references("\n".join(lines[5:])) + "\n"
@@ -1749,7 +1756,7 @@ def run_self_test() -> Dict[str, Any]:
         zero_ceo_skills
         and zero_ceo_wfs
         and zero_mut_mcp
-        and len(skill_ids) in (126, 127, 128, 129, 130, 131)
+        and len(skill_ids) in range(126, 145)
         and len(wf_ids) == 28
         and len(mcp_ids) == 24
     )

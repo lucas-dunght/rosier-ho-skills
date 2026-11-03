@@ -8,11 +8,29 @@
   - Mở rộng bảng nhận diện động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES` gồm chấm kpi, chấm lại kpi, tạo kpi mục tiêu, tính lương 3p, kiểm kê mù, đặt hàng b2b, dòng tiền 13 tuần), tự động định hình sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).
   - **Cầu Dao 0-Click Auto-Pass:** Khi độ tin cậy kỹ năng >= 85.0% và là lệnh phi phá hủy, hệ thống kích hoạt chế độ tự động thực thi với giả định hợp lý (`[DERIVED]`), không ngắt quãng người dùng qua popup khi đã đủ dữ kiện thực thi.
   - **Cổng Khử Mơ Hồ Động Theo Chuyên Môn Phân Khu:** Đối với câu lệnh thực sự thiếu dữ kiện cốt lõi (< 85%), sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng khối phòng ban (HR/KPI hỏi phân loại nhân sự HO vs Điểm bán; Tài chính hỏi pháp nhân đối soát; Vận hành hỏi Kho Tổng vs Điểm bán; tuyệt đối không còn các tùy chọn lạc đề).
-- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`183` hợp phần):**
-  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, duy trì 0 đặc quyền CEO và 0 thao tác ghi/xóa trực tiếp Database gốc.
+### Bổ Sung 6 Hệ Thống Sáng Tạo Đa Phương Tiện NotebookLM & Nhà Máy Học Viện LMS (`#146..#151` · `02-rs-kb-lms`)
+- **`#146 rs-kb-notebooklm-slide-studio`**: Thiết kế bộ Slide chuẩn thương hiệu v3.3 (`detailed_deck` / `presenter_slides`) và tinh chỉnh từng trang qua `studio_revise`.
+- **`#147 rs-kb-notebooklm-video-studio`**: Sản xuất Video đào tạo `.mp4` với 10 phong cách thị giác và khóa 100% số đọc bằng chữ tiếng Việt.
+- **`#148 rs-kb-notebooklm-podcast-studio`**: Sản xuất Podcast đối thoại 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) cho Radio giao ca.
+- **`#149 rs-kb-notebooklm-visual-quiz-pack`**: Tổ hợp học liệu 4-trong-1 (`infographic .png` + `mind_map` biên dịch sang `Mermaid` + `flashcards` + `quiz` 4 bậc thang Bloom `30/30/25/15`).
+- **`#150 rs-lms-notebooklm-course-builder`**: Cầu nối 6 mũi tự động đóng gói học liệu NotebookLM thành JSON chuẩn cho `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` (chế độ `HO_SAFE_READ_AND_DRAFT` yêu cầu mã phê duyệt trước khi `publish-live`).
+- **`#151 rs-kb-notebooklm-cross-briefing`**: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), xuất bảng Excel (`.xlsx`), đồng bộ Google Docs/Sheets và `pipeline` tự động.
+- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`189` hợp phần: `137` HO Skills + `28` HO Workflows + `24` Safe MCP Tools):**
+  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) và duy trì 0 đặc quyền CEO, 0 thao tác ghi/xóa trực tiếp Database gốc.
 
 ---
 
+  - `#147 rs-kb-notebooklm-video-studio`: Sản xuất Video Explainer/Brief `.mp4` tiêm sẵn `video_style_prompt` chuẩn Build Luxury Minimal v3.3 kèm Móc câu 3 giây đầu và chuyển đổi số sang chữ tiếng Việt.
+  - `#148 rs-kb-notebooklm-podcast-studio`: Sản xuất Podcast/Radio nội bộ 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) với khóa chuyển đổi 100% số viết bằng chữ tiếng Việt đọc tự nhiên.
+  - `#149 rs-kb-notebooklm-visual-quiz-pack`: Tổ hợp 4-trong-1 gồm `Infographic .png` (3 khổ × 11 phong cách), `Mind Map .json` biên dịch tự động sang sơ đồ `Mermaid`, `Flashcards` và ngân hàng `Quiz` chuẩn 4 bậc thang Bloom (`30/30/25/15`).
+  - `#150 rs-lms-notebooklm-course-builder`: Dây chuyền Liên thông Tự động 6 Mũi (`6-Modality Auto-Bridge`) gom trọn bộ học liệu từ NotebookLM và biên dịch khớp 100% schema `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` của MCP `rosier-lms`.
+  - `#151 rs-kb-notebooklm-cross-briefing`: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), bóc tách tài liệu phi cấu trúc thành bảng Excel `.xlsx` (`data_table_xlsx`), xuất thẳng sang Google Docs/Sheets và lưu `pipeline` định kỳ.
+
+# Nhật Ký Phát Hành Hệ Sinh Thái Kỹ Năng Nội Bộ Rosier (`RS-OS 200`)
+
+Mọi thay đổi kiến trúc, danh mục kỹ năng và công cụ điều phối của Hệ sinh thái `RS-OS 200` đều được ghi nhận và kiểm chứng mã băm SHA-256 tại tài liệu này.
+
+---
 
 ## [v6.8.0] - 2026-11-03
 
