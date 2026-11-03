@@ -1,6 +1,6 @@
-# Rosier HO Skills Suite · Quy Tắc Điều Phối Agent (`AGENTS.md` · `v6.5.0-ho.1`)
+# Rosier HO Skills Suite · Quy Tắc Điều Phối Agent (`AGENTS.md` · `v6.7.0-ho.1`)
 
-Tài liệu định nghĩa quy tắc vận hành cho mọi AI Agent làm việc trên kho kỹ năng **Khối Văn Phòng HO Rosier (`rosier-ho-skills` · `v6.5.0-ho.1`)**.
+Tài liệu định nghĩa quy tắc vận hành cho mọi AI Agent làm việc trên kho kỹ năng **Khối Văn Phòng HO Rosier (`rosier-ho-skills` · `v6.7.0-ho.1`)**.
 
 ## 1. Quy Trình Định Tuyến Tự Động (`Zero-Command Auto`)
 

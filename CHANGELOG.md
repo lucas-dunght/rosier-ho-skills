@@ -1,4 +1,16 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.7.0-ho.1`)
+
+## [6.7.0-ho.1] - 2026-11-03
+
+### Bổ sung Mới & Quản Trị Sổ Cái Bất Biến (`Added & Security`)
+- **Sổ Cái BOM Bất Biến Theo Ngày Tháng & Luồng Phê Duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO` · `core/bom_temporal_ledger.json` · PR #4):**
+  - Cấm tuyệt đối lệnh xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`); mọi thay đổi định mức đều tạo phiên bản mới theo `effective_from` (`YYYY-MM-DD`) và tự động đóng kỳ bản cũ `effective_to = D - 1 day` (`SUPERSEDED_ARCHIVED`).
+  - Thực thi luồng phê duyệt 3 Chốt độc lập: Chốt 1 (`rnd_lead` · `bom-create` / `bom-update`), Chốt 2 (`supply_chain` · `bom-verify-supply`), Chốt 3 (`chain_ceo` · `bom-approve`). Tại kho Khối HO (`rosier-ho-skills`), chặn cứng lệnh `bom-approve` trực tiếp nếu không có mã biên lai chữ ký số `--approval-token CEO-SIG-...` (`HO_CEO_APPROVAL_REQUIRED`).
+  - Liên thông truy vấn điểm thời gian `bom-as-of` với `rs-supply-pos-erp-blindcount`, `rs-supply-cost-variance-alert`, `rs-fin-drink-unit-economics` và `/rs-auto`.
+- **Đồng Bộ Bộ Đôi NotebookLM MCP (`#144` & `#145`) & Động Cơ KPI Tháng (`#143` · `183` hợp phần):**
+  - Bổ sung `rs-kb-notebooklm-research-studio`, `rs-kb-notebooklm-prompt-architect` và `rs-hr-monthly-kpi-engine` ở chế độ an toàn Khối HO (`HO_SAFE_READ_AND_DRAFT`).
+
+---
 
 ## [6.5.0-ho.1] - 2026-11-02
 

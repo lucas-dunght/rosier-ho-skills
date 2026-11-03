@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
   "repo_name": "rosier-ho-skills",
-  "canonical_version": "6.5.0-ho.1",
-  "last_synced_commit": "b77f848",
-  "last_synced_at": "2026-11-02T14:58:15.290386+00:00",
+  "canonical_version": "6.7.0-ho.1",
+  "last_synced_commit": "ecc7164",
+  "last_synced_at": "2026-11-03T06:56:13.408013+00:00",
   "master_hub_page_id": "4054ffbe-44fc-817b-9692-d1538c266ab2",
   "master_hub_page_url": "https://www.notion.so/4054ffbe44fc817b9692d1538c266ab2",
   "repo_hub_page_id": "40c4ffbe-44fc-81c3-b17e-e0b85c1d9315",
@@ -13,7 +13,7 @@
       "title": "01. Kiến Trúc, Data Model & Guardrails (Architecture & Security)",
       "page_id": "40c4ffbe-44fc-8151-af72-ef5e8719d772",
       "page_url": "https://www.notion.so/40c4ffbe44fc8151af72ef5e8719d772",
-      "sha256": "1bb5313de8b0dfb5f000673a17318135b43a7e09549869fe76b75881a2b5a84d",
+      "sha256": "8692ed896ae4ab1ed531f875b435bfce853ecb1106589d8fc64dcb122f2a4bc9",
       "source_files": [
         "AGENTS.md",
         "CLAUDE.md",
@@ -24,7 +24,7 @@
       "title": "02. Danh Mục Packages, Modules & Skills (Packages & Core Capabilities)",
       "page_id": "40c4ffbe-44fc-8103-98af-ee21d424689a",
       "page_url": "https://www.notion.so/40c4ffbe44fc810398afee21d424689a",
-      "sha256": "f8ffc143ecefde926d87ba125c207acb2a3c06234297e10ac0071e4980838e1e",
+      "sha256": "7e4dedf95432f4c7df05a1f72e8db4fe67994d12a56f0340b8743a93a9d3e9ff",
       "source_files": [
         "README.md",
         "docs/reference-packages-and-skills.md"
@@ -53,7 +53,7 @@
       "title": "05. Nhật Ký Phát Hành, PRs & Calibration Ledger (Release & Calibration Log)",
       "page_id": "40c4ffbe-44fc-8179-9b23-ca43a6acc07a",
       "page_url": "https://www.notion.so/40c4ffbe-44fc-8179-9b23-ca43a6acc07a",
-      "sha256": "376e46f201889f3de7e297f759dc120dfe326f9162eae96951ba56b89ae8b5f7",
+      "sha256": "30160a6b1830c14bba8e0dc427ca666f48c0b042264154b80a84655d99865d06",
       "source_files": [
         "CHANGELOG.md",
         "VERSION",

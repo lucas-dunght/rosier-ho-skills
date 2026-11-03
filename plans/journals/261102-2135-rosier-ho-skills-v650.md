@@ -21,3 +21,8 @@
 - `python3 scripts/verify_rs_ho_ecosystem.py --self-test --json`: **`PASS`** (`178` hợp phần: `126/126` HO skills, `28/28` HO workflows, `8/8` MCP modules / `24/24` safe tools, `16/16` Feature Map `FRESH`, `0` lỗi Constraint Loop, `0` rò rỉ White-Label).
 - `./bin/rs-control doctor --json`: **`PASS`**.
 - GitHub Issue `#1` & Pull Request `#2`: Đã merge vào nhánh `main` và vượt qua 100% kiểm định CI (`RS-OS HO Periodic Verify & Auto-Sync`).
+
+## 4. Cập Nhật Sổ Cái BOM Bất Biến Theo Ngày & Cổng Phê Duyệt 3 Chốt (`v6.7.0-ho.1` · PR #4 · 2026-11-03)
+- **Sổ cái BOM hai chiều thời gian (`core/bom_temporal_ledger.json`):** Khóa cứng lệnh xóa/ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`), tự động đóng kỳ hiệu lực `effective_to = D - 1 day` (`SUPERSEDED_ARCHIVED`) khi bản mới kích hoạt cho cùng `store_scope` (`PILOT_COMPANY_3` hoặc `CHAIN_25_STORES`).
+- **Luồng phê duyệt 3 Chốt độc lập (`R&D -> Cung Ứng -> CEO`):** Chặn tự duyệt chéo (`SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`) và chặn duyệt trực tiếp tại kho Khối HO nếu không có chữ ký số CEO (`HO_CEO_APPROVAL_REQUIRED`).
+- **Biên lai kiểm định (`main @ ecc7164`):** `python3 scripts/verify_rs_ho_ecosystem.py --self-test --json` đạt `PASS` (`183/183` hợp phần, `bom_immutable_delete_blocked: true`, `bom_ho_ceo_approval_blocked: true`, CI Run `#41592523743` `SUCCESS`).
