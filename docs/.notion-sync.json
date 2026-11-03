@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "repo_name": "rosier-ho-skills",
   "canonical_version": "6.7.0-ho.1",
-  "last_synced_commit": "ecc7164",
+  "last_synced_commit": "e4e1e42",
   "last_synced_at": "2026-11-03T06:56:13.408013+00:00",
   "master_hub_page_id": "4054ffbe-44fc-817b-9692-d1538c266ab2",
   "master_hub_page_url": "https://www.notion.so/4054ffbe44fc817b9692d1538c266ab2",
@@ -60,5 +60,14 @@
         "plans/journals/261102-2135-rosier-ho-skills-v650.md"
       ]
     }
+  },
+  "version": "6.8.0-ho.1",
+  "last_synced_at_utc": "2026-11-03T14:14:37.763721+00:00",
+  "release_tag": "v6.8.0-ho.1",
+  "total_items": 189,
+  "ho_skills_count": 137,
+  "synced_notion_pages": {
+    "master_release_hub": "4054ffbe-44fc-817b-9692-d1538c266ab2",
+    "ho_repo_release_hub": "40c4ffbe-44fc-81c3-b17e-e0b85c1d9315"
   }
 }
