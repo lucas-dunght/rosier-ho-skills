@@ -1,11 +1,11 @@
-# 🏛️ DANH MỤC TỔNG THỂ HỆ SINH THÁI KỸ NĂNG ĐỘC QUYỀN NỘI BỘ ROSIER 202 HỢP PHẦN (`RS-OS 200 v6.5.0`)
+# 🏛️ DANH MỤC TỔNG THỂ HỆ SINH THÁI KỸ NĂNG ĐỘC QUYỀN NỘI BỘ ROSIER 207 HỢP PHẦN (`RS-OS 200 v6.7.0`)
 
-> **Tổng quy mô:** `202 Hợp phần chuẩn mã rs-*` (`142 rs-* Skills` + `30 rs-wf-* Workflows` kèm `/rs-auto` + `30 rs-mcp-* Tools` trong `10 Mô-đun MCP`)
+> **Tổng quy mô:** `207 Hợp phần chuẩn mã rs-*` (`147 rs-* Skills` + `30 rs-wf-* Workflows` kèm `/rs-auto` + `30 rs-mcp-* Tools` trong `10 Mô-đun MCP`)
 > **Kiến trúc nội bộ:** Chuẩn 5 Lớp Kép Rosier (`./bin/control-app`, `./bin/rs-control`, `Feature Map 16/16`, `Kỷ Luật Kiểm Chứng 4 Nhãn`, `Khử Mùi AI 3 Vòng`, `0 Constraint Violations`)
 
 ---
 
-## PHẦN I: 142 KỸ NĂNG ĐỘC QUYỀN (`000` + `000A` + `001..140` · `rs-*` SKILLS · 12 PHÂN KHU)
+## PHẦN I: 147 KỸ NĂNG ĐỘC QUYỀN (`000` + `000A` + `001..145` · `rs-*` SKILLS · 12 PHÂN KHU)
 
 | Mã số | Mã Skill (`rs-*`) | Tầng | Phân khu | Tên & Công năng thực chiến | Nguồn gốc nội bộ | Vùng bảo mật |
 | :-: | :--- | :---: | :--- | :--- | :--- | :---: |
@@ -16,6 +16,7 @@
 | `008` | [`rs-exec-project-initializer`](skills/rs-exec-project-initializer/SKILL.md) | `flagship` | `01-rs-exec` | Khởi Tạo Cấu Trúc Dự Án Mới Chuẩn Ban Điều Hành (4 Loại Dự Án) | khoi-tao-du-an-ceo (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `009` | [`rs-exec-meeting-minutes`](skills/rs-exec-meeting-minutes/SKILL.md) | `flagship` | `01-rs-exec` | Bóc Băng Cuộc Họp Thành Biên Bản Điều Hành & Nhật Ký DECISIONS.md | meeting-notes-report (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `010` | [`rs-exec-memo-scqa`](skills/rs-exec-memo-scqa/SKILL.md) | `flagship` | `01-rs-exec` | Soạn Thảo Bản Ghi Nhớ Điều Hành 1-Pager / 6-Pager Chuẩn SCQA | executive-memo-writer (`+0 files`) | `INTERNAL_PRIVILEGED` |
+| `142` | [`rs-exec-task-dispatch-auto`](skills/rs-exec-task-dispatch-auto/SKILL.md) | `flagship` | `01-rs-exec` | Điều Phối Giao Việc Tự Động 3 Phân Hệ (`Todolist` · `Kế Hoạch` · `Quy Trình`) Kèm Cổng Hỏi Lại Khử Mơ Hồ | 4-Gate Autonomous Task Dispatch Router (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `013` | [`rs-kb-knowledge-2hub-router`](skills/rs-kb-knowledge-2hub-router/SKILL.md) | `flagship` | `02-rs-kb-lms` | Điều Phối Đồng Bộ Một Chiều & Khử Nhạy Cảm Giữa 2 Kho Tri Thức Nội Bộ (2-Hub) | Xây mới (G-202) + 2hub-sanitized-sync (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `014` | [`rs-kb-sop-iso-author`](skills/rs-kb-sop-iso-author/SKILL.md) | `flagship` | `02-rs-kb-lms` | Soạn Thảo Quy Trình Chuẩn SOP Vận Hành & An Toàn Thực Phẩm ISO/HACCP | sop-generator + ros-wiki-lms (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `015` | [`rs-kb-recipe-rd-vault`](skills/rs-kb-recipe-rd-vault/SKILL.md) | `flagship` | `02-rs-kb-lms` | Chuẩn Hóa Công Thức Đồ Uống R&D, Định Mức Nguyên Liệu & Costing | Xây mới + ros-wiki-lms (`+0 files`) | `INTERNAL_PRIVILEGED` |
@@ -28,6 +29,8 @@
 | `022` | [`rs-lms-bloom-quiz-engine`](skills/rs-lms-bloom-quiz-engine/SKILL.md) | `flagship` | `02-rs-kb-lms` | Sinh Ngân Hàng Câu Hỏi Trắc Nghiệm Pha Chế & Vận Hành Chuẩn Bloom | rosier-lms-authoring (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `023` | [`rs-lms-1700-tracker`](skills/rs-lms-1700-tracker/SKILL.md) | `flagship` | `02-rs-kb-lms` | Giám Sát Chuỗi Bài Học Có Tích Xanh Trước 17:00 Hàng Ngày Toàn Chuỗi | Xây mới (G-206) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `024` | [`rs-lms-onboarding-path`](skills/rs-lms-onboarding-path/SKILL.md) | `flagship` | `02-rs-kb-lms` | Thiết Kế Lộ Trình Hội Nhập 7-14-30 Ngày & Huấn Luyện Đứng Lớp Cho Nhân Sự Mới | training-curriculum-planner + rosier-speech-coach (`+2 files`) | `INTERNAL_PRIVILEGED` |
+| `144` | [`rs-kb-notebooklm-research-studio`](skills/rs-kb-notebooklm-research-studio/SKILL.md) | `flagship` | `02-rs-kb-lms` | Xưởng Nghiên Cứu Tri Thức, Sản Xuất Học Liệu Studio & Bóc Băng Ghi Âm Đa Giọng Nói Trên Google NotebookLM MCP (53 Công Cụ / 9 Khuôn Mẫu N1..N9 / 9 Hồ Sơ Giọng Nói Chức Danh) | rs_notebooklm_mcp_engine.py + rs_audio_diarization_engine.py (`+2 files`) | `INTERNAL_PRIVILEGED` |
+| `145` | [`rs-kb-notebooklm-prompt-architect`](skills/rs-kb-notebooklm-prompt-architect/SKILL.md) | `flagship` | `02-rs-kb-lms` | Kiến Trúc Sư Thiết Kế Prompt 5-Khối Chuẩn Hóa Cho 12 Cổng Điều Khiển Google NotebookLM v0.15.8 | rs_nlm_prompt_architect_engine.py (`+1 files`) | `INTERNAL_PRIVILEGED` |
 | `025` | [`rs-ops-store-risk-scorer`](skills/rs-ops-store-risk-scorer/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Chấm Điểm Sức Khỏe & Rủi Ro 25 Điểm Bán Chính Thức (Thang 100 Điểm) | Xây mới (G-203) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `026` | [`rs-ops-focus12-turnaround`](skills/rs-ops-focus12-turnaround/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Kịch Bản Vực Dậy Chuyên Sâu Nhóm 12 Cửa Hàng Trọng Điểm | Xây mới (G-203) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `027` | [`rs-ops-company3-pilot-lab`](skills/rs-ops-company3-pilot-lab/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Quản Trị Thử Nghiệm Vận Hành Tại 3 Cửa Hàng Mô Hình Công Ty (38197, 46880, 87024) | Xây mới (3 CHH Pilot) (`+0 files`) | `INTERNAL_PRIVILEGED` |
@@ -40,6 +43,7 @@
 | `034` | [`rs-ops-incident-postmortem`](skills/rs-ops-incident-postmortem/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Điều Tra Nguyên Nhân Gốc Rễ Sự Cố Vận Hành & An Toàn Thực Phẩm | incident-postmortem (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `035` | [`rs-ops-sla-speed-tracker`](skills/rs-ops-sla-speed-tracker/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Đo Lường Thời Gian Chờ Trung Bình Của Khách & Năng Suất Quầy Bar | sla-performance-tracker (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `036` | [`rs-ops-franchise-compliance`](skills/rs-ops-franchise-compliance/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Chấm Điểm Tuân Thủ Tiêu Chuẩn Thương Hiệu Tại 22 Cửa Hàng Nhượng Quyền | audit-readiness-checklist (`+0 files`) | `INTERNAL_PRIVILEGED` |
+| `141` | [`rs-ops-pos-sales-sync`](skills/rs-ops-pos-sales-sync/SKILL.md) | `flagship` | `03-rs-ops` | Đồng Bộ Sổ Bán Hàng POS (D05/D06/D08) & Tổng Hợp Doanh Thu Chuỗi 25 Điểm Bán | Xây mới (POS D05/D06/D08 Streaming ETL & Monthly Summary) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `037` | [`rs-supply-pos-erp-blindcount`](skills/rs-supply-pos-erp-blindcount/SKILL.md) | `bundled_tactical` | `04-rs-supply` | Đối Soát Kiểm Kê Mù Chéo Giữa Hệ Thống POS Bán Hàng & Tồn Kho Cung Ứng Trung Tâm | Xây mới (G-204) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `038` | [`rs-supply-b2b-order-portal`](skills/rs-supply-b2b-order-portal/SKILL.md) | `bundled_tactical` | `04-rs-supply` | Chuẩn Hóa Đặt Hàng Nguyên Vật Liệu Của 25 Quán Trên Cổng Đặt Hàng B2B Nội Bộ | Xây mới (G-205) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `039` | [`rs-supply-central-warehouse-5s`](skills/rs-supply-central-warehouse-5s/SKILL.md) | `bundled_tactical` | `04-rs-supply` | Điều Phối Vận Hành Kho Tổng Trung Tâm Theo Chuẩn 5S & FIFO/FEFO | Xây mới (Central Warehouse) (`+0 files`) | `INTERNAL_PRIVILEGED` |
@@ -76,6 +80,7 @@
 | `070` | [`rs-legal-premises-lease-review`](skills/rs-legal-premises-lease-review/SKILL.md) | `bundled_tactical` | `06-rs-hr-legal` | Thẩm Định Pháp Lý Hợp Đồng Thuê Mặt Bằng Mở Quán Mới | contract-redline-review (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `071` | [`rs-legal-admin-dispatch-nd30`](skills/rs-legal-admin-dispatch-nd30/SKILL.md) | `bundled_tactical` | `06-rs-hr-legal` | Soạn Thảo Công Văn, Quyết Định, Thông Báo Chuẩn Nghị Định 30/2020/NĐ-CP | legalkit-vn + docx-enterprise-author (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `072` | [`rs-legal-food-safety-license`](skills/rs-legal-food-safety-license/SKILL.md) | `bundled_tactical` | `06-rs-hr-legal` | Quản Lý Hồ Sơ Giấy Phép Vệ Sinh An Toàn Thực Phẩm & Tự Công Bố Sản Phẩm | policy-handbook-writer (`+0 files`) | `INTERNAL_PRIVILEGED` |
+| `143` | [`rs-hr-monthly-kpi-engine`](skills/rs-hr-monthly-kpi-engine/SKILL.md) | `flagship` | `06-rs-hr-legal` | Động Cơ Tự Động Tạo Mới KPI Đầu Tháng, Chấm Điểm KPI Cuối Tháng & Liên Thông Lương 3P (16 Vị Trí Chuẩn × Sổ Cái Bất Biến) | hr-monthly-kpi-lifecycle-engine (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `073` | [`rs-brand-design-system-v33`](skills/rs-brand-design-system-v33/SKILL.md) | `flagship` | `07-rs-mkt-brand` | Studio Thiết Kế HTML Chuyên Nghiệp & Kiểm Toán Rosier Design System v3.3 (Cổng 3 Hướng Thiết Kế) | rosier-design (`+69 files`) | `INTERNAL_PRIVILEGED` |
 | `074` | [`rs-mkt-3touch-copywriter`](skills/rs-mkt-3touch-copywriter/SKILL.md) | `flagship` | `07-rs-mkt-brand` | Viết Nội Dung Quảng Cáo 3 Điểm Chạm & Hiệu Đính Khử Mùi AI 3 Vòng | copywriting + rosier-proofreading (`+4 files`) | `INTERNAL_PRIVILEGED` |
 | `075` | [`rs-mkt-food-delivery-growth`](skills/rs-mkt-food-delivery-growth/SKILL.md) | `flagship` | `07-rs-mkt-brand` | Tối Ưu Gian Hàng, Combo Lon PET & Biên Lợi Nhuận Ròng Trên Các Sàn Giao Đồ Ăn | Xây mới (G-210) (`+0 files`) | `INTERNAL_PRIVILEGED` |
@@ -191,3 +196,4 @@
 | `196` | `rs-mcp-omni-messaging-dispatch` | `rs-mcp-omni-external` | Gửi tin nhắn mẫu OTT chăm sóc khách hàng, xác nhận đơn B2B và thông báo điểm thưởng. | `PUBLIC_DMZ_SAFE` |
 | `197` | `rs-mcp-omni-owner-group-care` | `rs-mcp-omni-external` | Tiếp nhận câu hỏi và gửi thông báo vận hành đã chuẩn hóa vào nhóm trao đổi của 22 Chủ cửa hàng nhượng quyền. | `PUBLIC_DMZ_SAFE` |
 | `198` | `rs-mcp-omni-map-review-sync` | `rs-mcp-omni-external` | Thu thập và đăng phản hồi đánh giá của khách hàng trên Bản đồ số và Fanpage của 25 điểm bán. | `PUBLIC_DMZ_SAFE` |
+| `#143` | `rs-hr-monthly-kpi-engine` | `flagship` | Động Cơ Tự Động Tạo Mới KPI Đầu Tháng, Chấm Điểm KPI Cuối Tháng & Liên Thông Lương 3P | `hr-monthly-kpi-lifecycle-engine` | `INTERNAL_PRIVILEGED` |

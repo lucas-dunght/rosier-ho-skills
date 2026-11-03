@@ -4,6 +4,7 @@
   "group": "WF-04",
   "title": "Chu trình Tính Lương 3P Cuối Tháng: Tổng Hợp Giờ Công POS + Điểm P2 LMS + Thưởng P3 KPR",
   "skills_chain": [
+    "rs-hr-monthly-kpi-engine",
     "rs-hr-3p-payroll-engine",
     "rs-hr-store-manager-eval",
     "rs-hr-barista-competency-eval"

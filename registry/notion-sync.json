@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "repo_name": "rosier-skills",
+  "suite_name": "RS-OS 200",
+  "canonical_version": "6.7.0",
+  "last_synced_commit": "42d324a",
+  "last_synced_at": "2026-11-03T05:31:42.561969+00:00",
+  "master_hub_page_id": "4054ffbe-44fc-817b-9692-d1538c266ab2",
+  "master_hub_page_url": "https://app.notion.com/p/4054ffbe44fc817b9692d1538c266ab2",
+  "repo_hub_page_id": "4094ffbe-44fc-817c-9375-c8ec6e67b5ce",
+  "repo_hub_page_url": "https://app.notion.com/p/4094ffbe44fc817c9375c8ec6e67b5ce",
+  "ho_repo_hub_page_id": "40c4ffbe-44fc-81c3-b17e-e0b85c1d9315",
+  "ho_repo_hub_page_url": "https://app.notion.com/p/40c4ffbe44fc81c3b17ee0b85c1d9315",
+  "business_handbook_page_id": "4084ffbe-44fc-8106-8a9a-fe1fb7db4f2e",
+  "business_handbook_page_url": "https://app.notion.com/p/4084ffbe44fc81068a9afe1fb7db4f2e",
+  "tracked_files": {
+    "README.md": "9eeceb94863e3c6635026d8a07930293116b1c3c1e85a7b0978de3dcaad020d5",
+    "INDEX-RS-200.md": "3caf4e52434107002e1275801027b12f519c086042151cae34a56e0ec0b64618",
+    "HUONG-DAN-SU-DUNG-NHANH-NOTION.md": "b847128631e19a17debce14a889727050e9ed663b15aa88f6a4b5deedca1eb0f",
+    "CHANGELOG.md": "4d4a2d4a0be2ccf61667d49b15efee41e3d3cde1e960ab53b7f0c6fa04059d38",
+    "VERSION": "82396552835868194c4604eaeb8b3e33be7e243b62a6973d5d8d767568231b10",
+    "skills.json": "6c195572beeec3f75c8a9ace2cbb7cccdec5973f2861f0a78a14341d4c3041c2"
+  }
+}

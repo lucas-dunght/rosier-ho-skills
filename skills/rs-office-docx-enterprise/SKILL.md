@@ -42,6 +42,7 @@ security_zone: "INTERNAL_PRIVILEGED"
      ```
 3. **Step 3 · Deliverable Packaging:**
    - Format the output using [`assets/templates/output-template.md`](assets/templates/output-template.md) and verify `< 30%` AI footprint score via `audit`.
+   - **Labor Contract & Legal `.docx` Typography Lock (`100% Times New Roman`):** Every Labor Contract (`HĐLĐ`), Contract Appendix (`JD`, `3P`), Confidentiality & IP Agreement (`NDA & IP`), Internal Rules Commitment, and HR Decision generated in `.docx` format MUST use `100% Times New Roman` across all body paragraphs, tables, headers, and footers (`w:rFonts` set to `"Times New Roman"` for `w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs`) and include the 360-degree confidentiality & Law No. 91/2025/QH15 personal data protection clauses.
 
 ### 🤖 Mode B: Autonomous Agent (For 0. Core-Eng, HERMES, Khối Văn Phòng Trung Tâm (HO))
 1. **Zero-Turn Deterministic Invocation & Live Control Lever:**

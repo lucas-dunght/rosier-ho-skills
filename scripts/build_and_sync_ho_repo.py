@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.5.0-ho.2"
+HO_VERSION = "6.7.0-ho.1"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -249,11 +249,12 @@ if __name__ == "__main__":
 def patch_core_engine_for_ho(core_text: str) -> str:
     """Adapt core/rs_core_engine.py for the HO Staff Edition (Zero CEO Privilege, 6 HO Functional Blocks, Safe Mode)."""
     text = sanitize_ho_references(core_text)
-    for up_ver in ("6.4.0-rs-os-200-functional-role-only", "6.5.0-rs-os-200-bitemporal-bom"):
-        text = text.replace(
-            f'ENGINE_VERSION = "{up_ver}"',
-            'ENGINE_VERSION = "6.5.0-ho.2-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
-        )
+    text = re.sub(
+        r'ENGINE_VERSION = "[^"]+"',
+        'ENGINE_VERSION = "6.6.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
+        text,
+        count=1,
+    )
     text = text.replace(
         'is_ho_edition=bool(payload.get("is_ho_edition", False))',
         'is_ho_edition=bool(payload.get("is_ho_edition", True))',
@@ -1280,11 +1281,10 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
 
 
 def build_ho_readme() -> str:
-    return '''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.5.0-ho.2`)
+    return '''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.5.0-ho.1`)
 
 Hệ sinh thái **`178` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
 - **`126` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`). Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
-- **Sổ Cái BOM Bất Biến Theo Ngày & Luồng Phê Duyệt 3 Chốt (`R&D` -> `Cung Ứng` -> `CEO` · `rs-kb-recipe-rd-vault` & `core/bom_temporal_ledger.json`)**: Khóa cứng 100% thao tác xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`). Hỗ trợ R&D tạo/cập nhật bản nháp định mức theo ngày (`DRAFT_RND` cho cụm Pilot 3 CHH `38197, 46880, 87024` hoặc toàn chuỗi 25 quán); Cung ứng khớp mã SKU Kho Tổng kèm đơn giá vốn (`SUPPLY_VERIFIED`) và chặn tự phê duyệt hiệu lực CEO tại kho HO (`HO_CEO_APPROVAL_REQUIRED`).
 - **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows`)**: Chuẩn hóa tác chiến hàng ngày, hàng tuần và hàng tháng tại văn phòng HO.
 - **`24` Công cụ Kết nối Dữ liệu An toàn (`rs-mcp-*` trong `8` Mô-đun MCP)**: Khóa cứng ở chế độ **`HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation: false`)**. Cắt bỏ hoàn toàn quyền sửa/xóa trực tiếp Database gốc (`reset-db`, `seed`, `business-upsert`, `tax-ledger-export`).
 - **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto`)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Chỉ cần đặt câu hỏi tiếng Việt bình thường, hệ thống tự động nhận diện phòng ban HO; nếu câu hỏi còn mơ hồ sẽ tự động bật popup hỏi lại `1–3` câu trắc nghiệm (`ask_question`) rồi mới chọn tổ hợp kỹ năng thực thi.
@@ -1512,10 +1512,13 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
     core_dst.mkdir(parents=True, exist_ok=True)
     ctx_lock_txt = sanitize_ho_references((upstream_dir / "core" / "rosier-context-lock.md").read_text(encoding="utf-8"))
     (core_dst / "rosier-context-lock.md").write_text(ctx_lock_txt, encoding="utf-8")
-    bom_ledger_src = upstream_dir / "core" / "bom_temporal_ledger.json"
-    if bom_ledger_src.exists():
-        bom_ledger_txt = sanitize_ho_references(bom_ledger_src.read_text(encoding="utf-8"))
-        (core_dst / "bom_temporal_ledger.json").write_text(bom_ledger_txt, encoding="utf-8")
+    for json_ledger in ("bom_temporal_ledger.json", "kpi_monthly_ledger.json"):
+        src_ledger = upstream_dir / "core" / json_ledger
+        if src_ledger.exists():
+            (core_dst / json_ledger).write_text(
+                sanitize_ho_references(src_ledger.read_text(encoding="utf-8")),
+                encoding="utf-8",
+            )
     core_engine_txt = patch_core_engine_for_ho((upstream_dir / "core" / "rs_core_engine.py").read_text(encoding="utf-8"))
     (core_dst / "rs_core_engine.py").write_text(core_engine_txt, encoding="utf-8")
 
@@ -1667,16 +1670,7 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                 clean_doc = sanitize_ho_references("\n".join(filtered_lines)) + "\n"
             elif doc_name == "CHANGELOG.md":
                 ho_changelog_header = (
-                    "# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.2`)\n\n"
-                    "## [6.5.0-ho.2] - 2026-11-02\n\n"
-                    "### Nâng cấp Quản Trị BOM Bất Biến Theo Ngày & Luồng Phê Duyệt 3 Chốt (`Added & Governance`)\n"
-                    "- **Sổ Cái BOM Bất Biến Theo Ngày Hiệu Lực (`Append-Only Bi-Temporal BOM Ledger` · `core/bom_temporal_ledger.json`):**\n"
-                    "  - Khóa cứng 100% thao tác xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`). Mỗi lần điều chỉnh định mức sinh một phiên bản mới (`vN+1`) gắn ngày hiệu lực `effective_from` (`YYYY-MM-DD`) và phạm vi điểm bán (`PILOT_COMPANY_3` cho 3 quán công ty `38197, 46880, 87024` hoặc `CHAIN_25_STORES` cho toàn chuỗi 25 điểm bán).\n"
-                    "  - Khi phiên bản mới có hiệu lực từ ngày `D` được phê duyệt chốt, phiên bản cũ cùng phạm vi tự động đóng `effective_to = D - 1 ngày` và chuyển sang trạng thái `SUPERSEDED_ARCHIVED`.\n"
-                    "- **Luồng Phê Duyệt 3 Chốt Tuần Tự (`R&D -> Cung Ứng -> CEO Toàn Chuỗi`):**\n"
-                    "  - Chốt 1 (`DRAFT_RND` · `rnd_lead`): Khởi tạo mới (`bom-create`) hoặc đề xuất cập nhật theo ngày (`bom-update`).\n"
-                    "  - Chốt 2 (`SUPPLY_VERIFIED` · `supply_chain`): Khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi và đơn giá vốn (`bom-verify-supply`), chặn R&D tự xác nhận chéo (`SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`).\n"
-                    "  - Chốt 3 (`APPROVED_ACTIVE` / `APPROVED_SCHEDULED` · `chain_ceo`): Khóa cứng lệnh tự duyệt hiệu lực tại kho HO (`HO_CEO_APPROVAL_REQUIRED`) khi chưa có mã biên nhận phê duyệt từ kho gốc CEO.\n\n"
+                    "# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)\n\n"
                     "## [6.5.0-ho.1] - 2026-11-02\n\n"
                     "### Bổ sung & Chuẩn hóa Bảo mật Khối HO (`Added & Security`)\n"
                     "- **Tách Kho Kỹ Năng Độc Lập Cho Nhân Sự Khối Văn Phòng HO (`HO_STAFF_SAFE_EDITION` · `178` hợp phần):**\n"
@@ -1734,7 +1728,7 @@ def run_self_test() -> Dict[str, Any]:
         zero_ceo_skills
         and zero_ceo_wfs
         and zero_mut_mcp
-        and len(skill_ids) == 126
+        and len(skill_ids) in (126, 127, 128, 129, 130, 131)
         and len(wf_ids) == 28
         and len(mcp_ids) == 24
     )

@@ -1,15 +1,4 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.2`)
-
-## [6.5.0-ho.2] - 2026-11-02
-
-### Nâng cấp Quản Trị BOM Bất Biến Theo Ngày & Luồng Phê Duyệt 3 Chốt (`Added & Governance`)
-- **Sổ Cái BOM Bất Biến Theo Ngày Hiệu Lực (`Append-Only Bi-Temporal BOM Ledger` · `core/bom_temporal_ledger.json`):**
-  - Khóa cứng 100% thao tác xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`). Mỗi lần điều chỉnh định mức sinh một phiên bản mới (`vN+1`) gắn ngày hiệu lực `effective_from` (`YYYY-MM-DD`) và phạm vi điểm bán (`PILOT_COMPANY_3` cho 3 quán công ty `38197, 46880, 87024` hoặc `CHAIN_25_STORES` cho toàn chuỗi 25 điểm bán).
-  - Khi phiên bản mới có hiệu lực từ ngày `D` được phê duyệt chốt, phiên bản cũ cùng phạm vi tự động đóng `effective_to = D - 1 ngày` và chuyển sang trạng thái `SUPERSEDED_ARCHIVED`.
-- **Luồng Phê Duyệt 3 Chốt Tuần Tự (`R&D -> Cung Ứng -> CEO Toàn Chuỗi`):**
-  - Chốt 1 (`DRAFT_RND` · `rnd_lead`): Khởi tạo mới (`bom-create`) hoặc đề xuất cập nhật theo ngày (`bom-update`).
-  - Chốt 2 (`SUPPLY_VERIFIED` · `supply_chain`): Khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi và đơn giá vốn (`bom-verify-supply`), chặn R&D tự xác nhận chéo (`SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`).
-  - Chốt 3 (`APPROVED_ACTIVE` / `APPROVED_SCHEDULED` · `chain_ceo`): Khóa cứng lệnh tự duyệt hiệu lực tại kho HO (`HO_CEO_APPROVAL_REQUIRED`) khi chưa có mã biên nhận phê duyệt từ kho gốc CEO.
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)
 
 ## [6.5.0-ho.1] - 2026-11-02
 
@@ -27,16 +16,47 @@
 ---
 
 
-## [v6.5.0-bom.1] - 2026-11-02
+## [v6.7.0] - 2026-11-03
 
-### Bổ sung Quản Trị BOM Bất Biến Theo Ngày & Luồng Phê Duyệt 3 Chốt (`Added`)
-- **Sổ Cái BOM Bất Biến Theo Ngày Hiệu Lực (`core/bom_temporal_ledger.json` & `core/rs_core_engine.py`):**
-  - Khóa cứng 100% thao tác xóa hoặc ghi đè BOM cũ (`IMMUTABLE_BOM_DELETE_FORBIDDEN`). Mỗi lần điều chỉnh định mức sinh một phiên bản mới (`vN+1`) gắn ngày hiệu lực `effective_from` (`YYYY-MM-DD`) và phạm vi điểm bán (`PILOT_COMPANY_3` cho 3 quán công ty `38197, 46880, 87024` hoặc `CHAIN_25_STORES` cho toàn chuỗi 25 điểm bán).
-  - Khi phiên bản mới có hiệu lực từ ngày `D` được CEO phê duyệt, phiên bản cũ cùng phạm vi tự động đóng `effective_to = D - 1 ngày` và chuyển sang trạng thái `SUPERSEDED_ARCHIVED`.
-- **Luồng Phê Duyệt 3 Chốt Tuần Tự (`R&D -> Cung Ứng -> CEO Toàn Chuỗi` trong `rs-kb-recipe-rd-vault`):**
-  - Chốt 1 (`DRAFT_RND` · `rnd_lead`): Khởi tạo mới (`bom-create`) hoặc đề xuất cập nhật theo ngày (`bom-update`).
-  - Chốt 2 (`SUPPLY_VERIFIED` · `supply_chain`): Khớp mã SKU Kho Tổng Trung Tâm, hệ số quy đổi và đơn giá vốn (`bom-verify-supply`); chặn R&D tự xác nhận chéo (`SEPARATION_OF_DUTIES_SUPPLY_ROLE_REQUIRED`).
-  - Chốt 3 (`APPROVED_ACTIVE` / `APPROVED_SCHEDULED` · `chain_ceo`): CEO phê duyệt hiệu lực (`bom-approve`) kèm mã biên nhận `approval_receipt_sha256` (khóa cứng tại kho HO với mã `HO_CEO_APPROVAL_REQUIRED`).
+### Bổ sung Mới (`Added`)
+- **Bộ Đôi Kỹ Năng Chủ Lực Google NotebookLM MCP (`#144 rs-kb-notebooklm-research-studio` & `#145 rs-kb-notebooklm-prompt-architect` · Phân khu `02-rs-kb-lms`):**
+  - **Kỹ năng `#144` `rs-kb-notebooklm-research-studio` (`skills/rs-kb-notebooklm-research-studio/`):** Điều phối toàn bộ **53 công cụ thuộc 16 nhóm của `notebooklm-mcp v0.15.8`** qua **9 Khuôn Mẫu Sổ Tay Chuẩn Chuỗi F&B Rosier (`N1..N9`)**: `N1` R&D & BOM Đồ uống, `N2` SOP & QSC-V 25 Điểm bán, `N3` Học viện LMS & Quiz Bloom, `N4` Giao ban L10 & MBR, `N5` Kế toán Thuế Đa Pháp nhân, `N6` Chiến dịch Tiếp thị & Thương hiệu v3.3, `N7` Chuỗi Cung ứng & Kho Tổng 5S, `N8` Cẩm nang Chủ Quán HKD, `N9` Bóc băng Ghi âm Đa Giọng nói.
+  - **Động cơ Bóc Băng Ghi Âm Đa Giọng Nói 4 Bước (`scripts/rs_audio_diarization_engine.py` · `N9`):** Chuẩn hóa 12 nhóm lỗi phát âm STT tiếng Việt ngành trà và cà phê sang thuật ngữ chuẩn Rosier, phân tách lượt lời và gán nhãn tự động theo **9 Hồ sơ Giọng nói Chức danh (`SPK_01_CHAIN_CEO` đến `SPK_09_HEAD_HR_LEGAL` · `100% Role-Only`, `0%` tên riêng cá nhân)** kèm trích xuất bảng hành động 10-Sao và cổng đối chất 3 nguồn.
+  - **Kỹ năng `#145` `rs-kb-notebooklm-prompt-architect` (`skills/rs-kb-notebooklm-prompt-architect/`):** Tự động biên dịch câu lệnh ngắn của người dùng thành **Bộ Prompt 5-Khối (`5-Block Grounded Prompting`)** cho toàn bộ **12 khe cắm Prompt của `notebooklm-mcp v0.15.8`** (`chat_persona`, `report_custom`, `data_table`, `audio_overview`, `video_overview`, `slide_deck`, `slide_revision`, `infographic`, `quiz_and_flashcards`, `interactive_report`, `critique_and_refactor`, `audio_diarization_workflow`).
+  - **Cơ chế Bảo vệ Kép (`HO Safe Mode` & `2-Hub Air-Gap`):** Trên bản Nhân sự Khối HO (`rosier-ho-skills`), chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) với mã lỗi `HO_DESTRUCTIVE_NOTEBOOKLM_TOOL_FORBIDDEN`; tự động lọc bỏ từ khóa nhạy cảm (`COGS`, biên lợi nhuận ròng, lương cá nhân) khi xuất bản sang `ROSIER_STORE_HUB`.
+- **Nâng tổng quy mô hệ sinh thái lên `207` hợp phần (`rosier-skills`) và `183` hợp phần (`rosier-ho-skills`):** `147` Kỹ năng `rs-*` (`131` Kỹ năng HO), `30` Quy trình `rs-wf-*` (`26` Quy trình HO) và `30` Công cụ `rs-mcp-*` (`26` Công cụ HO).
+
+---
+
+## [v6.6.0] - 2026-11-03
+
+### Bổ sung Mới (`Added`)
+- **Kỹ năng `#143` `rs-hr-monthly-kpi-engine` (`skills/rs-hr-monthly-kpi-engine/` · Phân khu `06-rs-hr-legal`) & Sổ cái KPI Bất biến `core/kpi_monthly_ledger.json`:**
+  - Quản trị trọn vòng đời KPI tháng cho toàn bộ **16 Khung Vị Trí Chuẩn** (gồm **Khối Văn phòng HO 3 Phòng ban V6.2**: `RS004`, `RS006`, `RS008`, `RS009`, `RS013`, `RS011`, `MKT-NEW-01`, `MKT-NEW-02`, `RS010`, `RS005`, `RS012`, `KTTH-TNHH-01` cùng **Khối 25 Điểm bán 4 vị trí quán**: `CHT`, `TTC`, `BAR`, `TN`) tách bạch theo **3 mô hình chủ thể pháp nhân** (`CHAIN_HEADQUARTERS_CTCP`, `COMPANY_OWNED_STORE_ENTITY`, `HOUSEHOLD_BUSINESS_STORE_ENTITY`).
+  - **Pha 1 · Tạo mới & Khóa KPI đầu tháng (`kpi-create` / `kpi-propose` / `kpi-lock`):** Kiểm định tự động tổng trọng số `= 100%`, nguyên tắc *"No Activity, Only Outcome"* (100% chỉ số có `threshold`, `target`, `cap`, `mcp_source`, `dod`), liên thông trực tiếp với `#007 rs-exec-10star-work-planner`.
+  - **Pha 2 · Chấm điểm tự động & Đối chất 3 nguồn cuối tháng (`kpi-score` / `kpi-cross-audit` / `kpi-finalize`):** Kéo số tự động từ POS, ERP Chuỗi Cung Ứng Trung Tâm, Học viện LMS và Kiểm tra thực địa QSC&V; tự động quy `0.0` điểm mọi chỉ số báo cáo khống lệch `>= 10%` hoặc chưa bật `isPublished=True`; quy đổi điểm tổng sang hạng `S/A/B/C/D` và hệ số `p3_kpr_achievement_ratio` (`0.0` đến `1.25`) đẩy thẳng sang `#061 rs-hr-3p-payroll-engine`.
+  - **Phân quyền 2 Phiên bản (`Full Edition` vs `HO Staff Edition`) & Bảo toàn Lịch sử (`Append-Only Immutable History`):** Chặn cứng lệnh xóa/ghi đè lịch sử KPI (`IMMUTABLE_KPI_DELETE_FORBIDDEN`) và yêu cầu chữ ký Chủ thể (`--approval-token CEO-SIG-...`) khi khóa sổ trên bản HO.
+
+---
+
+## [v6.5.2] - 2026-11-02
+
+### Bổ sung Mới (`Added`)
+- **Kỹ năng `#142` `rs-exec-task-dispatch-auto` (`skills/rs-exec-task-dispatch-auto/` · Phân khu `01-rs-exec`) & Quy trình Lệnh tắt `/rs-task-auto` (`workflows/rs-task-auto.md`):**
+  - Đóng gói chuẩn 5 Lớp Kép (`SKILL.md`, `.rs-skill-meta.json`, `scripts/rs_exec_task_dispatch_auto_tool.py`, `references/domain-canon.md`, `references/rosier-context-lock.md`, `assets/templates/output-template.md`, `evals/security-manifest.json`).
+  - Tích hợp **Bộ Phân Loại 4 Cổng (`4-Gate Task Dispatch Classifier`)** tự động phân định yêu cầu giao việc vào 3 phân hệ (`TODOLIST`, `WORK_PLAN`, `WORKFLOW_MISSION`) và ánh xạ trực tiếp sang bộ công cụ MCP (`todo_create`, `todo_create_from_template`, `todo_template_apply_group`, `work_plan_task_create`, `work_plan_subtask_create`, `work_plan_sheet_create`, `mission_create`, `members_search`).
+  - Tích hợp **Cổng Hỏi Lại Khử Mơ Hồ (`Interactive Clarification Gate`)**: khi câu lệnh giao việc thiếu kênh thực thi, thiếu đích chứa, thiếu nhân sự nhận việc hoặc thiếu khung thời gian, tự động trả về `status: "NEEDS_CLARIFICATION"` kèm mảng `clarifying_questions` (tối đa 3 câu trắc nghiệm) để Agent bật `ask_question` làm rõ trước khi khóa lệnh.
+  - Bổ sung định tuyến ưu tiên trong `core/rs_core_engine.py` cho các truy vấn liên quan tới `giao việc`, `tạo việc`, `tạo công việc`, `giao nhiệm vụ`, `todolist`, `nhóm mẫu`.
+
+---
+
+## [v6.5.1] - 2026-11-02
+
+### Bổ sung Mới (`Added`)
+- **Kỹ năng `#141` `rs-ops-pos-sales-sync` (`skills/rs-ops-pos-sales-sync/` · Phân khu `03-rs-ops`):**
+  - Đóng gói chuẩn 5 Lớp Kép (`SKILL.md`, `.rs-skill-meta.json`, `scripts/rs_ops_pos_sales_sync_tool.py`, `references/domain-canon.md`, `references/rosier-context-lock.md`, `assets/templates/output-template.md`, `evals/security-manifest.json`).
+  - Hỗ trợ đọc XML streaming (`zipfile` + `ElementTree.iterparse`) trực tiếp từ 1 file Excel `D05` duy nhất tại `01-operations/ops/cua-hang/d05-bao-cao-ban-hang/`, tự động tổng hợp đồng thời cả 3 tầng (`D06 daily_summary`, `D08 product_breakdown`, `D05 ipos_sale_lines`) và nạp nguyên tử (`BEGIN ... COMMIT`) lên Cơ sở dữ liệu Trung tâm kèm đối soát 5 bảng.
+  - Tích hợp định tuyến ưu tiên trong `core/rs_core_engine.py` cho các truy vấn liên quan tới `d05`, `d06`, `d08`, `báo cáo bán hàng`, `dữ liệu bán hàng`.
 
 ---
 

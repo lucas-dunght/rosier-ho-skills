@@ -1,0 +1,10 @@
+{
+  "name": "rs-hr-monthly-kpi-engine",
+  "repo": "rosier-os/rs-os-200-suite",
+  "organization": "Rosier Fresh Tea & Coffee",
+  "subdir": "skills/rs-hr-monthly-kpi-engine",
+  "version": "6.6.0",
+  "commit": "a7f902c4e18b53d1",
+  "installed_at": "2026-11-03",
+  "last_checked": "2026-11-03"
+}

@@ -56,3 +56,4 @@ security_zone: "INTERNAL_PRIVILEGED"
 
 ## 3. Bundled Reference Playbooks & Internal Engines
   - `references/domain-canon.md` & `references/rosier-context-lock.md`
+  - Liên thông trực tiếp với [`rs-hr-monthly-kpi-engine`](../rs-hr-monthly-kpi-engine/SKILL.md) (`kpi-create` / `kpi-lock`) để chuyển hóa mục tiêu chiến lược đầu tháng thành Bảng KPI Tháng có tổng trọng số `= 100%` trên Sổ cái Bất biến `core/kpi_monthly_ledger.json`.
