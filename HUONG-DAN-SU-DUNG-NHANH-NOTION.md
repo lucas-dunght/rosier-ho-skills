@@ -1,4 +1,4 @@
-# 🌿 Cẩm Nang Tổng Hợp & Hướng Dẫn Sử Dụng Nhanh Hệ Sinh Thái 202 Kỹ Năng Nội Bộ Rosier (RS-OS 200 v6.5.0)
+# 🌿 Cẩm Nang Tổng Hợp & Hướng Dẫn Sử Dụng Nhanh Hệ Sinh Thái 207 Hợp Phần Nội Bộ Rosier (RS-OS 200 v6.7.0)
 
 - **Mã Tài Liệu Tri Thức:** `4084ffbe-44fc-8106-8a9a-fe1fb7db4f2e`
 - **Trang Cha (Parent):** `Kho Biểu Mẫu, SOP & Tài Nguyên` (`02a4ffbe44fc82cb9bdf016f1b729447`) thuộc Hub 1 `ROSIER BUSINESS` (`15e4ffbe44fc8390be0601a8074420d9`)
@@ -6,7 +6,7 @@
 ---
 
 <callout icon="🌿" color="green_bg">
-<b>Tóm tắt Điều hành (Executive Summary):</b> <b>Hệ Sinh Thái Kỹ Năng Độc Quyền Nội Bộ Rosier (<code>RS-OS 200 v6.5.0</code>)</b> là bộ <b>202 hợp phần chuẩn mã <code>rs-*</code></b> (gồm <b>142 Kỹ năng <code>rs-*</code></b> chia theo 12 Phân khu + <b>30 Quy trình Liên phòng ban <code>rs-wf-*</code></b> kèm lệnh tự trị <code>/rs-auto</code> + <b>30 Công cụ Kết nối Dữ liệu <code>rs-mcp-*</code></b> trong 10 Mô-đun MCP). Toàn bộ hệ sinh thái được chuẩn hóa <b>100% Thuần Vai Trò &amp; Chức Năng</b> (không phụ thuộc tên cá nhân, tên phần mềm bên thứ ba hay địa danh đường phố), đóng gói thành thư viện chuẩn (<code>skills-lib/rs-os-suite</code> + kho GitHub Private <code>rosier-skills</code>) và cài đặt cô lập 100% trong <b><code>rosier-workspace</code></b>.
+<b>Tóm tắt Điều hành (Executive Summary):</b> <b>Hệ Sinh Thái Kỹ Năng Độc Quyền Nội Bộ Rosier (<code>RS-OS 200 v6.7.0</code>)</b> là bộ <b>207 hợp phần chuẩn mã <code>rs-*</code></b> (gồm <b>147 Kỹ năng <code>rs-*</code></b> chia theo 12 Phân khu + <b>30 Quy trình Liên phòng ban <code>rs-wf-*</code></b> kèm lệnh tự trị <code>/rs-auto</code> + <b>30 Công cụ Kết nối Dữ liệu <code>rs-mcp-*</code></b> trong 10 Mô-đun MCP). Toàn bộ hệ sinh thái được chuẩn hóa <b>100% Thuần Vai Trò &amp; Chức Năng</b> (không phụ thuộc tên cá nhân, tên phần mềm bên thứ ba hay địa danh đường phố), đóng gói thành thư viện chuẩn (<code>skills-lib/rs-os-suite</code> + kho GitHub Private <code>rosier-skills</code>) và cài đặt cô lập 100% trong <b><code>rosier-workspace</code></b>.
 </callout>
 
 <table-of-contents color="gray" />
@@ -15,7 +15,7 @@
 
 ## ⚡ 1. Bắt Đầu Nhanh Trong 60 Giây (Dành Cho Nhân Sự HO & Cửa Hàng)
 
-Bạn không cần nhớ toàn bộ 202 mã kỹ năng. Khi **chỉ muốn viết yêu cầu công việc để Agent tự động hỏi lại nếu chưa rõ và tự điều phối tổ hợp kỹ năng chính xác**, hãy gọi ngay lệnh **`/rs-auto`** (`#000A`) hoặc **`/rs-meta-intent-router`** (`#000`):
+Bạn không cần nhớ toàn bộ 205 mã kỹ năng. Khi **chỉ muốn viết yêu cầu công việc để Agent tự động hỏi lại nếu chưa rõ và tự điều phối tổ hợp kỹ năng chính xác**, hãy gọi ngay lệnh **`/rs-auto`** (`#000A`) hoặc **`/rs-meta-intent-router`** (`#000`):
 
 <callout icon="🧭" color="orange_bg">
 <b>Lệnh Tự Trị <code>/rs-auto</code> (Mã <code>#000A</code>) &amp; Bộ Định Tuyến <code>/rs-meta-intent-router</code> (Mã <code>#000</code>):</b><br />• <b>Lệnh 1 · Điều phối tự trị có cổng hỏi lại khử mơ hồ (<code>/rs-auto &lt;yêu cầu&gt;</code>):</b> Chỉ cần gõ <code>/rs-auto</code> kèm yêu cầu công việc (hoặc chạy <code>./.agent/bin/rs-control rs-auto "..."</code>). Hệ thống chấm điểm độ rõ ràng trên <b>3 Trục (<code>Chủ thể Pháp nhân / Điểm bán</code> · <code>Phân khu Nghiệp vụ</code> · <code>Định dạng Đầu ra</code>)</b>. Nếu yêu cầu còn mơ hồ, Agent tự động bật hộp thoại hỏi lại tối đa 1-3 câu trắc nghiệm (<code>ask_question</code>); khi đã rõ, Agent khóa ngay <b>Tổ hợp 4 Lớp (Skill thực thi + Tư duy cố vấn + Quy trình + Công cụ MCP)</b> và thực thi tất định.<br />• <b>Lệnh 2 · Tư vấn chọn Skill (<code>/rs-meta-intent-router advise</code>):</b> Chấm điểm toàn bộ 12 Phân khu và đề xuất danh sách Skill phù hợp kèm lệnh copy-paste.
@@ -36,18 +36,18 @@ Bạn không cần nhớ toàn bộ 202 mã kỹ năng. Khi **chỉ muốn viế
 
 ---
 
-## 🧭 2. Bản Đồ Tổng Quan 202 Hợp Phần `RS-OS 200` (12 Phân Khu)
+## 🧭 2. Bản Đồ Tổng Quan 205 Hợp Phần `RS-OS 200` (12 Phân Khu)
 
-Toàn bộ 202 hợp phần được quy hoạch chặt chẽ theo 12 Phân khu nghiệp vụ của **Rosier Fresh Tea & Coffee**:
+Toàn bộ 205 hợp phần được quy hoạch chặt chẽ theo 12 Phân khu nghiệp vụ của **Rosier Fresh Tea & Coffee**:
 
 | Mã Phân Khu | Tên Phân Khu Nghiệp Vụ | Tiền Tố Mã (`Prefix`) | Số Lượng | Vai Trò Chức Danh Chủ Trì (`Role PIC`) & AI Agent Phối Hợp | Vùng Bảo Mật Kho Tri Thức |
 | --- | --- | --- | --- | --- | --- |
-| **01** | 🏛️ Điều Hành Tối Cao CEO Toàn Chuỗi, Chiến Lược & Giao Ban | `rs-exec-*` | **12 Skills** (`#001..#012`) | **CEO Toàn Chuỗi** · **Chủ Cửa Hàng Mô Hình Công Ty** · `HERMES` & `CORE-CHIEF` | `INTERNAL_PRIVILEGED` (`ROSIER BUSINESS`) |
-| **02** | 📚 Quản Trị Kho Tri Thức 2-Hub, SOP, R&D & Học Viện LMS | `rs-kb-*` · `rs-lms-*` | **12 Skills** (`#013..#024`) | **Trưởng Bộ Phận Đào Tạo & LMS** · **Trưởng Bộ Phận R&D & QLVH** · `4. Core-Academy` | `INTERNAL_PRIVILEGED` -> Đồng bộ sạch sang `STORE HUB` |
+| **01** | 🏛️ Điều Hành Tối Cao CEO Toàn Chuỗi, Chiến Lược & Giao Ban | `rs-exec-*` | **13 Skills** (`#001..#012` + `#142`) | **CEO Toàn Chuỗi** · **Chủ Cửa Hàng Mô Hình Công Ty** · `HERMES` & `CORE-CHIEF` | `INTERNAL_PRIVILEGED` (`ROSIER BUSINESS`) |
+| **02** | 📚 Quản Trị Kho Tri Thức 2-Hub, SOP, R&D, NotebookLM Studio & Học Viện LMS | `rs-kb-*` · `rs-lms-*` | **14 Skills** (`#013..#024` + `#144..#145`) | **Trưởng Bộ Phận Đào Tạo & LMS** · **Trưởng Bộ Phận R&D & QLVH** · `4. Core-Academy` | `INTERNAL_PRIVILEGED` -> Đồng bộ sạch sang `STORE HUB` |
 | **03** | 🏪 Vận Hành Chuỗi 25 Điểm Bán, Thực Địa & Hệ Thống POS | `rs-ops-*` | **12 Skills** (`#025..#036`) | **Giám Sát Vận Hành Chuỗi** · **Trưởng Bộ Phận R&D & QLVH** · **Chủ Cửa Hàng (Công Ty / HKD)** · `1. Core-Ops` | `INTERNAL_PRIVILEGED` |
-| **04** | 📦 Chuỗi Cung Ứng Trung Tâm, Cổng Đặt Hàng B2B & Kho Tổng Trung Tâm | `rs-supply-*` | **12 Skills** (`#037..#048`) | **Kế Toán Cung Ứng** · **Quản Lý Kho Tổng Trung Tâm** · `2. Core-Supply` | `INTERNAL_PRIVILEGED` |
+| **04** | 📦 Chuỗi Cung Ứng Trung Tâm, Cổng Đặt Hàng B2B & Kho Tổng Trung Tâm | `rs-supply-*` | **13 Skills** (`#037..#048` + `#141`) | **Kế Toán Cung Ứng** · **Quản Lý Kho Tổng Trung Tâm** · `2. Core-Supply` | `INTERNAL_PRIVILEGED` |
 | **05** | 💰 Tài Chính Đa Mô Hình Pháp Nhân, Ngân Quỹ, P&L & Quyết Toán Thuế | `rs-fin-*` | **12 Skills** (`#049..#060`) | **Kế Toán Tổng Hợp** · **Đơn Vị Tư Vấn & Quyết Toán Thuế Độc Lập** · `3. Core-Finance` | `INTERNAL_PRIVILEGED` |
-| **06** | 👥 Nhân Sự Lương 3P, Tuyển Dụng 2 Vòng & Pháp Lý Hợp Đồng | `rs-hr-*` · `rs-legal-*` | **12 Skills** (`#061..#072`) | **Trưởng Bộ Phận Hành Chính Nhân Sự** · **CEO Toàn Chuỗi** · `6. Core-HR` | `INTERNAL_PRIVILEGED` |
+| **06** | 👥 Nhân Sự Lương 3P, Tuyển Dụng 2 Vòng & Pháp Lý Hợp Đồng | `rs-hr-*` · `rs-legal-*` | **13 Skills** (`#061..#072` + `#143`) | **Trưởng Bộ Phận Hành Chính Nhân Sự** · **CEO Toàn Chuỗi** · `6. Core-HR` | `INTERNAL_PRIVILEGED` |
 | **07** | 📈 Thương Hiệu v3.3, Marketing Thực Chiến & Sàn Giao Đồ Ăn | `rs-brand-*` · `rs-mkt-*` | **12 Skills** (`#073..#084`) | **Trưởng Bộ Phận Marketing** · `5. Core-Growth` | `INTERNAL_PRIVILEGED` |
 | **08** | 🎬 Sản Xuất Đa Phương Tiện, Video Studio, Ảnh Sản Phẩm & OCR | `rs-media-*` | **12 Skills** (`#085..#096`) | **Trưởng Bộ Phận Marketing** · **Trưởng Bộ Phận Đào Tạo & LMS** · **Kế Toán Tổng Hợp** · `5. Core-Growth` | `INTERNAL_PRIVILEGED` |
 | **09** | 💬 Chăm Sóc Khách Hàng Đa Kênh, Nhắn Tin OTT & Hỗ Trợ 22 Chủ Quán | `rs-omni-*` | **12 Skills** (`#097..#108`) | **Bộ Phận Marketing & CSKH** · **Giám Sát Vận Hành Chuỗi** · `ROSIE` cổng `:3900` (`1..5 Omni-*`) | `PUBLIC_DMZ_SAFE` (Chỉ đọc `ROSIER STORE HUB`) |
@@ -82,6 +82,8 @@ Dưới đây là các kỹ năng **Flagship (Chủ lực)** được cài sẵn
 | `/rs-lms-1700-tracker` | Giám sát tiến độ học tập có tích xanh trước `17:00` hàng ngày của toàn bộ Khối VP và 25 Cửa hàng | `"Dùng /rs-lms-1700-tracker kiểm tra danh sách các cửa hàng chưa hoàn thành bài học LMS trước 17:00 hôm nay để gửi Giám Sát Vận Hành đôn đốc."` |
 | `/rs-kb-knowledge-2hub-router` | Điều phối đồng bộ 1 chiều từ `ROSIER BUSINESS` (`15e4...`) sang `ROSIER STORE HUB` (`4004...`) sau khi đã cắt bỏ 100% cột Giá vốn COGS, Lương 3P và P&L | `"Dùng /rs-kb-knowledge-2hub-router kiểm tra an toàn bảo mật và chuẩn bị bản đồng bộ sạch của tài liệu SOP này sang ROSIER STORE HUB."` |
 | `/rs-kb-sop-iso-author` | Soạn thảo quy trình SOP vận hành quầy bar và an toàn thực phẩm chuẩn ISO/HACCP | `"Dùng /rs-kb-sop-iso-author soạn quy trình kiểm soát nhiệt độ tủ mát 4°C ± 1 và vệ sinh máy đóng lon cuối ca."` |
+| `/rs-kb-notebooklm-research-studio` | Điều phối 53 công cụ `notebooklm-mcp v0.15.8` theo 9 khuôn mẫu sổ tay chuẩn Rosier (`N1..N9`), sinh học liệu Studio và bóc băng ghi âm đa giọng nói 4 bước theo 9 chức danh chuẩn | `"Dùng /rs-kb-notebooklm-research-studio tạo sổ tay N3 cho SOP Trà Ô Long Nhài Sữa và sinh bộ Slide + 20 câu hỏi Quiz Bloom."` |
+| `/rs-kb-notebooklm-prompt-architect` | Biên dịch câu lệnh ngắn của người dùng thành Bộ Prompt 5-Khối (`5-Block Grounded Prompting`) cho toàn bộ 12 cổng điều khiển của Google NotebookLM v0.15.8 | `"Dùng /rs-kb-notebooklm-prompt-architect biên dịch bộ 12 Prompt chuẩn cho chủ đề Kiểm soát chất lượng QSC-V tại 25 điểm bán."` |
 
 ### 🏪 3.3. Vận Hành Chuỗi 25 Điểm Bán & Thực Địa (`Giám Sát Vận Hành Chuỗi` & `Trưởng Bộ Phận R&D & QLVH`)
 
@@ -108,6 +110,7 @@ Dưới đây là các kỹ năng **Flagship (Chủ lực)** được cài sẵn
 | `/rs-fin-dual-entity-ledger` | Hạch toán tách bạch tuyệt đối các mô hình pháp nhân: **Công ty TNHH Rosier Việt Nam (`03 CHH`)**, **CTCP Trà và Cà phê Rosier (`Toàn Chuỗi` + `Kho Tổng Trung Tâm`)** và **Hộ Kinh Doanh (`22 CHNQ`)** | `"Dùng /rs-fin-dual-entity-ledger kiểm tra sổ hạch toán tháng 11 đảm bảo tách bạch 100% giữa Công ty TNHH Rosier Việt Nam và CTCP Trà và Cà phê Rosier."` |
 | `/rs-fin-bank-statement-reconciler` | Đối soát tự động sao kê **Ngân hàng Giao dịch** với doanh thu Hệ thống POS và phiếu thu công nợ B2B | `"Dùng /rs-fin-bank-statement-reconciler đối soát file sao kê ngân hàng giao dịch ngày hôm qua với bảng kê đơn hàng B2B."` |
 | `/rs-persona-tax-shield-ledger` | Rà soát chứng từ, hóa đơn điện tử, thuế HKD và chuẩn bị hồ sơ báo cáo quyết toán thuế phối hợp cùng **Đơn vị Tư vấn & Quyết toán Thuế Độc lập** | `"Dùng /rs-persona-tax-shield-ledger rà soát bộ hồ sơ chứng từ thuế GTGT và TNDN của khối CTCP để gửi Đơn vị Tư vấn Thuế Độc lập làm báo cáo quyết toán."` |
+| `/rs-hr-monthly-kpi-engine` | Quản trị vòng đời KPI tháng tự động 2 Pha: Tạo mới/Giao & Khóa KPI đầu tháng (`kpi-create`/`kpi-propose`/`kpi-lock`) + Chấm điểm tự động, Đối soát chéo 3 chiều & Chốt thưởng `P3` cuối tháng (`kpi-score`/`kpi-cross-audit`/`kpi-finalize`) trên Sổ cái bất biến `core/kpi_monthly_ledger.json` | `"Dùng /rs-hr-monthly-kpi-engine tạo mới bảng KPI đầu tháng 11/2026 cho vị trí RS006 hoặc chấm điểm KPI cuối tháng từ dữ liệu thực tế."` |
 | `/rs-hr-3p-payroll-engine` | Tính bảng lương 3P (`P1 Vị trí + P2 Tích xanh LMS + P3 Hiệu suất KPR`) theo chuẩn Luật BHXH 41/2024/QH15 | `"Dùng /rs-hr-3p-payroll-engine tổng hợp bảng lương 3P tháng này kết hợp dữ liệu chấm công và tỷ lệ hoàn thành khóa học LMS."` |
 | `/rs-hr-2round-recruitment-funnel` | Vận hành Phễu Tuyển dụng 2 Vòng chuẩn nội bộ (đề test chuyên môn nộp trong `48h` kèm ghi âm giải thích cách làm) | `"Dùng /rs-hr-2round-recruitment-funnel tạo phiếu chấm điểm ứng viên vòng 1 (bài test 48h có ghi âm) và bộ câu hỏi phỏng vấn STAR vòng 2."` |
 
@@ -129,15 +132,15 @@ Dưới đây là các kỹ năng **Flagship (Chủ lực)** được cài sẵn
 
 | Tên Profile (`Mã Kích Hoạt`) | Số Lượng Skill Nạp | Dành Cho Đối Tượng / Tình Huống Sử Dụng | Lệnh Kích Hoạt Cô Lập Trong Workspace |
 | --- | --- | --- | --- |
-| **`core-35`** *(Mặc định khuyên dùng)* | **38 Flagship Skills** | Phục vụ 95% tác vụ điều hành, `/rs-auto`, Tam Giác Chủ Thể F&B, LMS, vận hành, cung ứng, tài chính, MKT và báo cáo hàng ngày. | `python3 .agent/scripts/rs_profile_loader.py activate core-35 --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
-| **`exec`** | **34 Skills (`01` + `11` + `12`)** | Dành riêng cho CEO Toàn Chuỗi, Chủ Cửa Hàng Mô Hình Công Ty và Chủ Cửa Hàng Mô Hình HKD khi lập kế hoạch tháng/quý, họp L10, MBR và làm Slide HĐQT. | `python3 .agent/scripts/rs_profile_loader.py activate exec --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
+| **`core-35`** *(Mặc định khuyên dùng)* | **41 Flagship Skills** | Phục vụ 95% tác vụ điều hành, `/rs-auto`, Tam Giác Chủ Thể F&B, LMS, vận hành, cung ứng, tài chính, MKT và báo cáo hàng ngày. | `python3 .agent/scripts/rs_profile_loader.py activate core-35 --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
+| **`exec`** | **35 Skills (`01` + `11` + `12`)** | Dành riêng cho CEO Toàn Chuỗi, Chủ Cửa Hàng Mô Hình Công Ty và Chủ Cửa Hàng Mô Hình HKD khi lập kế hoạch tháng/quý, họp L10, MBR và làm Slide HĐQT. | `python3 .agent/scripts/rs_profile_loader.py activate exec --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
 | **`academy-kb`** | **24 Skills (`02` + `08`)** | Dành cho Bộ phận Đào tạo & LMS và Bộ phận R&D khi biên soạn khóa học Video LMS, viết SOP và đồng bộ 2 Kho Tri Thức. | `python3 .agent/scripts/rs_profile_loader.py activate academy-kb --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
-| **`ops-supply`** | **24 Skills (`03` + `04`)** | Dành cho Giám sát Vận hành, Quản lý Vận hành, Kế toán Cung ứng & Quản lý Kho Tổng Trung Tâm khi đi Audit 25 quán, đối soát kho và vận hành Cổng Đặt Hàng B2B. | `python3 .agent/scripts/rs_profile_loader.py activate ops-supply --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
-| **`fin-hr`** | **24 Skills (`05` + `06`)** | Dành cho Kế toán Tổng hợp, Trưởng Bộ phận HCNS & Đơn vị Tư vấn Thuế Độc lập khi khóa sổ đa pháp nhân, quyết toán thuế và tính lương 3P. | `python3 .agent/scripts/rs_profile_loader.py activate fin-hr --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
+| **`ops-supply`** | **25 Skills (`03` + `04`)** | Dành cho Giám sát Vận hành, Quản lý Vận hành, Kế toán Cung ứng & Quản lý Kho Tổng Trung Tâm khi đi Audit 25 quán, đối soát kho và vận hành Cổng Đặt Hàng B2B. | `python3 .agent/scripts/rs_profile_loader.py activate ops-supply --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
+| **`fin-hr`** | **25 Skills (`05` + `06`)** | Dành cho Kế toán Tổng hợp, Trưởng Bộ phận HCNS & Đơn vị Tư vấn Thuế Độc lập khi khóa sổ đa pháp nhân, quyết toán thuế và tính lương 3P. | `python3 .agent/scripts/rs_profile_loader.py activate fin-hr --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
 | **`growth-media`** | **24 Skills (`07` + `08`)** | Dành cho Bộ phận Marketing khi chạy chiến dịch Sàn Giao Đồ Ăn, tem dán lon, thiết kế v3.3 và sản xuất video đa kênh. | `python3 .agent/scripts/rs_profile_loader.py activate growth-media --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
 | **`omni-dmz`** | **12 Skills (`09-rs-omni-dmz`)** | Dành riêng cho trợ lý `ROSIE` cổng `:3900` (chỉ đọc `ROSIER STORE HUB`, cách ly tuyệt đối khỏi dữ liệu mật HO). | `python3 .agent/scripts/rs_profile_loader.py activate omni-dmz --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
 | **`persona-counsel`** | **22 Skills (`11` + `12`)** | Hội đồng cố vấn tư duy vai trò & nguyên lý (`CEO Toàn Chuỗi`, `Chủ Quán Mô Hình Công Ty`, `Chủ Quán Mô Hình HKD`, `R&D`, `GSVH`, `Lá Chắn Thuế`, `Tư Duy Ngược`, `Tối Giản SP`, `Chống Mong Manh`, `Nguyên Lý Gốc`) và bộ công cụ siêu tiến hóa. | `python3 .agent/scripts/rs_profile_loader.py activate persona-counsel --target workspace --workspace /Users/tuandunghoang/work/rosier-workspace` |
-| **`all-140`** | **Toàn bộ 142 Skills** | Kích hoạt đầy đủ 142 kỹ năng + 30 quy trình + `/rs-auto` bên trong `rosier-workspace`. | `./install.sh --target /Users/tuandunghoang/work/rosier-workspace --profile all-140` |
+| **`all-140`** | **Toàn bộ 145 Skills** | Kích hoạt đầy đủ 145 kỹ năng + 30 quy trình + `/rs-auto` bên trong `rosier-workspace`. | `./install.sh --target /Users/tuandunghoang/work/rosier-workspace --profile all-140` |
 
 ---
 
@@ -160,12 +163,12 @@ Khi cần phản biện kế hoạch, thẩm định mở quán mới hoặc ki�
 
 ---
 
-## 🗂️ 6. Tra Cứu Toàn Bộ 202 Hợp Phần (142 Skills + 30 Workflows + 30 MCP Tools)
+## 🗂️ 6. Tra Cứu Toàn Bộ 205 Hợp Phần (145 Skills + 30 Workflows + 30 MCP Tools)
 
 Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi tiết của từng phân khu:
 
 <toggle heading="h3">
-📂 Phân khu 01: Điều Hành Tối Cao CEO, Chiến Lược & Giao Ban (rs-exec-*) (12 Kỹ năng)
+📂 Phân khu 01: Điều Hành Tối Cao CEO, Chiến Lược & Giao Ban (rs-exec-*) (13 Kỹ năng)
 
 | Mã số | Mã Kỹ Năng (`rs-*`) | Tầng | Tên & Công Năng Thực Chiến | Vùng Bảo Mật |
 | --- | --- | --- | --- | --- |
@@ -181,6 +184,7 @@ Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi ti
 | `010` | `rs-exec-memo-scqa` | `flagship` | Soạn Thảo Bản Ghi Nhớ Điều Hành 1-Pager / 6-Pager Chuẩn SCQA | `INTERNAL_PRIVILEGED` |
 | `011` | `rs-office-data-kpi-storyteller` | `flagship` | Thiết Kế Slide HĐQT, Cổ Đông & Hồ Sơ Gọi Vốn Chuẩn v3.3 (18 Phong Cách Thuyết Trình) | `INTERNAL_PRIVILEGED` |
 | `012` | `rs-fin-capex-store-roi` | `flagship` | Thẩm Định Mở Rộng Điểm Bán Mới, M&A & Đối Tác Chiến Lược | `INTERNAL_PRIVILEGED` |
+| `142` | `rs-exec-ground-truth-cross-auditor` | `flagship` | Kiểm Toán Đối Chiếu Chéo 3 Chiều Độc Lập Cấp Chủ Sở Hữu (Chống Báo Cáo Tô Hồng Giữa Tự Khai HO × Thực Tế Hệ Thống) | `INTERNAL_PRIVILEGED` |
 </toggle>
 <toggle heading="h3">
 📂 Phân khu 02: Quản Trị Tri Thức Kho Tri Thức 2-Hub, SOP, R&D & Học Viện LMS (rs-kb-* & rs-lms-*) (12 Kỹ năng)
@@ -219,7 +223,7 @@ Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi ti
 | `036` | `rs-ops-franchise-compliance` | `bundled_tactical` | Chấm Điểm Tuân Thủ Tiêu Chuẩn Thương Hiệu Tại 22 Cửa Hàng Nhượng Quyền | `INTERNAL_PRIVILEGED` |
 </toggle>
 <toggle heading="h3">
-📂 Phân khu 04: Chuỗi Cung Ứng, Mua Hàng, Cổng Đặt Hàng B2B Nội Bộ & Kho Tổng Trung Tâm (rs-supply-*) (12 Kỹ năng)
+📂 Phân khu 04: Chuỗi Cung Ứng, Mua Hàng, Cổng Đặt Hàng B2B Nội Bộ & Kho Tổng Trung Tâm (rs-supply-*) (13 Kỹ năng)
 
 | Mã số | Mã Kỹ Năng (`rs-*`) | Tầng | Tên & Công Năng Thực Chiến | Vùng Bảo Mật |
 | --- | --- | --- | --- | --- |
@@ -235,6 +239,7 @@ Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi ti
 | `046` | `rs-supply-packaging-can-stock` | `bundled_tactical` | Dự Báo Nhu Cầu Vỏ Lon PET, Nắp Nhôm & Tem Nhãn Mùa Cao Điểm | `INTERNAL_PRIVILEGED` |
 | `047` | `rs-supply-cost-variance-alert` | `bundled_tactical` | Cảnh Báo Biến Động Giá Nhập Nguyên Liệu Đầu Vào & Đề Xuất Khóa Giá | `INTERNAL_PRIVILEGED` |
 | `048` | `rs-supply-return-rma-handler` | `bundled_tactical` | Quy Trình Đổi Trả Hàng Lỗi, Hư Hỏng Vận Chuyển Với Nhà Cung Cấp | `INTERNAL_PRIVILEGED` |
+| `141` | `rs-supply-bom-temporal-ledger` | `flagship` | Sổ Cái Định Mức BOM & Giá Vốn Đa Phiên Bản Theo Thời Gian (Temporal Multi-Version Effective-Dated BOM Ledger) | `INTERNAL_PRIVILEGED` |
 </toggle>
 <toggle heading="h3">
 📂 Phân khu 05: Tài Chính, Kế Toán 2 Pháp Nhân, Công Nợ Hệ Thống ERP Cung Ứng Trung Tâm & Thuế (rs-fin-*) (12 Kỹ năng)
@@ -255,7 +260,7 @@ Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi ti
 | `060` | `rs-fin-xlsx-model-architect` | `flagship` | Kiến Trúc Sư Bảng Tính Tài Chính Excel (.xlsx) Động Chuẩn Doanh Nghiệp | `INTERNAL_PRIVILEGED` |
 </toggle>
 <toggle heading="h3">
-📂 Phân khu 06: Nhân Sự 3P, Tuyển Dụng, Vận Hành Nhân Sự Quán & Pháp Lý (rs-hr-* & rs-legal-*) (12 Kỹ năng)
+📂 Phân khu 06: Nhân Sự 3P, Tuyển Dụng, Vận Hành Nhân Sự Quán & Pháp Lý (rs-hr-* & rs-legal-*) (13 Kỹ năng)
 
 | Mã số | Mã Kỹ Năng (`rs-*`) | Tầng | Tên & Công Năng Thực Chiến | Vùng Bảo Mật |
 | --- | --- | --- | --- | --- |
@@ -271,6 +276,7 @@ Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi ti
 | `070` | `rs-legal-premises-lease-review` | `bundled_tactical` | Thẩm Định Pháp Lý Hợp Đồng Thuê Mặt Bằng Mở Quán Mới | `INTERNAL_PRIVILEGED` |
 | `071` | `rs-legal-admin-dispatch-nd30` | `bundled_tactical` | Soạn Thảo Công Văn, Quyết Định, Thông Báo Chuẩn Nghị Định 30/2020/NĐ-CP | `INTERNAL_PRIVILEGED` |
 | `072` | `rs-legal-food-safety-license` | `bundled_tactical` | Quản Lý Hồ Sơ Giấy Phép Vệ Sinh An Toàn Thực Phẩm & Tự Công Bố Sản Phẩm | `INTERNAL_PRIVILEGED` |
+| `143` | `rs-hr-monthly-kpi-engine` | `flagship` | Động Cơ Thiết Lập KPI Đầu Tháng & Chấm Điểm KPI Cuối Tháng Tự Động Gắn Sổ Cái Bất Biến & Lương 3P (P3) | `INTERNAL_PRIVILEGED` |
 </toggle>
 <toggle heading="h3">
 📂 Phân khu 07: Marketing, Thương Hiệu v3.3, Chiến Dịch Mùa Vụ & Sàn Giao Đồ Ăn (rs-mkt-* & rs-brand-*) (12 Kỹ năng)
@@ -394,7 +400,7 @@ Nhấp vào từng mục bên dưới để mở rộng bảng danh mục chi ti
 | `148` | `rs-wf-ops-focus12-weekly-sprint` | Chu trình Vực Dậy 12 Cửa Hàng Trọng Điểm (Focus 12) Hàng Tuần | `rs-ops-focus12-turnaround`, `rs-ops-waste-spoilage-control`, `rs-mkt-local-store-lsm` | `rs-mcp-pos-sales-sync`, `rs-mcp-hub-business-query` |
 | `149` | `rs-wf-ops-blindcount-blitz` | Chu trình Kiểm Kê Mù Đột Xuất & Đối Chiếu Chéo Định Mức Hệ Thống POS Bán Hàng × Hệ Thống ERP Cung Ứng Trung Tâm | `rs-supply-pos-erp-blindcount`, `rs-ops-pos-hidden-code`, `rs-ops-waste-spoilage-control` | `rs-mcp-pos-recipe-consumption`, `rs-mcp-supply-blindcount-diff` |
 | `150` | `rs-wf-ops-company3-pilot-test` | Chu trình Thử Nghiệm Món Mới & Quy Trình Mới Tại 3 Cửa Hàng Công Ty (38197, 46880, 87024) | `rs-ops-company3-pilot-lab`, `rs-kb-recipe-rd-vault`, `rs-fin-drink-unit-economics`, `rs-persona-store-owner-company` | `rs-mcp-pos-sales-sync`, `rs-mcp-hub-business-query` |
-| `151` | `rs-wf-ops-new-store-48gates-launch` | Chu trình Khai Trương Quán Mới Qua 48 Cổng Kiểm Duyệt Kỹ Thuật – Mặt Bằng CAD – Pháp Lý | `rs-ops-new-store-48gates`, `rs-meta-cad-store-floorplan-dxf`, `rs-legal-premises-lease-review`, `rs-fin-capex-store-roi` | `rs-mcp-work-dod-gate`, `rs-mcp-hub-store-publish` |
+| `151` | `rs-wf-ops-new-store-48gates-launch` | Chu trình Khai Trương Quán Mới Qua 48 Cổng Kiểm Duyệt Kỹ Thuật - Mặt Bằng CAD - Pháp Lý | `rs-ops-new-store-48gates`, `rs-meta-cad-store-floorplan-dxf`, `rs-legal-premises-lease-review`, `rs-fin-capex-store-roi` | `rs-mcp-work-dod-gate`, `rs-mcp-hub-store-publish` |
 | `152` | `rs-wf-ops-equipment-preventive-care` | Chu trình Bảo Trì Định Kỳ & Xử Lý Sự Cố Thiết Bị Quầy Bar 25 Quán | `rs-ops-equipment-maintenance`, `rs-ops-shift-handover-log` | `rs-mcp-work-task-dispatch`, `rs-mcp-hub-business-query` |
 | `153` | `rs-wf-supply-b2b-order-to-cash` | Chu trình Đặt Hàng Cổng Đặt Hàng B2B Nội Bộ -> Duyệt Khóa Nợ CB-01 -> Soạn Hàng Kho Tổng Trung Tâm -> Xuất Kho | `rs-supply-b2b-order-portal`, `rs-fin-b2b-credit-gate-cb01`, `rs-supply-central-warehouse-5s` | `rs-mcp-supply-order-sync`, `rs-mcp-supply-credit-gate-cb01`, `rs-mcp-supply-warehouse-fifo` |
 | `154` | `rs-wf-supply-central-warehouse-inbound` | Chu trình Nhập Kho Tổng Trung Tâm: Kiểm Tra Chất Lượng (IQC), Dán Nhãn Hạn Dùng FEFO & Sắp Xếp 5S | `rs-supply-coldchain-qc`, `rs-supply-central-warehouse-5s`, `rs-supply-po-generator` | `rs-mcp-supply-warehouse-fifo`, `rs-mcp-studio-ocr-extract` |
@@ -487,6 +493,6 @@ Mọi vai trò chức danh và AI Agent khi vận hành bộ kỹ năng <code>RS
 - **Thư viện lưu trữ chuẩn Hệ sinh thái `RS-OS 200` (SSOT):** `/Users/tuandunghoang/work/02-wiki/skills-lib/rs-os-suite/`
 - **Kho Git Độc lập & GitHub Private (`rosier-skills`):** `/Users/tuandunghoang/projects/rosier-skills/` (`gh repo clone rosier-skills`)
 - **Bản gương tích hợp trong Monorepo `rosier-studio`:** `/Users/tuandunghoang/projects/rosier-studio/packages/rs-os-suite/`
-- **Danh mục tổng tra cứu 202 hợp phần:** `INDEX-RS-200.md` và `skills.json`
+- **Danh mục tổng tra cứu 205 hợp phần:** `INDEX-RS-200.md` và `skills.json`
 - **Bản đồ tính năng có mã băm SHA-256 (`16/16 Features`):** `references/features/README.md`
 - **Bảng điều khiển trực quan HTML v3.3:** `RS-OS-180-CONTROL-CENTER.html`

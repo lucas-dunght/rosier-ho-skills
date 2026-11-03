@@ -1,4 +1,4 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.6.0-ho.1`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)
 
 ## [6.5.0-ho.1] - 2026-11-02
 
@@ -16,7 +16,19 @@
 ---
 
 
-## [6.6.0-ho.1] - 2026-11-03
+## [v6.7.0] - 2026-11-03
+
+### Bổ sung Mới (`Added`)
+- **Bộ Đôi Kỹ Năng Chủ Lực Google NotebookLM MCP (`#144 rs-kb-notebooklm-research-studio` & `#145 rs-kb-notebooklm-prompt-architect` · Phân khu `02-rs-kb-lms`):**
+  - **Kỹ năng `#144` `rs-kb-notebooklm-research-studio` (`skills/rs-kb-notebooklm-research-studio/`):** Điều phối toàn bộ **53 công cụ thuộc 16 nhóm của `notebooklm-mcp v0.15.8`** qua **9 Khuôn Mẫu Sổ Tay Chuẩn Chuỗi F&B Rosier (`N1..N9`)**: `N1` R&D & BOM Đồ uống, `N2` SOP & QSC-V 25 Điểm bán, `N3` Học viện LMS & Quiz Bloom, `N4` Giao ban L10 & MBR, `N5` Kế toán Thuế Đa Pháp nhân, `N6` Chiến dịch Tiếp thị & Thương hiệu v3.3, `N7` Chuỗi Cung ứng & Kho Tổng 5S, `N8` Cẩm nang Chủ Quán HKD, `N9` Bóc băng Ghi âm Đa Giọng nói.
+  - **Động cơ Bóc Băng Ghi Âm Đa Giọng Nói 4 Bước (`scripts/rs_audio_diarization_engine.py` · `N9`):** Chuẩn hóa 12 nhóm lỗi phát âm STT tiếng Việt ngành trà và cà phê sang thuật ngữ chuẩn Rosier, phân tách lượt lời và gán nhãn tự động theo **9 Hồ sơ Giọng nói Chức danh (`SPK_01_CHAIN_CEO` đến `SPK_09_HEAD_HR_LEGAL` · `100% Role-Only`, `0%` tên riêng cá nhân)** kèm trích xuất bảng hành động 10-Sao và cổng đối chất 3 nguồn.
+  - **Kỹ năng `#145` `rs-kb-notebooklm-prompt-architect` (`skills/rs-kb-notebooklm-prompt-architect/`):** Tự động biên dịch câu lệnh ngắn của người dùng thành **Bộ Prompt 5-Khối (`5-Block Grounded Prompting`)** cho toàn bộ **12 khe cắm Prompt của `notebooklm-mcp v0.15.8`** (`chat_persona`, `report_custom`, `data_table`, `audio_overview`, `video_overview`, `slide_deck`, `slide_revision`, `infographic`, `quiz_and_flashcards`, `interactive_report`, `critique_and_refactor`, `audio_diarization_workflow`).
+  - **Cơ chế Bảo vệ Kép (`HO Safe Mode` & `2-Hub Air-Gap`):** Trên bản Nhân sự Khối HO (`rosier-ho-skills`), chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) với mã lỗi `HO_DESTRUCTIVE_NOTEBOOKLM_TOOL_FORBIDDEN`; tự động lọc bỏ từ khóa nhạy cảm (`COGS`, biên lợi nhuận ròng, lương cá nhân) khi xuất bản sang `ROSIER_STORE_HUB`.
+- **Nâng tổng quy mô hệ sinh thái lên `207` hợp phần (`rosier-skills`) và `183` hợp phần (`rosier-ho-skills`):** `147` Kỹ năng `rs-*` (`131` Kỹ năng HO), `30` Quy trình `rs-wf-*` (`26` Quy trình HO) và `30` Công cụ `rs-mcp-*` (`26` Công cụ HO).
+
+---
+
+## [v6.6.0] - 2026-11-03
 
 ### Bổ sung Mới (`Added`)
 - **Kỹ năng `#143` `rs-hr-monthly-kpi-engine` (`skills/rs-hr-monthly-kpi-engine/` · Phân khu `06-rs-hr-legal`) & Sổ cái KPI Bất biến `core/kpi_monthly_ledger.json`:**

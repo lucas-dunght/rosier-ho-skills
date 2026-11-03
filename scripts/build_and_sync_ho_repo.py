@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.5.0-ho.1"
+HO_VERSION = "6.7.0-ho.1"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -1721,7 +1721,7 @@ def run_self_test() -> Dict[str, Any]:
         zero_ceo_skills
         and zero_ceo_wfs
         and zero_mut_mcp
-        and len(skill_ids) in (126, 127, 128, 129, 130)
+        and len(skill_ids) in (126, 127, 128, 129, 130, 131)
         and len(wf_ids) == 28
         and len(mcp_ids) == 24
     )

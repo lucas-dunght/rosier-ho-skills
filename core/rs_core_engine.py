@@ -3,7 +3,7 @@
 RS-OS 200 · Hệ Sinh Thái Kỹ Năng Độc Quyền Nội Bộ Rosier · Shared Deterministic Core Engine (rs_core_engine.py)
 Single Source of Truth (L1 Stored Facts [OBSERVED] + L2 Deterministic Calculators [DERIVED] +
 Rosier 3-Pass De-AI Scanner + Rosier Text Constraint & Functional Abstraction Sanitizer)
-for all 141 rs-* Skills (12 Divisions + #000 Intent Router), 30 rs-wf-* Workflows, and 30 rs-mcp-* Tools.
+for all 147 rs-* Skills (12 Divisions + #000 Intent Router + Dual Flagship NotebookLM Suite #144 & #145), 30 rs-wf-* Workflows, and 30 rs-mcp-* Tools.
 100% Role-Only, Vendor-Agnostic, and Location-Agnostic Architecture.
 """
 
@@ -1271,6 +1271,913 @@ def execute_bom_lifecycle_action(
     }
 
 
+# ==============================================================================
+# ROSIER NOTEBOOKLM v0.15.8 PROMPT ARCHITECT, MCP ORCHESTRATOR & AUDIO DIARIZATION
+# (#144 rs-kb-notebooklm-research-studio + #145 rs-kb-notebooklm-prompt-architect)
+# ==============================================================================
+
+NOTEBOOKLM_MCP_RUNTIME_META: Dict[str, Any] = {
+    "mcp_server": "notebooklm-mcp",
+    "cli_version": "0.15.8",
+    "total_mcp_tools": 53,
+    "total_tool_groups": 16,
+    "mandatory_grounding_anchor": "Dựa hoàn toàn vào các nguồn tài liệu đã cung cấp trong Notebook này; tuyệt đối không tự suy diễn số liệu ngoài nguồn.",
+    "five_block_anatomy": [
+        "Block 1 (Grounding Anchor): Chỉ sử dụng nguồn tài liệu trong Notebook này và không ngoại suy số liệu ngoài nguồn.",
+        "Block 2 (Persona & Audience): Định danh vai trò chức danh Rosier kết hợp đối tượng độc giả mục tiêu (CEO Toàn Chuỗi / Khối HO / Cửa hàng trưởng 25 điểm bán).",
+        "Block 3 (Structural Blueprint): Cấu trúc mục lục, số cột bảng dữ liệu, số trang slide hoặc số thẻ câu hỏi cụ thể.",
+        "Block 4 (Domain Constraints): Ngôn ngữ tiếng Việt chuẩn nghiệp vụ F&B Rosier, phân tách 3 mô hình chủ thể (CTCP Chuỗi, Cty TNHH 3 CHH, HKD 22 CHNQ) và tự động lọc dữ liệu nhạy cảm khi xuất bản sang ROSIER STORE HUB.",
+        "Block 5 (Tone & De-AI Guard): Cấm từ sáo rỗng AI, cấm dấu gạch ngang dài, cấm dấu phẩy trước chữ và, bắt buộc trích dẫn [Source: Tên tài liệu].",
+    ],
+}
+
+HO_FORBIDDEN_NOTEBOOKLM_TOOLS: Tuple[str, ...] = (
+    "notebook_delete",
+    "source_delete",
+    "collection_delete",
+    "studio_delete",
+)
+
+NOTEBOOKLM_MCP_TOOLS_MAP: Dict[str, List[str]] = {
+    "server_and_auth": ["server_info", "usage_get", "refresh_auth", "save_auth_tokens", "profile"],
+    "notebooks": ["notebook_list", "notebook_get", "notebook_describe", "notebook_create", "notebook_rename", "notebook_delete"],
+    "sources": ["source_add", "source_list_drive", "source_sync_drive", "source_rename", "source_delete", "source_describe", "source_get_content"],
+    "query_and_chat": ["notebook_query", "notebook_query_start", "notebook_query_status", "cross_notebook_query", "chat_configure", "chat_list", "chat_get", "chat_export", "chat_save_to_note"],
+    "research": ["research_start", "research_status", "research_import"],
+    "studio_core": ["studio_create", "studio_status", "studio_revise", "studio_delete", "download_artifact", "download_all_artifacts", "export_artifact", "report"],
+    "studio_audio": ["studio_create(artifact_type=audio, audio_format=deep_dive|brief|critique|debate, audio_length=short|default|long)"],
+    "studio_video": ["studio_create(artifact_type=video, video_format=explainer|brief|cinematic, visual_style=auto_select|classic|whiteboard|kawaii|anime|watercolor|retro_print|heritage|paper_craft, style_prompt=...)"],
+    "studio_report": ["studio_create(artifact_type=report, report_format=Briefing Doc|Study Guide|Blog Post|Create Your Own, custom_prompt=...)"],
+    "studio_slides": ["studio_create(artifact_type=slide_deck, slide_format=detailed_deck|presenter_slides, slide_length=short|default, focus_prompt=...)", "studio_revise(artifact_id=..., slide_instructions=[{slide: N, prompt: ...}])"],
+    "studio_infographic": ["studio_create(artifact_type=infographic, orientation=landscape|portrait|square, detail_level=concise|standard|detailed, infographic_style=auto_select|sketch_note|professional|bento_grid|editorial|instructional|bricks|clay|anime|kawaii|scientific, focus_prompt=...)"],
+    "studio_data_table": ["studio_create(artifact_type=data_table, description=..., language=vi)"],
+    "studio_quiz_flashcards": ["studio_create(artifact_type=quiz|flashcards, question_count=N, difficulty=easy|medium|hard, focus_prompt=...)"],
+    "notes": ["note"],
+    "sharing": ["notebook_share_status", "notebook_share_public", "notebook_share_invite", "notebook_share_batch"],
+    "collections_tags_pipeline": ["collection_list", "collection_create", "collection_edit", "collection_set_emoji", "collection_delete", "tag", "alias", "label", "pipeline", "batch"],
+}
+
+ROSIER_NOTEBOOKLM_ARCHETYPES_9: Dict[str, Dict[str, Any]] = {
+    "N1": {
+        "archetype_id": "N1",
+        "title": "Sổ tay Nghiên cứu R&D, Công thức Pha chế & Định mức BOM Đồ uống (R&D & Beverage Lab)",
+        "division": "02-rs-kb-lms",
+        "default_hub": "ROSIER_BUSINESS",
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "recommended_personas": ["rs-persona-master-rnd", "rs-persona-antifragile-supply"],
+        "focus_summary": "Tổng hợp hồ sơ ủ trà Ô Long Nhài Sữa, định mức BOM gram/ml, độ ngọt Brix, thử nghiệm cảm quan tại Cụm 03 CHH Pilot Lab và kiểm soát biến động giá vốn COGS.",
+        "default_studio_artifacts": ["report", "data_table", "slide_deck", "quiz"],
+    },
+    "N2": {
+        "archetype_id": "N2",
+        "title": "Sổ tay Tiêu chuẩn Vận hành SOP, Kiểm soát QSC-V & An toàn Thực phẩm 25 Điểm bán",
+        "division": "03-rs-ops",
+        "default_hub": "ROSIER_STORE_HUB",
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "recommended_personas": ["rs-persona-field-commander", "rs-persona-store-owner-company"],
+        "focus_summary": "Chuẩn hóa quy trình mở ca, đóng ca, bảo quản tủ mát 4 độ C, vệ sinh máy đóng lon PET, xử lý Focus 12 và danh mục kiểm tra thực địa 10-Sao cho 25 điểm bán.",
+        "default_studio_artifacts": ["slide_deck", "infographic", "audio", "flashcards"],
+    },
+    "N3": {
+        "archetype_id": "N3",
+        "title": "Sổ tay Học viện Đào tạo LMS, Bài giảng Slide, Audio Podcast & Ngân hàng Quiz Bloom",
+        "division": "02-rs-kb-lms",
+        "default_hub": "ROSIER_STORE_HUB",
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "recommended_personas": ["rs-persona-first-principles-truth", "rs-persona-authentic-brewer"],
+        "focus_summary": "Chuyển hóa tài liệu SOP thành bài giảng 12 trang Slide, Audio Podcast đào tạo ca kíp và bộ 20 câu hỏi trắc nghiệm thang Bloom phục vụ cổng tích xanh 17:00 trên LMS.",
+        "default_studio_artifacts": ["slide_deck", "audio", "quiz", "flashcards"],
+    },
+    "N4": {
+        "archetype_id": "N4",
+        "title": "Sổ tay Quản trị Giao ban L10, Nghiệm thu MBR & Kế hoạch 10-Sao Khối HO",
+        "division": "01-rs-exec",
+        "default_hub": "ROSIER_BUSINESS",
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "recommended_personas": ["rs-persona-first-principles-truth", "rs-persona-inversion-premortem"],
+        "focus_summary": "Tổng hợp biên bản họp L10, đối chất 3 nguồn trên MCP (báo cáo miệng so với hệ thống tác nghiệp và dữ liệu POS), rà soát KPI tháng và phân tích Pre-Mortem.",
+        "default_studio_artifacts": ["report", "data_table", "audio", "slide_deck"],
+    },
+    "N5": {
+        "archetype_id": "N5",
+        "title": "Sổ tay Pháp chế, Kế toán Thuế Đa Pháp nhân (CTCP, Cty TNHH 3 CHH, 22 HKD) & Hợp đồng Nhượng quyền",
+        "division": "05-rs-fin",
+        "default_hub": "ROSIER_BUSINESS",
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "recommended_personas": ["rs-persona-tax-shield-ledger", "rs-persona-first-principles-truth"],
+        "focus_summary": "Tra cứu quy định thuế GTGT, TNDN, TNCN, thuế khoán Hộ kinh doanh (Thông tư 88, Nghị định 70), tách bạch chứng từ giữa CTCP Chuỗi, Cty TNHH 03 CHH và 22 CHNQ.",
+        "default_studio_artifacts": ["report", "data_table", "flashcards"],
+    },
+    "N6": {
+        "archetype_id": "N6",
+        "title": "Sổ tay Chiến dịch Tiếp thị, Lịch nội dung 30 ngày, Kịch bản Video Ngắn & Tiêu chuẩn Thương hiệu v3.3",
+        "division": "07-rs-mkt-brand",
+        "default_hub": "ROSIER_BUSINESS",
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "recommended_personas": ["rs-persona-hook-retention-3s", "rs-persona-minimal-product-cut"],
+        "focus_summary": "Nghiên cứu xu hướng đồ uống mùa vụ, kịch bản giữ chân 3 giây đầu cho Reels/Shorts, tối ưu tăng trưởng kênh giao đồ ăn, đơn nhóm dán tem lon và quy chuẩn Design System v3.3.",
+        "default_studio_artifacts": ["report", "video", "infographic", "slide_deck"],
+    },
+    "N7": {
+        "archetype_id": "N7",
+        "title": "Sổ tay Chuỗi Cung ứng Trung tâm, Kiểm kê Mù & Quản trị Hạn mức Công nợ B2B",
+        "division": "04-rs-supply",
+        "default_hub": "ROSIER_BUSINESS",
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "recommended_personas": ["rs-persona-antifragile-supply", "rs-persona-field-commander"],
+        "focus_summary": "Phân tích chênh lệch kiểm kê mù nguyên vật liệu, tồn kho an toàn ROP/EOQ, điều phối tuyến giao hàng ngoại thành (67650, 57588, 99324, 100177) và cổng khóa nợ tự động CB-01.",
+        "default_studio_artifacts": ["data_table", "report", "infographic"],
+    },
+    "N8": {
+        "archetype_id": "N8",
+        "title": "Sổ tay Cẩm nang Vận hành & Tối ưu Dòng tiền cho Chủ Quán Nhượng quyền (22 CHNQ)",
+        "division": "09-rs-omni-dmz",
+        "default_hub": "ROSIER_STORE_HUB",
+        "security_zone": "PUBLIC_DMZ_SAFE",
+        "recommended_personas": ["rs-persona-store-owner-hkd", "rs-persona-authentic-brewer"],
+        "focus_summary": "Cẩm nang dành riêng cho Chủ Quán Hộ Kinh Doanh: kiểm soát dòng tiền thực thu hàng ngày, tối ưu chi phí ca kíp, đặt hàng B2B đúng hạn mức và xử lý phản hồi khách hàng 4 bước.",
+        "default_studio_artifacts": ["report", "audio", "slide_deck", "infographic"],
+    },
+    "N9": {
+        "archetype_id": "N9",
+        "title": "Sổ tay Bóc băng Ghi âm Họp Giao ban L10, Kiểm tra Thực địa & Phỏng vấn Tuyển dụng Đa Giọng nói",
+        "division": "02-rs-kb-lms",
+        "default_hub": "ROSIER_BUSINESS",
+        "security_zone": "INTERNAL_PRIVILEGED",
+        "recommended_personas": ["rs-persona-first-principles-truth", "rs-persona-field-commander"],
+        "focus_summary": "Bóc băng file ghi âm cuộc họp nhiều người nói, chuẩn hóa từ vựng STT ngành trà và cà phê Rosier, gán nhãn người nói theo 9 chức danh chuẩn và trích xuất bảng hành động 10-Sao.",
+        "default_studio_artifacts": ["data_table", "report", "audio"],
+    },
+}
+
+ROSIER_SPEAKER_FINGERPRINTS_9: Dict[str, Dict[str, Any]] = {
+    "SPK_01_CHAIN_CEO": {
+        "speaker_id": "SPK_01_CHAIN_CEO",
+        "role_title": "CEO Toàn Chuỗi (Pháp nhân CTCP)",
+        "department": "Ban Điều hành Chuỗi (01-rs-exec)",
+        "persona_id": "rs-persona-first-principles-truth",
+        "acoustic_and_turn_cues": "Mở đầu và chốt cuộc họp; câu ngắn, dứt khoát; luôn truy vấn cơ chế gốc rễ, yêu cầu đối chất 3 nguồn trên MCP và chốt hạn hoàn thành nhị phân.",
+        "lexical_markers": [
+            "đối chất 3 nguồn", "cơ chế gốc rễ", "5 cổng", "kế hoạch 10-sao",
+            "toàn chuỗi 25 điểm bán", "tích xanh 17:00", "khung 3c", "pre-mortem", "ctcp",
+        ],
+    },
+    "SPK_02_STORE_OWNER_COMPANY": {
+        "speaker_id": "SPK_02_STORE_OWNER_COMPANY",
+        "role_title": "Đại diện Chủ Cửa Hàng Mô Hình Công Ty (Cụm 03 CHH: 38197, 46880, 87024)",
+        "department": "Khối Cửa Hàng Công Ty TNHH (03-rs-ops)",
+        "persona_id": "rs-persona-store-owner-company",
+        "acoustic_and_turn_cues": "Báo cáo số liệu vận hành và P&L của cụm 03 điểm bán công ty (38197, 46880, 87024), kết quả thí điểm Pilot Lab và định biên ca kíp.",
+        "lexical_markers": [
+            "38197", "46880", "87024", "cụm 3 chh", "3 chh", "mô hình công ty",
+            "pilot lab", "cty tnhh", "định biên lao động",
+        ],
+    },
+    "SPK_03_STORE_OWNER_HKD": {
+        "speaker_id": "SPK_03_STORE_OWNER_HKD",
+        "role_title": "Đại diện Chủ Quán Mô Hình Hộ Kinh Doanh (22 Điểm Bán Nhượng Quyền CHNQ)",
+        "department": "Mạng lưới Nhượng quyền 22 CHNQ (09-rs-omni-dmz)",
+        "persona_id": "rs-persona-store-owner-hkd",
+        "acoustic_and_turn_cues": "Tập trung vào dòng tiền mặt hàng ngày, chi phí mặt bằng, đặt hàng B2B kho tổng và kê khai thuế hộ kinh doanh.",
+        "lexical_markers": [
+            "hộ kinh doanh", "hkd", "chủ quán", "nhượng quyền", "dòng tiền hàng ngày",
+            "hoàn vốn", "thuế khoán", "thông tư 88", "hạn mức đặt hàng",
+        ],
+    },
+    "SPK_04_HEAD_OPS_QSC": {
+        "speaker_id": "SPK_04_HEAD_OPS_QSC",
+        "role_title": "Trưởng Bộ phận Vận hành & Kiểm soát Chất lượng Thực địa (Field Commander)",
+        "department": "Bộ phận Vận hành, Đào tạo & Cung ứng (03-rs-ops)",
+        "persona_id": "rs-persona-field-commander",
+        "acoustic_and_turn_cues": "Báo cáo điểm sức khỏe cửa hàng, danh sách Focus 12, kết quả kiểm tra QSC-V, tốc độ ra đồ và nhiệt độ tủ mát.",
+        "lexical_markers": [
+            "focus 12", "qsc-v", "qscv", "kiểm tra thực địa", "tốc độ ra đồ",
+            "nhiệt độ tủ mát", "4 độ c", "vệ sinh quầy bar", "mã ẩn pos",
+        ],
+    },
+    "SPK_05_HEAD_SUPPLY_WAREHOUSE": {
+        "speaker_id": "SPK_05_HEAD_SUPPLY_WAREHOUSE",
+        "role_title": "Trưởng Bộ phận Chuỗi Cung ứng Trung tâm & Kho Tổng 5S",
+        "department": "Bộ phận Chuỗi Cung ứng & Kho Tổng (04-rs-supply)",
+        "persona_id": "rs-persona-antifragile-supply",
+        "acoustic_and_turn_cues": "Báo cáo tồn kho an toàn, kiểm kê mù nguyên vật liệu, chênh lệch giá nhập vượt 2%, điều phối tuyến giao hàng ngoại thành (67650, 57588, 99324, 100177).",
+        "lexical_markers": [
+            "kiểm kê mù", "kho tổng 5s", "fifo", "fefo", "tuyến ngoại thành",
+            "67650", "57588", "99324", "100177", "vỏ lon pet", "biến động giá nhập",
+        ],
+    },
+    "SPK_06_MASTER_RND": {
+        "speaker_id": "SPK_06_MASTER_RND",
+        "role_title": "Chuyên gia Nghiên cứu & Phát triển Sản phẩm (Master R&D)",
+        "department": "Phòng Lab R&D & Học viện Đào tạo (02-rs-kb-lms)",
+        "persona_id": "rs-persona-master-rnd",
+        "acoustic_and_turn_cues": "Phân tích hương vị cốt trà ủ lạnh, định mức BOM gram/ml, độ ngọt Brix, quy trình lắc tạo bọt và đề xuất phiên bản công thức mới.",
+        "lexical_markers": [
+            "cốt trà", "ô long nhài sữa", "định mức bom", "độ brix", "ủ lạnh",
+            "nhiệt độ nước ủ", "cảm quan", "phiên bản công thức",
+        ],
+    },
+    "SPK_07_HEAD_FIN_TAX": {
+        "speaker_id": "SPK_07_HEAD_FIN_TAX",
+        "role_title": "Trưởng Bộ phận Tài chính Kế toán & Lá chắn Thuế Đa Pháp nhân",
+        "department": "Bộ phận Tài chính, Kế toán & Pháp chế (05-rs-fin)",
+        "persona_id": "rs-persona-tax-shield-ledger",
+        "acoustic_and_turn_cues": "Báo cáo đối soát 3 chiều ngân hàng giao dịch, cảnh báo khóa công nợ tự động CB-01, tách bạch hóa đơn GTGT giữa CTCP và Cty TNHH.",
+        "lexical_markers": [
+            "đối soát sao kê", "khóa công nợ cb-01", "cb-01", "đa pháp nhân",
+            "hóa đơn gtgt", "quyết toán thuế", "giá vốn cogs", "biên lợi nhuận gộp", "dòng tiền 13 tuần",
+        ],
+    },
+    "SPK_08_HEAD_MKT_BRAND": {
+        "speaker_id": "SPK_08_HEAD_MKT_BRAND",
+        "role_title": "Trưởng Bộ phận Tăng trưởng Tiếp thị & Sáng tạo Thương hiệu",
+        "department": "Bộ phận Thương hiệu, Tiếp thị & Tăng trưởng (07-rs-mkt-brand)",
+        "persona_id": "rs-persona-hook-retention-3s",
+        "acoustic_and_turn_cues": "Trình bày chiến dịch mùa vụ, lịch nội dung 30 ngày, tỷ lệ giữ chân 3 giây đầu video ngắn, tăng trưởng kênh giao đồ ăn và đơn nhóm dán tem lon.",
+        "lexical_markers": [
+            "chiến dịch mùa vụ", "giữ chân 3 giây", "sàn giao đồ ăn",
+            "đơn nhóm dán tem lon", "design system v3.3", "bán kính 2km", "lịch nội dung 30 ngày",
+        ],
+    },
+    "SPK_09_HEAD_HR_LEGAL": {
+        "speaker_id": "SPK_09_HEAD_HR_LEGAL",
+        "role_title": "Trưởng Bộ phận Nhân sự Lương 3P, Đào tạo LMS & Hành chính Pháp chế",
+        "department": "Bộ phận Nhân sự, Học viện LMS & Pháp chế (06-rs-hr-legal)",
+        "persona_id": "rs-persona-first-principles-truth",
+        "acoustic_and_turn_cues": "Báo cáo kết quả khóa KPI đầu tháng, chấm điểm KPI cuối tháng, bảng lương 3P, tỷ lệ hoàn thành học tập LMS trước 17:00 và phễu tuyển dụng 2 vòng.",
+        "lexical_markers": [
+            "kpi đầu tháng", "chấm điểm kpi cuối tháng", "lương 3p",
+            "phễu tuyển dụng 2 vòng", "học viện lms", "nghị định 30", "hợp đồng nhượng quyền",
+        ],
+    },
+}
+
+ROSIER_STT_PHONETIC_CORRECTIONS: List[Tuple[str, str, str]] = [
+    (r"\bô\s+long\s+nhài\b", "Ô Long Nhài Sữa", "Chuẩn hóa tên dòng trà chủ lực Rosier"),
+    (r"\blương\s+ba\s+pê\b|\bba\s+phê\b", "Lương 3P (P1-P2-P3)", "Chuẩn hóa thuật ngữ Lương 3P"),
+    (r"\bbăm\s+định\s+mức\b|\bbê\s+ô\s+em\b", "Định mức BOM", "Chuẩn hóa thuật ngữ Định mức BOM công thức"),
+    (r"\bmột\s+bảy\s+không\s+không\b|\bmười\s+bảy\s+giờ\b", "Cổng tích xanh 17:00 trên LMS", "Chuẩn hóa mốc kỷ luật tích xanh 17:00"),
+    (r"\bfocus\s+mười\s+hai\b|\bphô\s+cớt\s+mười\s+hai\b", "Focus 12", "Chuẩn hóa chương trình vực dậy cửa hàng Focus 12"),
+    (r"\bxi\s+bi\s+không\s+một\b|\bcb\s+không\s+một\b", "Cổng khóa công nợ tự động CB-01", "Chuẩn hóa mã cầu chì tài chính CB-01"),
+    (r"\bhăm\s+lăm\s+quán\b|\bhai\s+mươi\s+lăm\s+quán\b", "25 Điểm bán đang hoạt động", "Chuẩn hóa quy mô 25 điểm bán toàn chuỗi"),
+    (r"\bba\s+cửa\s+hàng\s+công\s+ty\b|\bba\s+chh\b", "Cụm 03 CHH Mô Hình Công Ty (38197, 46880, 87024)", "Chuẩn hóa cụm 03 điểm bán công ty"),
+    (r"\bhai\s+mươi\s+hai\s+quán\s+nhượng\s+quyền\b", "22 Điểm Bán Nhượng Quyền Mô Hình Hộ Kinh Doanh", "Chuẩn hóa khối 22 cửa hàng nhượng quyền"),
+    (r"\bquy\s+ét\s+xi\s+vi\b|\bqsc\s+v\b", "Tiêu chuẩn QSC-V", "Chuẩn hóa bộ tiêu chuẩn kiểm tra chất lượng thực địa QSC-V"),
+    (r"\bkế\s+hoạch\s+mười\s+sao\b", "Kế hoạch Tác chiến 10-Sao", "Chuẩn hóa khung kế hoạch 10-Sao"),
+    (r"\bphi\s+phô\b", "Nguyên tắc nhập trước xuất trước FIFO/FEFO", "Chuẩn hóa thuật ngữ quản trị kho FIFO/FEFO"),
+]
+
+ROSIER_NLM_PROMPT_SLOTS_V0158: Dict[str, Dict[str, Any]] = {
+    "chat_persona": {
+        "slot_id": "chat_persona",
+        "mcp_tool": "chat_configure",
+        "mcp_parameter": "custom_prompt (with goal='custom', response_length='default|longer|shorter')",
+        "char_budget_target": "420-650 chars",
+        "purpose": "Cấu hình nhân cách cố vấn chuyên gia cho toàn bộ phiên hỏi đáp trên sổ tay NotebookLM của Rosier.",
+        "template_vi": (
+            "[Block 1: Grounding Anchor] Dựa hoàn toàn vào các nguồn tài liệu đã cung cấp trong Notebook này; tuyệt đối không tự suy diễn số liệu ngoài nguồn. "
+            "[Block 2: Persona & Audience] Bạn là {persona_title} của hệ thống Rosier Fresh Tea & Coffee (25 điểm bán: Cụm 03 CHH Công ty 38197, 46880, 87024 và 22 CHNQ Hộ kinh doanh), tư vấn trực tiếp cho {target_audience}. "
+            "[Block 3: Structural Blueprint] Trả lời theo cấu trúc 4 phần: (1) Kết luận trọng tâm kèm nhãn [OBSERVED]/[DERIVED]; (2) Bảng số liệu đối chiếu từ nguồn; (3) Phân tách tác động theo 3 mô hình chủ thể; (4) Hành động thực thi kế tiếp. "
+            "[Block 4: Domain Constraints] Tuân thủ nghiêm ngặt ranh giới 2 kho tri thức ({target_hub}); tuyệt đối không tiết lộ giá vốn COGS hoặc biên lợi nhuận nội bộ nếu xuất bản ra ROSIER STORE HUB. "
+            "[Block 5: Tone & De-AI Guard] Văn phong điều hành thực chiến, súc tích, không dùng từ sáo rỗng AI, không dùng dấu gạch ngang dài, không đặt dấu phẩy trước chữ và, luôn gắn trích dẫn [Source: Tên tài liệu]."
+        ),
+    },
+    "report_custom": {
+        "slot_id": "report_custom",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='report', report_format='Create Your Own', custom_prompt=...",
+        "char_budget_target": "600-950 chars",
+        "purpose": "Sinh báo cáo chuyên sâu hoặc quy trình vận hành chuẩn SOP từ nguồn sổ tay NotebookLM.",
+        "template_vi": (
+            "Hãy biên soạn tài liệu báo cáo nghiệp vụ chuyên sâu về chủ đề: '{topic}' cho hệ thống Rosier Fresh Tea & Coffee. "
+            "Yêu cầu bắt buộc: (1) Chỉ sử dụng dữ kiện có thật trong các nguồn của Notebook này và gắn nhãn trích dẫn [Source: Tên tài liệu] sau mỗi số liệu định lượng; "
+            "(2) Cấu trúc gồm 5 mục: Tóm tắt điều hành cho {target_audience}, Phân tích số liệu thực tế và nguyên nhân gốc rễ, Bảng quy chuẩn kỹ thuật hoặc định mức vận hành, Phân tách trách nhiệm theo mô hình chủ thể ({ownership_scope}), Danh mục kiểm tra nghiệm thu nhị phân trước 17:00; "
+            "(3) Áp dụng quy tắc bảo mật kho tri thức {target_hub}; "
+            "(4) Tuyệt đối không dùng từ ngữ chung chung, không dùng dấu gạch ngang dài và không đặt dấu phẩy trước chữ và."
+        ),
+    },
+    "data_table": {
+        "slot_id": "data_table",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='data_table', description=..., language='vi'",
+        "char_budget_target": "300-520 chars",
+        "purpose": "Trích xuất bảng dữ liệu có cấu trúc chuẩn hóa từ tập tài liệu nguồn trong NotebookLM.",
+        "template_vi": (
+            "Trích xuất bảng dữ liệu chuẩn hóa tiếng Việt về '{topic}' từ toàn bộ nguồn trong Notebook này. "
+            "Bắt buộc thiết kế đúng các cột sau: (1) Mã hạng mục / Mã điểm bán hoặc Mã SKU; (2) Tên quy trình / Chỉ tiêu nghiệp vụ; (3) Thông số định lượng chuẩn từ tài liệu nguồn; "
+            "(4) Phạm vi áp dụng ({ownership_scope}); (5) Trạng thái đối chất hoặc Cảnh báo rủi ro; (6) Hành động khắc phục và Thời hạn hoàn thành; (7) Nguồn trích dẫn [Source]. "
+            "Chỉ lấy dữ liệu có trong nguồn, ghi rõ 'Chưa có trong nguồn' nếu khuyết thông tin."
+        ),
+    },
+    "audio_overview": {
+        "slot_id": "audio_overview",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='audio', audio_format='deep_dive|brief|critique|debate', audio_length='short|default|long', focus_prompt=...",
+        "char_budget_target": "380-600 chars",
+        "purpose": "Đạo diễn bản thu Audio Podcast đào tạo ca kíp hoặc bản tin điều hành từ sổ tay NotebookLM.",
+        "template_vi": (
+            "Sản xuất bản thu Audio Overview bằng tiếng Việt tự nhiên, mạch lạc về chủ đề '{topic}' dành cho {target_audience} tại hệ thống Rosier. "
+            "Hai người dẫn chương trình đóng vai {persona_title} và Quản lý Vận hành Thực địa cùng trao đổi thực chiến: "
+            "(1) Mở đầu bằng tình huống thực tế tại quầy pha chế hoặc kho cửa hàng; "
+            "(2) Đi sâu vào các con số định mức chuẩn, nhiệt độ bảo quản 4 độ C, kỷ luật tích xanh 17:00 và các lỗi thường gặp; "
+            "(3) Chốt lại 3 hành động kiểm tra ngay trong ca làm việc. Bám sát 100% tài liệu nguồn trong Notebook."
+        ),
+    },
+    "video_overview": {
+        "slot_id": "video_overview",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='video', video_format='explainer|brief|cinematic', visual_style='editorial|instructional|classic', style_prompt=..., focus_prompt=...",
+        "char_budget_target": "400-620 chars",
+        "purpose": "Chỉ đạo kịch bản và phong cách thị giác cho Video đào tạo SOP hoặc giới thiệu sản phẩm trên NotebookLM Studio.",
+        "template_vi": (
+            "Tạo Video Overview giải thích trực quan về '{topic}' cho đối tượng {target_audience} thuộc chuỗi Rosier Fresh Tea & Coffee. "
+            "Định hướng thị giác (style_prompt): Phong cách Botanical Editorial sạch sẽ, chuẩn nhận diện thương hiệu v3.3 với tông Xanh Rừng Sâu (#153A2E), Kem Ấm (#FBF8F3) và Vàng Đồng (#C89D54), bố cục rõ ràng, dễ theo dõi trên màn hình di động. "
+            "Nội dung tập trung vào quy trình thao tác từng bước, thông số định lượng chuẩn từ tài liệu nguồn và tiêu chuẩn nghiệm thu chất lượng QSC-V."
+        ),
+    },
+    "slide_deck": {
+        "slot_id": "slide_deck",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='slide_deck', slide_format='detailed_deck|presenter_slides', slide_length='default', focus_prompt=...",
+        "char_budget_target": "450-700 chars",
+        "purpose": "Sinh bộ Slide đào tạo Học viện LMS hoặc Slide báo cáo giao ban L10/MBR từ nguồn NotebookLM.",
+        "template_vi": (
+            "Thiết kế bộ Slide thuyết trình chuyên nghiệp về '{topic}' dành cho {target_audience} tại hệ thống Rosier. "
+            "Yêu cầu cấu trúc: (1) Slide 1 nêu Mục tiêu đầu ra và phạm vi áp dụng ({ownership_scope}); "
+            "(2) Các slide nội dung trình bày theo nguyên tắc 1 thông điệp cốt lõi mỗi trang, kèm bảng thông số định lượng gram/ml/nhiệt độ/thời gian trích xuất trực tiếp từ nguồn; "
+            "(3) Slide phân tích lỗi sai phổ biến tại điểm bán và cách phòng ngừa; "
+            "(4) Slide cuối tổng hợp Bảng kiểm nghiệm thu thực tế và câu hỏi ôn tập trước 17:00. Tuân thủ bảo mật kho {target_hub}."
+        ),
+    },
+    "slide_revision": {
+        "slot_id": "slide_revision",
+        "mcp_tool": "studio_revise",
+        "mcp_parameter": "artifact_id=..., slide_instructions=[{'slide': N, 'prompt': ...}]",
+        "char_budget_target": "220-400 chars per slide",
+        "purpose": "Tinh chỉnh chính xác từng trang Slide cụ thể mà không làm xáo trộn toàn bộ bài trình chiếu.",
+        "template_vi": (
+            "Chỉnh sửa trang Slide mục tiêu về '{topic}': Thay thế toàn bộ nhận định định tính bằng bảng số liệu định lượng trích dẫn từ nguồn Notebook; "
+            "bổ sung rõ phạm vi áp dụng ({ownership_scope}) và tiêu chí nghiệm thu nhị phân; loại bỏ mọi từ ngữ sáo rỗng AI và giữ bố cục tinh gọn."
+        ),
+    },
+    "infographic": {
+        "slot_id": "infographic",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='infographic', orientation='portrait|landscape|square', detail_level='detailed', infographic_style='instructional|bento_grid|editorial', focus_prompt=...",
+        "char_budget_target": "360-560 chars",
+        "purpose": "Thiết kế Infographic quy trình SOP dán tại quầy pha chế hoặc sơ đồ luồng vận hành kho.",
+        "template_vi": (
+            "Thiết kế Infographic trực quan hóa quy trình '{topic}' để tra cứu nhanh tại quầy pha chế và khu vực kho của {target_audience}. "
+            "Trình bày theo bố cục Bento Grid / Instructional từng bước đánh số thứ tự rõ ràng, làm nổi bật các mốc định lượng quan trọng (nhiệt độ 4 độ C, định mức pha chế, hạn sử dụng nguyên liệu sau mở nắp, cổng 17:00) dựa hoàn toàn vào tài liệu nguồn trong Notebook."
+        ),
+    },
+    "quiz_and_flashcards": {
+        "slot_id": "quiz_and_flashcards",
+        "mcp_tool": "studio_create",
+        "mcp_parameter": "artifact_type='quiz|flashcards', question_count=20, difficulty='medium|hard', focus_prompt=...",
+        "char_budget_target": "380-580 chars",
+        "purpose": "Biên soạn ngân hàng câu hỏi trắc nghiệm thang Bloom và thẻ ghi nhớ Flashcards phục vụ kiểm tra LMS 17:00.",
+        "template_vi": (
+            "Tạo bộ câu hỏi kiểm tra năng lực thực chiến về '{topic}' dành cho {target_audience} trên hệ thống Học viện LMS Rosier. "
+            "Phân bổ câu hỏi theo thang nhận thức Bloom (30% Ghi nhớ thông số chuẩn, 30% Hiểu quy trình, 25% Vận dụng xử lý tình huống tại quầy, 15% Phân tích sai lệch vận hành). "
+            "Mỗi câu hỏi bắt buộc đính kèm giải thích đáp án đúng dựa trên tài liệu nguồn trong Notebook này."
+        ),
+    },
+    "interactive_report": {
+        "slot_id": "interactive_report",
+        "mcp_tool": "notebook_query",
+        "mcp_parameter": "query=... (Multi-Source Cross-Reference Matrix)",
+        "char_budget_target": "420-680 chars",
+        "purpose": "Truy vấn đối chiếu chéo đa nguồn tài liệu để phát hiện mâu thuẫn số liệu hoặc khoảng trống vận hành.",
+        "template_vi": (
+            "Thực hiện đối chiếu chéo toàn bộ các nguồn tài liệu trong Notebook này về chủ đề '{topic}'. "
+            "Hãy lập ma trận so sánh gồm: (1) Các điểm thống nhất giữa tài liệu quy chuẩn và báo cáo thực tế; "
+            "(2) Các điểm chênh lệch hoặc mâu thuẫn số liệu (nêu rõ con số ở từng nguồn [Source]); "
+            "(3) Đề xuất phương án chuẩn hóa theo khung quản trị của {persona_title} áp dụng cho {ownership_scope}."
+        ),
+    },
+    "critique_and_refactor": {
+        "slot_id": "critique_and_refactor",
+        "mcp_tool": "notebook_query",
+        "mcp_parameter": "query=... (Red-Team Pre-Mortem & De-AI Critique)",
+        "char_budget_target": "420-680 chars",
+        "purpose": "Phản biện Pre-Mortem và rà soát lỗ hổng quy trình trước khi trình CEO Toàn Chuỗi phê duyệt.",
+        "template_vi": (
+            "Đóng vai Hội đồng Phản biện Đảo ngược (Pre-Mortem) của Rosier, hãy rà soát toàn bộ tài liệu trong Notebook về '{topic}'. "
+            "Chỉ ra: (1) 3 điểm đứt gãy thực thi có thể xảy ra tại 25 điểm bán hoặc Kho Tổng; "
+            "(2) Các chỉ số báo cáo có nguy cơ mang tính hình thức mà chưa khóa bằng trạng thái hệ thống; "
+            "(3) Bản thiết kế lại cơ chế kiểm soát nhị phân đảm bảo giữ vững chất lượng đầu vào cho {ownership_scope}."
+        ),
+    },
+    "audio_diarization_workflow": {
+        "slot_id": "audio_diarization_workflow",
+        "mcp_tool": "notebook_query",
+        "mcp_parameter": "query=... (4-Step Multi-Signal Speaker Diarization & Action Extraction)",
+        "char_budget_target": "650-980 chars",
+        "purpose": "Bóc băng ghi âm cuộc họp đa giọng nói, gán nhãn người nói theo 9 chức danh chuẩn Rosier và trích xuất bảng hành động 10-Sao.",
+        "template_vi": (
+            "Phân tích bản ghi âm / bản gỡ băng cuộc họp về '{topic}' trong Notebook này theo quy trình 4 bước: "
+            "Bước 1 (Chuẩn hóa thuật ngữ STT): Hiệu đính các từ nhận diện giọng nói sai sang thuật ngữ chuẩn của Rosier (Ô Long Nhài Sữa, Lương 3P, Định mức BOM, Cổng tích xanh 17:00, Focus 12, CB-01, Cụm 03 CHH 38197/46880/87024). "
+            "Bước 2 (Phân tách lượt lời & Gán nhãn chức danh): Dựa vào tín hiệu mở đầu/kết thúc cuộc họp và từ khóa nghiệp vụ đặc trưng để gán nhãn từng phát biểu vào đúng 9 chức danh chuẩn của Rosier (CEO Toàn Chuỗi, Chủ Cửa Hàng Công Ty, Chủ Quán HKD, Trưởng Vận hành QSC-V, Trưởng Cung ứng Kho Tổng, Chuyên gia R&D, Trưởng Tài chính Thuế, Trưởng Tiếp thị Thương hiệu, Trưởng Nhân sự Pháp chế), tuyệt đối không dùng tên riêng cá nhân. "
+            "Bước 3 (Bảng Tóm tắt Quyết định & Giao việc 10-Sao): Lập bảng gồm Cột Thời lượng [MM:SS], Chức danh phát biểu, Nội dung quyết định, Đầu việc 10-Sao, Chức danh chịu trách nhiệm và Thời hạn hoàn thành. "
+            "Bước 4 (Kiểm toán Đối chất 3 Nguồn): Đánh dấu các tuyên bố tiến độ trong cuộc họp cần đối chiếu lại với số liệu thực tế trên hệ thống MCP."
+        ),
+    },
+}
+
+
+def compile_notebooklm_v0158_prompt_bundle(
+    payload: Dict[str, Any],
+    is_ho_edition: bool = False,
+) -> Dict[str, Any]:
+    """Compile a deterministic 5-Block Grounded Prompt Bundle for all 12 NotebookLM v0.15.8 Prompt Slots."""
+    archetype_id = str(payload.get("archetype_id") or payload.get("archetype") or "N1").strip().upper()
+    if archetype_id not in ROSIER_NOTEBOOKLM_ARCHETYPES_9:
+        archetype_id = "N1"
+    arch = ROSIER_NOTEBOOKLM_ARCHETYPES_9[archetype_id]
+
+    requested_slot = str(payload.get("slot_id") or payload.get("prompt_slot") or "all").strip().lower()
+    raw_topic = str(
+        payload.get("topic")
+        or payload.get("query")
+        or payload.get("notebook_title")
+        or arch["title"]
+    ).strip()
+    clean_topic = sanitize_rosier_text(raw_topic)
+
+    target_hub_raw = str(payload.get("target_hub") or arch["default_hub"]).strip().upper()
+    is_store_hub = target_hub_raw in ("ROSIER_STORE_HUB", "STORE_HUB", "PUBLIC_DMZ_SAFE")
+    resolved_hub_id = (
+        KNOWLEDGE_HUBS["ROSIER_STORE_HUB"]["hub_id"]
+        if is_store_hub
+        else KNOWLEDGE_HUBS["ROSIER_BUSINESS"]["hub_id"]
+    )
+
+    if is_store_hub:
+        clean_topic = re.sub(
+            r"(?i)\b(cogs|giá vốn|biên lợi nhuận ròng|lợi nhuận mật|mức lương cá nhân)\b",
+            "tiêu chuẩn vận hành điểm bán",
+            clean_topic,
+        )
+
+    persona_id = str(payload.get("persona_id") or arch["recommended_personas"][0]).strip()
+    persona_title_map = {
+        "rs-persona-first-principles-truth": "Cố vấn Điều hành Toàn Chuỗi (CEO Toàn Chuỗi · Pháp nhân CTCP)",
+        "rs-persona-store-owner-company": "Cố vấn Quản trị Cụm 03 Cửa Hàng Công Ty (Cty TNHH · 38197, 46880, 87024)",
+        "rs-persona-store-owner-hkd": "Cố vấn Vận hành & Dòng tiền Điểm Bán Nhượng Quyền (Mô hình Hộ Kinh Doanh)",
+        "rs-persona-master-rnd": "Chuyên gia Nghiên cứu Công thức & Định mức Đồ uống (Master R&D)",
+        "rs-persona-field-commander": "Chỉ huy Vận hành & Kiểm soát Chất lượng Thực địa (Field Commander)",
+        "rs-persona-antifragile-supply": "Cố vấn Chuỗi Cung ứng Trung tâm & Kho Tổng 5S",
+        "rs-persona-tax-shield-ledger": "Cố vấn Tài chính Kế toán & Lá chắn Thuế Đa Pháp nhân",
+        "rs-persona-hook-retention-3s": "Đạo diễn Sáng tạo Thương hiệu & Giữ chân Thị giác 3 Giây",
+        "rs-persona-minimal-product-cut": "Cố vấn Tinh gọn Danh mục Sản phẩm & Trải nghiệm Điểm chạm",
+        "rs-persona-first-principles-truth": "Cố vấn Tư duy Nguyên bản & Học viện Đào tạo LMS",
+        "rs-persona-inversion-premortem": "Cố vấn Phản biện Đảo ngược & Quản trị Rủi ro Pre-Mortem",
+        "rs-persona-authentic-brewer": "Nghệ nhân Pha chế Chuẩn vị & Văn hóa Phục vụ Rosier",
+    }
+    persona_title = persona_title_map.get(persona_id, persona_title_map["rs-persona-first-principles-truth"])
+
+    target_audience = sanitize_rosier_text(
+        str(
+            payload.get("target_audience")
+            or ("Đội ngũ Cửa hàng trưởng và Barista tại 25 điểm bán" if is_store_hub else "Ban Điều hành và Trưởng Bộ phận Khối HO")
+        )
+    )
+    ownership_scope = sanitize_rosier_text(
+        str(
+            payload.get("ownership_scope")
+            or ("25 Điểm bán (Cụm 03 CHH Công ty 38197, 46880, 87024 và 22 CHNQ Hộ kinh doanh)" if is_store_hub else "Pháp nhân CTCP Chuỗi, Cụm 03 CHH Công ty TNHH và 22 CHNQ Hộ kinh doanh")
+        )
+    )
+
+    compiled_slots: Dict[str, Dict[str, Any]] = {}
+    slots_to_build = (
+        {requested_slot: ROSIER_NLM_PROMPT_SLOTS_V0158[requested_slot]}
+        if requested_slot in ROSIER_NLM_PROMPT_SLOTS_V0158
+        else ROSIER_NLM_PROMPT_SLOTS_V0158
+    )
+
+    for s_key, s_meta in slots_to_build.items():
+        rendered = s_meta["template_vi"].format(
+            topic=clean_topic,
+            persona_title=persona_title,
+            target_audience=target_audience,
+            target_hub=resolved_hub_id,
+            ownership_scope=ownership_scope,
+        )
+        rendered_clean = sanitize_rosier_text(rendered)
+        audit = run_rs_3pass_de_ai_audit(rendered_clean)
+        compiled_slots[s_key] = {
+            "slot_id": s_key,
+            "mcp_tool": s_meta["mcp_tool"],
+            "mcp_parameter": s_meta["mcp_parameter"],
+            "char_count": len(rendered_clean),
+            "char_budget_target": s_meta["char_budget_target"],
+            "prompt_text": rendered_clean,
+            "de_ai_3pass_status": audit["status"],
+        }
+
+    bundle_digest = hashlib.sha256(
+        json.dumps(
+            {
+                "archetype_id": archetype_id,
+                "topic": clean_topic,
+                "target_hub": resolved_hub_id,
+                "slots": list(compiled_slots.keys()),
+            },
+            sort_keys=True,
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()[:16]
+
+    return {
+        "ok": True,
+        "status": "COMPILED_OK",
+        "claim_label": "[DERIVED]",
+        "engine_module": "rs_nlm_prompt_architect_engine",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT" if is_ho_edition else "FULL_CEO",
+        "notebooklm_runtime": NOTEBOOKLM_MCP_RUNTIME_META,
+        "archetype": arch,
+        "topic": clean_topic,
+        "persona_id": persona_id,
+        "persona_title": persona_title,
+        "target_hub": resolved_hub_id,
+        "store_hub_air_gap_sanitized": is_store_hub,
+        "total_slots_compiled": len(compiled_slots),
+        "compiled_prompt_slots": compiled_slots,
+        "bundle_sha256_16": bundle_digest,
+    }
+
+
+def normalize_rosier_stt_transcript(raw_text: str) -> Dict[str, Any]:
+    """Step 1 of Audio Diarization: Normalize Vietnamese F&B & Rosier STT phonetic errors into canonical terms."""
+    cleaned = sanitize_rosier_text(raw_text or "")
+    applied_corrections: List[Dict[str, Any]] = []
+    for pattern, replacement, note in ROSIER_STT_PHONETIC_CORRECTIONS:
+        rx = re.compile(pattern, re.IGNORECASE)
+        matches = rx.findall(cleaned)
+        if matches:
+            cleaned = rx.sub(replacement, cleaned)
+            applied_corrections.append({
+                "matched_count": len(matches),
+                "canonical_term": replacement,
+                "reason": note,
+            })
+    return {
+        "normalized_transcript": cleaned,
+        "corrections_applied_count": len(applied_corrections),
+        "corrections_detail": applied_corrections,
+    }
+
+
+def diarize_and_attribute_rosier_transcript(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """4-Step Multi-Signal Audio Speaker Diarization & Role Attribution Engine (100% Role-Only, 0 Personal Names)."""
+    default_sample = (
+        "[00:00] Speaker A: Mở đầu buổi giao ban L10 hôm nay, tôi yêu cầu đối chất 3 nguồn trên hệ thống MCP cho toàn chuỗi 25 điểm bán và chốt kế hoạch 10-sao.\n"
+        "[01:15] Speaker B: Báo cáo tại cụm 3 chh gồm điểm bán 38197, 46880 và 87024 theo mô hình công ty, định biên lao động ca sáng đã ổn định cho thử nghiệm pilot lab.\n"
+        "[02:40] Speaker C: Về kiểm tra thực địa qsc-v và nhóm focus 12, tốc độ ra đồ đã cải thiện và nhiệt độ tủ mát duy trì đúng 4 độ C.\n"
+        "[04:05] Speaker D: Bộ phận kho tổng 5S đã hoàn tất kiểm kê mù nguyên vật liệu theo nguyên tắc phi phô và điều phối xe giao hàng cho tuyến ngoại thành 67650 và 57588.\n"
+        "[05:20] Speaker E: Phòng R&D đã hiệu chỉnh định mức bê ô em cho món ô long nhài ở mức độ Brix chuẩn để giữ hương hoa tự nhiên.\n"
+        "[06:45] Speaker F: Về tài chính đa pháp nhân, hệ thống đã kích hoạt xi bi không một với các điểm quá hạn và hoàn tất đối soát sao kê ngân hàng giao dịch.\n"
+        "[08:10] Speaker G: Bộ phận nhân sự đã khóa kpi đầu tháng, chuẩn bị chấm điểm kpi cuối tháng gắn với lương ba pê và kiểm soát cổng một bảy không không trên học viện lms."
+    )
+    raw_transcript = str(payload.get("transcript") or payload.get("raw_transcript") or default_sample).strip()
+
+    # Step 1: Phonetic STT Normalization
+    norm_res = normalize_rosier_stt_transcript(raw_transcript)
+    normalized_text = norm_res["normalized_transcript"]
+
+    # Step 2 & 3: Segment parsing & Multi-Signal Role Attribution across 9 Speaker Fingerprints
+    lines = [ln.strip() for ln in normalized_text.splitlines() if ln.strip()]
+    attributed_segments: List[Dict[str, Any]] = []
+    speaker_label_cache: Dict[str, str] = {}
+
+    for idx, line in enumerate(lines):
+        ts_match = re.match(r"^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s*(?:([A-Za-zÀ-ỹ0-9_\s]+):)?\s*(.*)$", line)
+        if ts_match:
+            timestamp = ts_match.group(1)
+            raw_spk_tag = (ts_match.group(2) or f"Turn_{idx+1}").strip()
+            utterance = ts_match.group(3).strip()
+        else:
+            timestamp = f"0{idx}:00"
+            raw_spk_tag = f"Turn_{idx+1}"
+            utterance = line
+
+        utterance_low = utterance.lower()
+        best_spk_id = "SPK_01_CHAIN_CEO"
+        best_score = -1.0
+        matched_markers: List[str] = []
+
+        for spk_id, fp in ROSIER_SPEAKER_FINGERPRINTS_9.items():
+            hits = [m for m in fp["lexical_markers"] if m.lower() in utterance_low]
+            score = float(len(hits) * 25.0)
+            if idx == 0 and spk_id == "SPK_01_CHAIN_CEO" and any(k in utterance_low for k in ("mở đầu", "giao ban", "yêu cầu")):
+                score += 20.0
+            if raw_spk_tag in speaker_label_cache and speaker_label_cache[raw_spk_tag] == spk_id:
+                score += 5.0
+            if score > best_score:
+                best_score = score
+                best_spk_id = spk_id
+                matched_markers = hits
+
+        speaker_label_cache[raw_spk_tag] = best_spk_id
+        fp_chosen = ROSIER_SPEAKER_FINGERPRINTS_9[best_spk_id]
+        confidence = min(99.0, round(68.0 + min(31.0, best_score), 1))
+
+        attributed_segments.append({
+            "turn_index": idx + 1,
+            "timestamp": timestamp,
+            "raw_speaker_tag": raw_spk_tag,
+            "resolved_speaker_id": best_spk_id,
+            "resolved_role_title": fp_chosen["role_title"],
+            "department": fp_chosen["department"],
+            "persona_id": fp_chosen["persona_id"],
+            "confidence_pct": confidence,
+            "matched_lexical_markers": matched_markers,
+            "normalized_utterance": utterance,
+        })
+
+    unique_roles = list(dict.fromkeys(seg["resolved_role_title"] for seg in attributed_segments))
+    action_items_10star = [
+        {
+            "action_id": f"ACT-NLM-{seg['turn_index']:02d}",
+            "owner_role": seg["resolved_role_title"],
+            "department": seg["department"],
+            "timestamp_ref": seg["timestamp"],
+            "summary": seg["normalized_utterance"],
+            "verification_gate": "MCP_3WAY_CROSS_AUDIT_AND_1700_CHECK",
+        }
+        for seg in attributed_segments
+    ]
+
+    return {
+        "ok": True,
+        "status": "DIARIZED_OK",
+        "claim_label": "[DERIVED]",
+        "engine_module": "rs_audio_diarization_engine",
+        "role_only_zero_personal_names": True,
+        "step_1_stt_normalization": norm_res,
+        "step_2_speaker_fingerprints_available": len(ROSIER_SPEAKER_FINGERPRINTS_9),
+        "step_3_attributed_segments_count": len(attributed_segments),
+        "unique_roles_detected_count": len(unique_roles),
+        "unique_roles_detected": unique_roles,
+        "attributed_segments": attributed_segments,
+        "step_4_action_items_10star": action_items_10star,
+    }
+
+
+def build_audio_diarization_mcp_plan(
+    payload: Dict[str, Any],
+    is_ho_edition: bool = False,
+) -> Dict[str, Any]:
+    """Build an end-to-end NotebookLM MCP + Local STT Diarization execution pipeline for multi-speaker audio."""
+    notebook_id = str(payload.get("notebook_id") or "nb-rosier-l10-audio-vault").strip()
+    audio_source = str(payload.get("audio_source") or "recordings/rosier-weekly-l10-session.m4a").strip()
+    diarization_res = diarize_and_attribute_rosier_transcript(payload)
+    prompt_slot = compile_notebooklm_v0158_prompt_bundle(
+        {
+            "archetype_id": "N9",
+            "slot_id": "audio_diarization_workflow",
+            "topic": payload.get("topic") or "Bóc băng họp giao ban L10 và trích xuất hành động 10-Sao",
+        },
+        is_ho_edition=is_ho_edition,
+    )
+    mcp_steps = [
+        {
+            "step": 1,
+            "mcp_tool": "source_add",
+            "arguments": {
+                "notebook_id": notebook_id,
+                "source_type": "file",
+                "file_path": audio_source,
+                "wait": True,
+            },
+            "purpose": "Nạp file ghi âm cuộc họp (.m4a/.mp3/.wav) vào sổ tay NotebookLM để trích xuất văn bản gốc.",
+        },
+        {
+            "step": 2,
+            "mcp_tool": "source_get_content",
+            "arguments": {
+                "source_id": "src-audio-transcript-latest",
+            },
+            "purpose": "Lấy toàn văn bản gỡ băng thô từ NotebookLM để đưa qua bộ chuẩn hóa từ vựng STT Rosier.",
+        },
+        {
+            "step": 3,
+            "mcp_tool": "notebook_query",
+            "arguments": {
+                "notebook_id": notebook_id,
+                "query": prompt_slot["compiled_prompt_slots"]["audio_diarization_workflow"]["prompt_text"],
+            },
+            "purpose": "Thực thi truy vấn gán nhãn 9 chức danh chuẩn Rosier và đối chất 3 nguồn trên NotebookLM.",
+        },
+        {
+            "step": 4,
+            "mcp_tool": "studio_create",
+            "arguments": {
+                "notebook_id": notebook_id,
+                "artifact_type": "data_table",
+                "language": "vi",
+                "description": "Bảng phân công hành động 10-Sao trích xuất từ cuộc họp gồm: Mốc thời gian, Chức danh phát biểu, Quyết định cốt lõi, Đầu việc, Chức danh phụ trách và Hạn hoàn thành.",
+                "confirm": True,
+            },
+            "purpose": "Xuất bảng Data Table chuẩn hóa phục vụ giao việc tự động trên hệ thống thực thi.",
+        },
+    ]
+    return {
+        "ok": True,
+        "status": "AUDIO_DIARIZATION_PLAN_READY",
+        "claim_label": "[DERIVED]",
+        "notebook_id": notebook_id,
+        "audio_source": audio_source,
+        "mcp_pipeline_steps": mcp_steps,
+        "local_diarization_preview": diarization_res,
+    }
+
+
+def build_notebooklm_mcp_execution_plan(
+    payload: Dict[str, Any],
+    is_ho_edition: bool = False,
+) -> Dict[str, Any]:
+    """Build a deterministic NotebookLM MCP tool call sequence with HO Destructive-Tool Blocking & 2-Hub Air-Gap."""
+    requested_tool = str(payload.get("mcp_tool") or payload.get("tool_name") or "").strip().lower()
+    if is_ho_edition and requested_tool in HO_FORBIDDEN_NOTEBOOKLM_TOOLS:
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+            "blocked_mcp_tool": requested_tool,
+            "error": {
+                "code": "HO_DESTRUCTIVE_NOTEBOOKLM_TOOL_FORBIDDEN",
+                "root_cause": (
+                    f"Bộ kỹ năng Khối HO (rosier-ho-skills) khóa cứng công cụ xóa '{requested_tool}' trên NotebookLM MCP "
+                    "để bảo vệ toàn vẹn sổ tay tri thức toàn chuỗi. Nhân sự HO chỉ được phép tạo mới, truy vấn, đồng bộ nguồn và sinh học liệu Studio."
+                ),
+                "next_command": "python3 skills/rs-kb-notebooklm-research-studio/scripts/rs_kb_notebooklm_research_studio_tool.py plan --archetype N1 --dry-run --json",
+            },
+        }
+
+    archetype_id = str(payload.get("archetype_id") or payload.get("archetype") or "N1").strip().upper()
+    if archetype_id not in ROSIER_NOTEBOOKLM_ARCHETYPES_9:
+        archetype_id = "N1"
+    arch = ROSIER_NOTEBOOKLM_ARCHETYPES_9[archetype_id]
+
+    prompt_bundle = compile_notebooklm_v0158_prompt_bundle(payload, is_ho_edition=is_ho_edition)
+    slots = prompt_bundle["compiled_prompt_slots"]
+    notebook_title = f"[ROSIER-{archetype_id}] {prompt_bundle['topic']}"
+
+    mcp_sequence = [
+        {
+            "step": 1,
+            "tool_group": "notebooks",
+            "mcp_tool": "notebook_create",
+            "arguments": {"title": notebook_title},
+            "description": "Khởi tạo sổ tay NotebookLM theo đúng phân khu chuẩn của Rosier.",
+        },
+        {
+            "step": 2,
+            "tool_group": "sources",
+            "mcp_tool": "source_add",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "source_type": str(payload.get("source_type") or "text"),
+                "title": f"Nguồn chuẩn hóa: {prompt_bundle['topic']}",
+                "wait": True,
+            },
+            "description": "Nạp tài liệu nguồn đã qua bộ lọc bảo mật 2-Hub của Rosier vào NotebookLM.",
+        },
+        {
+            "step": 3,
+            "tool_group": "query_and_chat",
+            "mcp_tool": "chat_configure",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "goal": "custom",
+                "response_length": "default",
+                "custom_prompt": slots["chat_persona"]["prompt_text"],
+            },
+            "description": "Khóa nhân cách cố vấn chuyên gia Rosier (5-Block Grounded Persona) cho sổ tay.",
+        },
+        {
+            "step": 4,
+            "tool_group": "query_and_chat",
+            "mcp_tool": "notebook_query",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "query": slots["interactive_report"]["prompt_text"],
+            },
+            "description": "Thực thi truy vấn đối chiếu chéo đa nguồn có trích dẫn [Source].",
+        },
+        {
+            "step": 5,
+            "tool_group": "studio_report",
+            "mcp_tool": "studio_create",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "artifact_type": "report",
+                "report_format": "Create Your Own",
+                "custom_prompt": slots["report_custom"]["prompt_text"],
+                "confirm": True,
+            },
+            "description": "Sinh báo cáo chuyên sâu hoặc quy trình SOP chuẩn hóa trên NotebookLM Studio.",
+        },
+        {
+            "step": 6,
+            "tool_group": "studio_slides",
+            "mcp_tool": "studio_create",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "artifact_type": "slide_deck",
+                "slide_format": "detailed_deck",
+                "slide_length": "default",
+                "focus_prompt": slots["slide_deck"]["prompt_text"],
+                "confirm": True,
+            },
+            "description": "Sinh bộ Slide đào tạo Học viện LMS hoặc Slide báo cáo giao ban.",
+        },
+        {
+            "step": 7,
+            "tool_group": "studio_data_table",
+            "mcp_tool": "studio_create",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "artifact_type": "data_table",
+                "language": "vi",
+                "description": slots["data_table"]["prompt_text"],
+                "confirm": True,
+            },
+            "description": "Trích xuất bảng dữ liệu chuẩn hóa tiếng Việt từ nguồn tài liệu.",
+        },
+        {
+            "step": 8,
+            "tool_group": "studio_quiz_flashcards",
+            "mcp_tool": "studio_create",
+            "arguments": {
+                "notebook_id": "<notebook_id>",
+                "artifact_type": "quiz",
+                "question_count": 20,
+                "difficulty": "medium",
+                "focus_prompt": slots["quiz_and_flashcards"]["prompt_text"],
+                "confirm": True,
+            },
+            "description": "Sinh bộ 20 câu hỏi trắc nghiệm thang Bloom phục vụ cổng tích xanh 17:00 trên LMS.",
+        },
+    ]
+
+    return {
+        "ok": True,
+        "status": "PLAN_READY",
+        "claim_label": "[DERIVED]",
+        "engine_module": "rs_notebooklm_mcp_engine",
+        "execution_mode": "HO_SAFE_READ_AND_DRAFT" if is_ho_edition else "FULL_CEO",
+        "ho_forbidden_tools_blocked": list(HO_FORBIDDEN_NOTEBOOKLM_TOOLS) if is_ho_edition else [],
+        "notebooklm_runtime": NOTEBOOKLM_MCP_RUNTIME_META,
+        "archetype": arch,
+        "target_hub": prompt_bundle["target_hub"],
+        "store_hub_air_gap_sanitized": prompt_bundle["store_hub_air_gap_sanitized"],
+        "mcp_sequence_steps_count": len(mcp_sequence),
+        "mcp_sequence": mcp_sequence,
+        "prompt_bundle_sha256_16": prompt_bundle["bundle_sha256_16"],
+    }
+
+
+def execute_notebooklm_action(
+    payload: Dict[str, Any],
+    dry_run: bool = False,
+    is_ho_edition: bool = False,
+) -> Dict[str, Any]:
+    """Unified dispatcher for NotebookLM Research Studio (#144) and Prompt Architect (#145)."""
+    action = str(payload.get("nlm_action") or payload.get("action") or "plan").strip().lower()
+    if action in ("archetypes", "list-archetypes"):
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "OK",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "total_archetypes": len(ROSIER_NOTEBOOKLM_ARCHETYPES_9),
+            "archetypes": ROSIER_NOTEBOOKLM_ARCHETYPES_9,
+            "total_speaker_fingerprints": len(ROSIER_SPEAKER_FINGERPRINTS_9),
+            "speaker_fingerprints": ROSIER_SPEAKER_FINGERPRINTS_9,
+        }
+    if action in ("slots", "list-slots"):
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "OK",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "runtime_meta": NOTEBOOKLM_MCP_RUNTIME_META,
+            "total_prompt_slots": len(ROSIER_NLM_PROMPT_SLOTS_V0158),
+            "prompt_slots": ROSIER_NLM_PROMPT_SLOTS_V0158,
+            "mcp_tool_groups": NOTEBOOKLM_MCP_TOOLS_MAP,
+        }
+    if action in ("compile-prompts", "compile", "prompt-bundle"):
+        return compile_notebooklm_v0158_prompt_bundle(payload, is_ho_edition=is_ho_edition)
+    if action in ("diarize", "audio-diarize", "stt-normalize"):
+        return diarize_and_attribute_rosier_transcript(payload)
+    if action in ("audio-plan", "diarization-plan"):
+        return build_audio_diarization_mcp_plan(payload, is_ho_edition=is_ho_edition)
+    return build_notebooklm_mcp_execution_plan(payload, is_ho_edition=is_ho_edition)
+
+
 def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
     raw_doc = payload.get("document", {
         "title": "SOP Pha Chế Trà Ô Long Nhài Sữa Chuẩn Rosier",
@@ -1311,9 +2218,28 @@ def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
             "total_versions_in_ledger": bom_resolved.get("total_versions_in_ledger"),
             "preserved_archived_versions_count": bom_resolved.get("preserved_archived_versions_count"),
         },
+        "notebooklm_research_studio_v0158": {
+            "mcp_server": NOTEBOOKLM_MCP_RUNTIME_META["mcp_server"],
+            "cli_version": NOTEBOOKLM_MCP_RUNTIME_META["cli_version"],
+            "total_mcp_tools": NOTEBOOKLM_MCP_RUNTIME_META["total_mcp_tools"],
+            "total_tool_groups": NOTEBOOKLM_MCP_RUNTIME_META["total_tool_groups"],
+            "total_archetypes_9": len(ROSIER_NOTEBOOKLM_ARCHETYPES_9),
+            "total_prompt_slots_12": len(ROSIER_NLM_PROMPT_SLOTS_V0158),
+            "total_speaker_fingerprints_9": len(ROSIER_SPEAKER_FINGERPRINTS_9),
+            "flagship_skills": [
+                "rs-kb-notebooklm-research-studio",
+                "rs-kb-notebooklm-prompt-architect",
+            ],
+        },
     }
     if payload.get("bom_action"):
         out["bom_action_result"] = execute_bom_lifecycle_action(
+            payload,
+            dry_run=bool(payload.get("dry_run", True)),
+            is_ho_edition=bool(payload.get("is_ho_edition", False)),
+        )
+    if payload.get("nlm_action") or payload.get("archetype_id") or payload.get("archetype") or payload.get("slot_id") or payload.get("transcript"):
+        out["notebooklm_action_result"] = execute_notebooklm_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
             is_ho_edition=bool(payload.get("is_ho_edition", False)),
@@ -3482,13 +4408,22 @@ INTENT_DOMAIN_RULES: List[Dict[str, Any]] = [
         "div_code": "02",
         "profile": "academy-kb",
         "keywords": [
+            "notebooklm", "notebook", "sổ tay ai", "prompt notebooklm", "studio_create",
+            "audio overview", "video overview", "bóc băng", "gỡ băng", "ghi âm họp", "phân tách giọng nói", "diarization",
             "bom", "tạo mới bom", "cập nhật bom", "duyệt bom", "lịch sử bom", "định mức công thức",
             "sop", "quy trình pha chế", "công thức", "r&d", "định mức", "ủ trà", "haccp",
             "iso", "học viện", "lms", "khóa học", "bài giảng", "slide đào tạo",
             "quiz", "trắc nghiệm", "bloom", "tích xanh", "17:00", "hội nhập", "onboarding",
             "đồng bộ kho tri thức", "2 hub", "store hub", "wiki", "faq",
         ],
-        "primary_skills": ["rs-kb-recipe-rd-vault", "rs-kb-sop-iso-author", "rs-lms-course-factory", "rs-kb-knowledge-2hub-router"],
+        "primary_skills": [
+            "rs-kb-notebooklm-research-studio",
+            "rs-kb-notebooklm-prompt-architect",
+            "rs-kb-recipe-rd-vault",
+            "rs-kb-sop-iso-author",
+            "rs-lms-course-factory",
+            "rs-kb-knowledge-2hub-router",
+        ],
         "personas": ["rs-persona-master-rnd", "rs-persona-first-principles-truth"],
         "workflow": "rs-wf-lms-slide-to-published-course",
         "mcp_tools": ["rs-mcp-lms-course-publish", "rs-mcp-hub-2way-sanitize-sync"],
@@ -3899,6 +4834,39 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
                 "div_code": k_code,
                 "confidence_score": round(99.5 - idx_k * 1.2, 1),
                 "matched_signals": ["monthly_kpi_lifecycle_create_and_score"],
+            })
+
+    nlm_signals = [
+        k for k in (
+            "notebooklm", "notebook", "sổ tay ai", "prompt notebooklm", "studio_create",
+            "audio overview", "video overview", "bóc băng", "gỡ băng", "ghi âm họp", "phân tách giọng nói", "diarization",
+        )
+        if k in lowered_q
+    ]
+    if nlm_signals:
+        is_prompt_first = any(k in lowered_q for k in ("prompt notebooklm", "thiết kế prompt", "prompt architect", "5-block", "12 slot"))
+        nlm_pair = (
+            [
+                ("rs-kb-notebooklm-prompt-architect", "02-rs-kb-lms", "02"),
+                ("rs-kb-notebooklm-research-studio", "02-rs-kb-lms", "02"),
+                ("rs-lms-course-factory", "02-rs-kb-lms", "02"),
+            ]
+            if is_prompt_first
+            else [
+                ("rs-kb-notebooklm-research-studio", "02-rs-kb-lms", "02"),
+                ("rs-kb-notebooklm-prompt-architect", "02-rs-kb-lms", "02"),
+                ("rs-lms-course-factory", "02-rs-kb-lms", "02"),
+            ]
+        )
+        for idx_n, (n_sid, n_div, n_code) in enumerate(nlm_pair):
+            scored_execution_skills = [x for x in scored_execution_skills if x["skill_id"] != n_sid]
+            seen_skill_ids.add(n_sid)
+            scored_execution_skills.insert(idx_n, {
+                "skill_id": n_sid,
+                "division": n_div,
+                "div_code": n_code,
+                "confidence_score": round(99.6 - idx_n * 1.1, 1),
+                "matched_signals": nlm_signals,
             })
 
     if matched_company_stores and "rs-ops-company3-pilot-lab" not in seen_skill_ids and not is_dmz:
@@ -4367,6 +5335,18 @@ def self_test_all_divisions() -> Dict[str, Any]:
     assert kpi_finalize_ok["ok"] is True and kpi_finalize_ok["evaluation_summary"]["p3_kpr_achievement_ratio"] == 1.0625, "kpi-finalize must compute deterministic P3 ratio for 3P payroll"
     router_kpi = route_rosier_intent({"mode": "advise", "query": "Tạo mới KPI đầu tháng và chấm điểm KPI cuối tháng cho Cửa hàng trưởng điểm bán 38197"}, dry_run=True)
     assert router_kpi["recommended_combo"]["layer_1_execution_skills"][0]["skill_id"] == "rs-hr-monthly-kpi-engine", "Router must prioritize rs-hr-monthly-kpi-engine for KPI queries"
+    # NotebookLM Dual Flagship Suite (#144 & #145) self-tests
+    nlm_bundle = compile_notebooklm_v0158_prompt_bundle({"archetype_id": "N3", "target_hub": "ROSIER_STORE_HUB", "topic": "SOP ủ trà Ô Long Nhài Sữa và giá vốn COGS"}, is_ho_edition=True)
+    assert nlm_bundle["ok"] is True and nlm_bundle["total_slots_compiled"] == 12 and nlm_bundle["store_hub_air_gap_sanitized"] is True, "Must compile all 12 NotebookLM v0.15.8 prompt slots with Store Hub air-gap sanitization"
+    assert "cogs" not in nlm_bundle["topic"].lower(), "Store Hub air-gap must strip COGS from NotebookLM topic"
+    nlm_ho_block = build_notebooklm_mcp_execution_plan({"mcp_tool": "notebook_delete"}, is_ho_edition=True)
+    assert nlm_ho_block["status"] == "BLOCKED" and nlm_ho_block["error"]["code"] == "HO_DESTRUCTIVE_NOTEBOOKLM_TOOL_FORBIDDEN", "Must block destructive NotebookLM tools in HO edition"
+    nlm_plan_ok = build_notebooklm_mcp_execution_plan({"archetype_id": "N1", "topic": "Hồ sơ R&D Trà Ô Long Nhài Sữa"}, is_ho_edition=False)
+    assert nlm_plan_ok["ok"] is True and nlm_plan_ok["mcp_sequence_steps_count"] == 8, "Must generate 8-step NotebookLM MCP execution plan"
+    nlm_diarize = diarize_and_attribute_rosier_transcript({})
+    assert nlm_diarize["ok"] is True and nlm_diarize["role_only_zero_personal_names"] is True and nlm_diarize["step_3_attributed_segments_count"] >= 5, "Must diarize and attribute multi-speaker transcript into Role-Only speaker profiles"
+    router_nlm = route_rosier_intent({"mode": "advise", "query": "Tạo sổ tay NotebookLM và bóc băng ghi âm họp giao ban L10 cho 25 điểm bán"}, dry_run=True)
+    assert router_nlm["recommended_combo"]["layer_1_execution_skills"][0]["skill_id"] == "rs-kb-notebooklm-research-studio", "Router must prioritize rs-kb-notebooklm-research-studio for NotebookLM queries"
     return {
         "status": "PASS",
         "claim_label": "[OBSERVED: core/rs_core_engine.py]",
@@ -4380,6 +5360,7 @@ def self_test_all_divisions() -> Dict[str, Any]:
         "ownership_triad_verified": True,
         "bom_bitemporal_ledger_and_3stage_gate_verified": True,
         "monthly_kpi_lifecycle_engine_verified": True,
+        "notebooklm_dual_flagship_suite_v0158_verified": True,
         "ceo_cognitive_os_v66_verified": True,
         "org_governance_v62_verified": True,
         "results": results,

@@ -393,7 +393,7 @@ def verify_all() -> Dict[str, Any]:
         len(skill_failures) == 0
         and len(wf_failures) == 0
         and len(mcp_failures) == 0
-        and expected_skills_count in (126, 127, 128, 129, 130)
+        and expected_skills_count in (126, 127, 128, 129, 130, 131)
         and len(skills_catalog_json.get("skills", [])) == expected_skills_count
         and len(manifest["workflows"]) == 28
         and mcp_tools_counted == 24

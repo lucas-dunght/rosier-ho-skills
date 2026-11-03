@@ -1,11 +1,11 @@
 {
   "_readme": "Machine-readable catalog of Rosier HO Skills Suite (RS-OS HO Edition · Khối Văn Phòng HO). Zero CEO privilege, Zero DB mutation, Zero-Command Auto Skill Router enabled.",
-  "updated": "2026-10-29",
+  "updated": "2026-11-03",
   "owner": "Ban Điều Hành Toàn Chuỗi · Rosier Fresh Tea & Coffee",
-  "ecosystem_version": "6.5.0-ho.1",
+  "ecosystem_version": "6.7.0-ho.1",
   "counts": {
-    "total_items": 181,
-    "skills": 129,
+    "total_items": 183,
+    "skills": 131,
     "workflows": 28,
     "mcp_tools": 24
   },
@@ -3639,6 +3639,65 @@
         "3p"
       ],
       "version": "6.6.0"
+    },
+    {
+      "index": 144,
+      "name": "rs-kb-notebooklm-research-studio",
+      "layer": "flagship",
+      "category": "Phân khu 02: Kho Tri Thức 2-Hub, Công Thức R&D & Học Viện Số LMS (rs-kb-* & rs-lms-*)",
+      "repo": "rs-os-180-suite",
+      "subdir": "skills/rs-kb-notebooklm-research-studio",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "summary": "Xưởng Nghiên Cứu Tri Thức, Sản Xuất Học Liệu Studio & Bóc Băng Ghi Âm Đa Giọng Nói Trên Google NotebookLM MCP (53 Công Cụ / 9 Khuôn Mẫu N1..N9 / 9 Hồ Sơ Giọng Nói Chức Danh)",
+      "lineage": "rs_notebooklm_mcp_engine.py + rs_audio_diarization_engine.py + notebooklm-mcp v0.15.8",
+      "bundled_engine_files": 2,
+      "bilingual_dual_brain": true,
+      "rosier_3pass_de_ai": true,
+      "rosier_cli_standard": true,
+      "keywords": [
+        "rs-kb-notebooklm-research-studio",
+        "02-rs-kb-lms",
+        "notebooklm",
+        "notebook",
+        "sổ",
+        "tay",
+        "studio",
+        "audio",
+        "video",
+        "bóc",
+        "băng",
+        "gỡ",
+        "diarization"
+      ],
+      "version": "6.7.0"
+    },
+    {
+      "index": 145,
+      "name": "rs-kb-notebooklm-prompt-architect",
+      "layer": "flagship",
+      "category": "Phân khu 02: Kho Tri Thức 2-Hub, Công Thức R&D & Học Viện Số LMS (rs-kb-* & rs-lms-*)",
+      "repo": "rs-os-180-suite",
+      "subdir": "skills/rs-kb-notebooklm-prompt-architect",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "summary": "Kiến Trúc Sư Thiết Kế Prompt 5-Khối Chuẩn Hóa Cho 12 Cổng Điều Khiển Google NotebookLM v0.15.8",
+      "lineage": "rs_nlm_prompt_architect_engine.py + 5-Block Grounded Prompting + 12 Prompt Slots v0.15.8",
+      "bundled_engine_files": 1,
+      "bilingual_dual_brain": true,
+      "rosier_3pass_de_ai": true,
+      "rosier_cli_standard": true,
+      "keywords": [
+        "rs-kb-notebooklm-prompt-architect",
+        "02-rs-kb-lms",
+        "notebooklm",
+        "prompt",
+        "architect",
+        "5-block",
+        "khe",
+        "cắm",
+        "studio_create",
+        "chat_configure"
+      ],
+      "version": "6.7.0"
     }
   ],
   "workflows": [
@@ -4560,7 +4619,7 @@
       "sha256_16": "c7b199994bc13cc8"
     }
   ],
-  "version": "6.6.0",
+  "version": "6.7.0",
   "edition": "HO_STAFF_SAFE_EDITION",
   "allow_db_mutation": false
 }
