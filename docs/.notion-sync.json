@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
   "repo_name": "rosier-ho-skills",
-  "canonical_version": "6.7.0-ho.1",
-  "last_synced_commit": "e4e1e42",
-  "last_synced_at": "2026-11-03T06:56:13.408013+00:00",
+  "canonical_version": "6.8.0-ho.2",
+  "last_synced_commit": "98ae09b",
+  "last_synced_at": "2026-11-03T14:58:44.274219+00:00",
   "master_hub_page_id": "4054ffbe-44fc-817b-9692-d1538c266ab2",
   "master_hub_page_url": "https://www.notion.so/4054ffbe44fc817b9692d1538c266ab2",
   "repo_hub_page_id": "40c4ffbe-44fc-81c3-b17e-e0b85c1d9315",
@@ -13,7 +13,7 @@
       "title": "01. Kiến Trúc, Data Model & Guardrails (Architecture & Security)",
       "page_id": "40c4ffbe-44fc-8151-af72-ef5e8719d772",
       "page_url": "https://www.notion.so/40c4ffbe44fc8151af72ef5e8719d772",
-      "sha256": "8692ed896ae4ab1ed531f875b435bfce853ecb1106589d8fc64dcb122f2a4bc9",
+      "sha256": "be6a74732a9fb58fcbc079832c2b059aefd8fae014e08f0dc0763872219d2db5",
       "source_files": [
         "AGENTS.md",
         "CLAUDE.md",
@@ -24,7 +24,7 @@
       "title": "02. Danh Mục Packages, Modules & Skills (Packages & Core Capabilities)",
       "page_id": "40c4ffbe-44fc-8103-98af-ee21d424689a",
       "page_url": "https://www.notion.so/40c4ffbe44fc810398afee21d424689a",
-      "sha256": "7e4dedf95432f4c7df05a1f72e8db4fe67994d12a56f0340b8743a93a9d3e9ff",
+      "sha256": "46257882a8940b057e3f110674bffa1b6a5577ee39730b89ae00b4bcc3199cb2",
       "source_files": [
         "README.md",
         "docs/reference-packages-and-skills.md"
@@ -34,7 +34,7 @@
       "title": "03. Tham Chiếu CLI, REST API & MCP Tools (API & MCP Reference)",
       "page_id": "40c4ffbe-44fc-8191-9bec-d8f0b7671355",
       "page_url": "https://www.notion.so/40c4ffbe44fc81919becd8f0b7671355",
-      "sha256": "90fcf1ae631cbbf4ea5510b3e551aedeb0ba02a1de1cb69d67cc7752674cf4e7",
+      "sha256": "59991f26ccc9c4b27c331251487502d3684240973285f6cc08772e1283434b21",
       "source_files": [
         "docs/reference-cli-and-api.md"
       ]
@@ -43,7 +43,7 @@
       "title": "04. Hướng Dẫn Cấu Hình, Vận Hành & Triển Khai (How-To & Operations)",
       "page_id": "40c4ffbe-44fc-8127-9006-e19cdf133d5e",
       "page_url": "https://www.notion.so/40c4ffbe44fc81279006e19cdf133d5e",
-      "sha256": "15870d4a8380b0d90e6b09b2f95b35271a73cc5af7021f54bc00908af2f9993d",
+      "sha256": "5b1a8e08123f877c752008e804eec1114065f951c28d5cbe33c3c3b9b1204390",
       "source_files": [
         "docs/howto-operations-and-auto-update.md",
         "docs/tutorial-getting-started-ho-staff.md"
@@ -52,22 +52,13 @@
     "05_release_calibration_log": {
       "title": "05. Nhật Ký Phát Hành, PRs & Calibration Ledger (Release & Calibration Log)",
       "page_id": "40c4ffbe-44fc-8179-9b23-ca43a6acc07a",
-      "page_url": "https://www.notion.so/40c4ffbe-44fc-8179-9b23-ca43a6acc07a",
-      "sha256": "30160a6b1830c14bba8e0dc427ca666f48c0b042264154b80a84655d99865d06",
+      "page_url": "https://www.notion.so/40c4ffbe44fc81799b23ca43a6acc07a",
+      "sha256": "1eaf6502a80853fbac65c974bb0b5ce2f9d181b3a1f0a52ab1c75cae49728f2f",
       "source_files": [
         "CHANGELOG.md",
         "VERSION",
         "plans/journals/261102-2135-rosier-ho-skills-v650.md"
       ]
     }
-  },
-  "version": "6.8.0-ho.1",
-  "last_synced_at_utc": "2026-11-03T14:14:37.763721+00:00",
-  "release_tag": "v6.8.0-ho.1",
-  "total_items": 189,
-  "ho_skills_count": 137,
-  "synced_notion_pages": {
-    "master_release_hub": "4054ffbe-44fc-817b-9692-d1538c266ab2",
-    "ho_repo_release_hub": "40c4ffbe-44fc-81c3-b17e-e0b85c1d9315"
   }
 }
