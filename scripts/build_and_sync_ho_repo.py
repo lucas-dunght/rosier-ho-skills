@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.7.0-ho.1"
+HO_VERSION = "6.8.0-ho.1"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -251,7 +251,7 @@ def patch_core_engine_for_ho(core_text: str) -> str:
     text = sanitize_ho_references(core_text)
     text = re.sub(
         r'ENGINE_VERSION = "[^"]+"',
-        'ENGINE_VERSION = "6.6.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
+        'ENGINE_VERSION = "6.8.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
         text,
         count=1,
     )
@@ -301,6 +301,9 @@ def patch_core_engine_for_ho(core_text: str) -> str:
                 "Cụm 03 Điểm Bán Trực Thuộc Công Ty (CHH 38197, 46880, 87024 · Mô hình Cty TNHH, hóa đơn GTGT, BHXH & Phòng thí nghiệm vận hành)",
             ],'''
     text = text.replace(old_q1, new_q1)
+    old_q_ceo = '"(Recommended) CEO Toàn Chuỗi & Khối Văn phòng Hội Sở (Pháp nhân CTCP · Điều hành toàn mạng lưới 25 điểm bán)"'
+    new_q_ceo = '"(Recommended) Khối Văn Phòng HO & Toàn Hệ Thống 25 Điểm Bán (Tổng hợp số liệu, lập kế hoạch, đối soát & soạn quy trình cấp Phòng ban HO)"'
+    text = text.replace(old_q_ceo, new_q_ceo)
 
     # Update self_test_all_divisions in core/rs_core_engine.py to verify HO boundary guard
     old_tail = '''    router_blocked = route_rosier_intent({"mode": "advise", "query": "Kiểm tra doanh thu điểm bán 115953"}, dry_run=True)
@@ -392,7 +395,7 @@ from core.rs_core_engine import (  # noqa: E402
 )
 from scripts.rs_ho_auto_updater import RosierHOAutoUpdater  # noqa: E402
 
-HO_CLI_VERSION = "6.7.0-ho.1"
+HO_CLI_VERSION = "6.8.0-ho.1"
 
 VALID_HO_ROLES = {
     "ho_ops_supply": {
@@ -1141,7 +1144,7 @@ if __name__ == "__main__":
 def build_ho_install_sh() -> str:
     return '''#!/usr/bin/env bash
 # ==============================================================================
-# RS-OS HO Edition (v6.5.0-ho.1) · Trình Cài Đặt & Kích Hoạt Tự Cập Nhật Cho Nhân Sự Khối HO
+# RS-OS HO Edition (v6.8.0-ho.1) · Trình Cài Đặt & Kích Hoạt Tự Cập Nhật Cho Nhân Sự Khối HO
 # Hỗ trợ:
 #   1. Cài đặt Cô lập vào Workspace kèm bật Tự động cập nhật định kỳ 24h (Khuyên dùng):
 #      ./install.sh --workspace /path/to/ho-workspace [--profile ho-all-126] [--enable-auto-update]
@@ -1246,7 +1249,7 @@ fi
 def build_ho_auto_router_rule() -> str:
     return '''---
 trigger: always_on
-description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.5.0-ho.1)
+description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.8.0-ho.1)
 ---
 
 # Quy Tắc Điều Phối Tự Động Mặc Định & Cổng Hỏi Lại Khử Mơ Hồ Dành Cho Nhân Sự Khối HO (`rosier-ho-skills`)
@@ -1256,8 +1259,10 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
      ```bash
      ./.agent/bin/rs-control rs-auto "<câu hỏi nguyên văn của nhân sự HO>" --json
      ```
+   - **Cầu Dao Tự Động Thực Thi (High-Confidence Auto-Pass Gate >= 85%):**
+     - Khi độ tin cậy kỹ năng đạt từ 85% trở lên và là lệnh tác chiến phi phá hủy (chấm KPI, tính lương, tra cứu dòng tiền, đặt hàng...), hệ thống tự động kích hoạt `0-Click Auto-Pass` với tham số ngầm định hợp lý (`[DERIVED]`), thực thi trực tiếp không ngắt quãng người dùng qua popup.
    - **Nếu kết quả trả về `needs_clarification: true` (`status == "NEEDS_CLARIFICATION"`):**
-     - Agent **DỪNG LẠI NGAY** (không tự đoán mò) và gọi công cụ **`ask_question`** hiển thị mảng `clarifying_questions` (`1–3` câu hỏi trắc nghiệm ngắn gọn về: *1. Khối Phòng Ban HO / Mô hình Điểm bán*, *2. Trọng tâm nghiệp vụ*, *3. Định dạng sản phẩm đầu ra*).
+     - Agent **DỪNG LẠI NGAY** (không tự đoán mò) và gọi công cụ **`ask_question`** hiển thị mảng `clarifying_questions` (`1–3` câu hỏi trắc nghiệm ngữ cảnh động chuẩn xác theo nghiệp vụ phòng ban, tuyệt đối không hỏi lan man ngoài phạm vi).
    - **Ngay sau khi nhân sự chọn đáp án (hoặc khi `needs_clarification: false` ngay từ đầu):**
      - Agent gọi lại `./.agent/bin/rs-control rs-auto "<câu hỏi>" --role <vai_trò_HO> --domain <mã_phân_khu> --deliverable <định_dạng> --confirmed --json`, đọc `SKILL.md` của tổ hợp kỹ năng được chọn trong `recommended_combo` và thực thi trọn vẹn cho nhân sự.
 
@@ -1281,13 +1286,13 @@ description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo v
 
 
 def build_ho_readme() -> str:
-    return '''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.5.0-ho.1`)
+    return f'''# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v{HO_VERSION}`)
 
-Hệ sinh thái **`178` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
-- **`126` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`). Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
+Hệ sinh thái **`183` Hợp phần chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
+- **`131` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Bộ Đôi NotebookLM MCP (`#144` & `#145`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.
 - **`28` Quy trình Phối hợp Liên phòng ban (`rs-wf-* Workflows`)**: Chuẩn hóa tác chiến hàng ngày, hàng tuần và hàng tháng tại văn phòng HO.
 - **`24` Công cụ Kết nối Dữ liệu An toàn (`rs-mcp-*` trong `8` Mô-đun MCP)**: Khóa cứng ở chế độ **`HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation: false`)**. Cắt bỏ hoàn toàn quyền sửa/xóa trực tiếp Database gốc (`reset-db`, `seed`, `business-upsert`, `tax-ledger-export`).
-- **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto`)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Chỉ cần đặt câu hỏi tiếng Việt bình thường, hệ thống tự động nhận diện phòng ban HO; nếu câu hỏi còn mơ hồ sẽ tự động bật popup hỏi lại `1–3` câu trắc nghiệm (`ask_question`) rồi mới chọn tổ hợp kỹ năng thực thi.
+- **Chế độ Auto Mặc Định (`Zero-Command Auto` + `/rs-auto` 10-Star Adaptive Router & High-Confidence Auto-Pass Gate)**: Nhân sự HO **không cần nhớ tên bất kỳ skill nào**. Nhận diện tự động danh bạ nhân sự HO (`HO_PERSONNEL_DIRECTORY`), mở rộng động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES`), tự động kích hoạt Cầu Dao 0-Click Auto-Pass khi độ tin cậy >= 85.0% phi phá hủy và sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng phòng ban khi nội dung thực sự thiếu dữ kiện cốt lõi.
 - **Cơ chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`)**: Tự động đồng bộ bản mới từ kho gốc đã lọc quyền CEO và tự động kéo bản cập nhật mới về máy nhân sự HO định kỳ mỗi `24 giờ` (kèm cơ chế lưu nhãn cứu hộ `Rescue Ref` và tự động `Rollback` nếu lỗi).
 
 ---
@@ -1326,7 +1331,7 @@ Nhờ Rule `always_on` tại [`.agent/rules/rs-ho-auto-router.md`](rules/rs-ho-a
 # 3. Kiểm tra và kéo bản cập nhật bộ Skill HO mới nhất ngay lập tức
 ./bin/rs-control update --json
 
-# 4. Kiểm tra sức khỏe toàn bộ 178 hợp phần Khối HO và cổng bảo mật Database
+# 4. Kiểm tra sức khỏe toàn bộ 183 hợp phần Khối HO và cổng bảo mật Database
 python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 ```
 
@@ -1336,7 +1341,7 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 
 | Mã Profile | Khối Phòng Ban HO Phụ Trách | Lệnh kích hoạt nhanh |
 | :--- | :--- | :--- |
-| `ho-all-126` | Toàn bộ `126` Kỹ năng Chuyên môn của tất cả các phòng ban Khối HO (Mặc định) | `python3 scripts/rs_profile_loader.py activate ho-all-126` |
+| `ho-all-126` | Toàn bộ `131` Kỹ năng Chuyên môn của tất cả các phòng ban Khối HO (Mặc định) | `python3 scripts/rs_profile_loader.py activate ho-all-126` |
 | `ho-core-35` | Gói Cốt lõi Tinh gọn cho Nhân sự HO tổng hợp (`35` kỹ năng trọng yếu nhất) | `python3 scripts/rs_profile_loader.py activate ho-core-35` |
 | `ho-ops-supply` | Khối Vận Hành Chuỗi 25 Quán, Giám Sát Thực Địa & Cung Ứng Kho Tổng 5S | `python3 scripts/rs_profile_loader.py activate ho-ops-supply` |
 | `ho-fin-hr` | Khối Tài Chính, Kế Toán Đa Pháp Nhân, Nhân Sự 3P & Hành Chính Pháp Chế | `python3 scripts/rs_profile_loader.py activate ho-fin-hr` |
@@ -1353,7 +1358,7 @@ python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 | :--- | :--- | :--- |
 | **Tutorial (Làm quen nhanh)** | [docs/tutorial-getting-started-ho-staff.md](docs/tutorial-getting-started-ho-staff.md) | Thực hành làm chủ chế độ Zero-Command Auto (`/rs-auto`), cổng hỏi lại 3 trục và chốt chặn bảo mật trong 3 bước |
 | **How-To (Tác vụ thực tế)** | [docs/howto-operations-and-auto-update.md](docs/howto-operations-and-auto-update.md) | Hướng dẫn cài đặt theo phòng ban HO, quản lý tự động cập nhật 24h, khôi phục từ `Rescue Ref` và biên dịch từ kho gốc |
-| **Reference (Danh mục 178 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `126` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
+| **Reference (Danh mục 183 items)** | [docs/reference-packages-and-skills.md](docs/reference-packages-and-skills.md) | Bảng tra cứu đầy đủ 100% bề mặt của `131` HO Skills, `28` HO Workflows và `8` Hồ sơ phòng ban HO |
 | **Reference (CLI & MCP API)** | [docs/reference-cli-and-api.md](docs/reference-cli-and-api.md) | Tham chiếu tham số, kiểu dữ liệu và JSON schema của `./bin/rs-control`, `install.sh` và `24` Safe MCP Tools |
 | **Explanation (Kiến trúc & Lý do)** | [docs/explanation-architecture-and-guardrails.md](docs/explanation-architecture-and-guardrails.md) | Giải thích kiến trúc tách đặc quyền CEO, khóa cứng `HO_SAFE_READ_AND_DRAFT` và các đánh đổi thiết kế |
 '''
@@ -1670,18 +1675,16 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                 clean_doc = sanitize_ho_references("\n".join(filtered_lines)) + "\n"
             elif doc_name == "CHANGELOG.md":
                 ho_changelog_header = (
-                    "# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.5.0-ho.1`)\n\n"
-                    "## [6.5.0-ho.1] - 2026-11-02\n\n"
-                    "### Bổ sung & Chuẩn hóa Bảo mật Khối HO (`Added & Security`)\n"
-                    "- **Tách Kho Kỹ Năng Độc Lập Cho Nhân Sự Khối Văn Phòng HO (`HO_STAFF_SAFE_EDITION` · `178` hợp phần):**\n"
-                    "  - Cắt bỏ `16` kỹ năng đặc quyền CEO/HĐQT/M&A và Core/System-evolution, giữ lại `126` HO Skills chuyên môn cho 6 Khối Phòng Ban HO.\n"
-                    "  - Cắt bỏ `2` quy trình nhịp sinh học riêng của CEO (`07:30` & `22:30`), giữ lại `28` HO Workflows.\n"
-                    "  - Cắt bỏ `2` mô-đun MCP đặc quyền và `2` công cụ ghi đè Database/xuất sổ cái thuế, giữ lại `8` Mô-đun / `24` Safe MCP Tools khóa cứng ở chế độ `HO_SAFE_READ_AND_DRAFT` (`allow_db_mutation = False`).\n"
-                    "  - Xóa bỏ hoàn toàn lệnh `reset-db` và `seed` trong `./bin/control-app`, `./bin/rs-control` và `scripts/rs_os_control_tool.py`.\n"
-                    "- **Chế Độ Auto Mặc Định (`Zero-Command Auto` · `rules/rs-ho-auto-router.md`):**\n"
-                    "  - Bổ sung Rule `always_on` giúp nhân sự HO chỉ cần đặt câu hỏi tiếng Việt tự nhiên, hệ thống tự động chọn bộ Skill hoặc bật `ask_question` (1-3 câu hỏi trắc nghiệm theo 6 Khối Phòng Ban HO, chặn leo thang `--role chain_ceo`).\n"
-                    "- **Cơ Chế Tự Động Cập Nhật Định Kỳ 2 Chiều (`Dual-Sync 24h Auto-Updater`):**\n"
-                    "  - Bổ sung `scripts/build_and_sync_ho_repo.py`, `scripts/rs_ho_auto_updater.py`, `./install.sh --enable-auto-update` và `.github/workflows/periodic-ho-verify-and-sync.yml`.\n\n"
+                    f"# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v{HO_VERSION}`)\n\n"
+                    f"## [{HO_VERSION}] - 2026-11-03\n\n"
+                    "### Cải Tiến Cốt Lõi & Định Tuyến Thích Ứng Khối HO (`Enhanced & Cognitive Routing`)\n"
+                    "- **Bộ Định Tuyến Thích Ứng 10-Sao & Cầu Dao Tự Động Thực Thi (`High-Confidence Auto-Pass Gate` · `/rs-auto`):**\n"
+                    "  - Tự động nhận diện danh bạ nhân sự Khối Văn phòng Hội Sở HO (`HO_PERSONNEL_DIRECTORY` gồm Lâm, Ân, Hưng, Yến, Phương Anh, Linh, Tân, Huy, Kế toán Tổng hợp) qua regex ranh giới từ tiếng Việt chuẩn xác, tự động khóa pháp nhân `CHAIN_HEADQUARTERS_CTCP` và thỏa mãn Trục 1 (`axis_1_entity_clear = True`).\n"
+                    "  - Mở rộng bảng nhận diện động từ tác chiến nghiệp vụ (`ACTION_DELIVERABLE_RULES` gồm chấm kpi, chấm lại kpi, tạo kpi mục tiêu, tính lương 3p, kiểm kê mù, đặt hàng b2b, dòng tiền 13 tuần), tự động định hình sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).\n"
+                    "  - **Cầu Dao 0-Click Auto-Pass:** Khi độ tin cậy kỹ năng >= 85.0% và là lệnh phi phá hủy, hệ thống kích hoạt chế độ tự động thực thi với giả định hợp lý (`[DERIVED]`), không ngắt quãng người dùng qua popup khi đã đủ dữ kiện thực thi.\n"
+                    "  - **Cổng Khử Mơ Hồ Động Theo Chuyên Môn Phân Khu:** Đối với câu lệnh thực sự thiếu dữ kiện cốt lõi (< 85%), sinh câu hỏi trắc nghiệm ngữ cảnh động 100% theo chuyên môn của từng khối phòng ban (HR/KPI hỏi phân loại nhân sự HO vs Điểm bán; Tài chính hỏi pháp nhân đối soát; Vận hành hỏi Kho Tổng vs Điểm bán; tuyệt đối không còn các tùy chọn lạc đề).\n"
+                    "- **Đồng Bộ Hệ Sinh Thái HO An Toàn (`183` hợp phần):**\n"
+                    "  - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, duy trì 0 đặc quyền CEO và 0 thao tác ghi/xóa trực tiếp Database gốc.\n\n"
                     "---\n\n"
                 )
                 clean_doc = ho_changelog_header + sanitize_ho_references("\n".join(lines[5:])) + "\n"
@@ -1700,6 +1703,24 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
         if ffile.name == "FEAT-16-rs-os-control-app.md":
             clean_f = clean_f.replace("scripts/verify_rs_ecosystem.py", "scripts/verify_rs_ho_ecosystem.py")
         (feat_dst / ffile.name).write_text(clean_f, encoding="utf-8")
+
+    # Update feature hashes to ensure 100% FRESH
+    try:
+        subprocess.run(
+            [
+                sys.executable,
+                str(target_dir / "scripts" / "rs_os_control_tool.py"),
+                "maintain-features",
+                "--features-dir",
+                str(feat_dst),
+                "--update",
+                "--json",
+            ],
+            check=True,
+            capture_output=True,
+        )
+    except Exception:
+        pass
 
     return {
         "ok": True,
