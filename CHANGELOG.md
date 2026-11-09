@@ -1,11 +1,11 @@
 # Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.8.0-ho.2`)
 
-## [6.8.0-ho.2] - 2026-11-03
+## [6.8.0-ho.2] - 2026-11-04
 
-### Chuyển Đổi 30 Quy Trình Khối HO Sang Định Dạng `skills/<name>/SKILL.md` & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)
-- **Chuyển đổi `30` HO Workflows sang `skills/<name>/SKILL.md` (`migrate-workflows`)**:
-  - Tạo mới `29` skill quy trình (`skills/rs-task-auto/SKILL.md` + `28` `skills/rs-wf-*/SKILL.md`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/SKILL.md` 5 lớp; lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.
-  - Cắt bỏ tuyệt đối `2` quy trình riêng của CEO (`rs-wf-exec-0730-morning-pulse`, `rs-wf-exec-2230-evening-wrap`) trên cả `skills/` và `workflows/`.
+### Hợp Nhất 100% Quy Trình Khối HO Thành Kỹ Năng 5 Lớp (`166 5-Layer HO Skills`) & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)
+- **Hợp nhất `30` HO Workflows thành Kỹ năng 5 Lớp (`Unified 5-Layer Workflow-as-Skill` · `/migrate-workflows`)**:
+  - Nâng cấp toàn bộ `29` quy trình Khối HO (`skills/rs-task-auto/` + `28` `skills/rs-wf-*/`) lên **Hợp đồng Kỹ năng 5 Lớp đầy đủ** (có `SKILL.md`, `.rs-skill-meta.json`, CLI độc lập `scripts/<snake>_tool.py --self-test`, `references/`, `assets/`, `evals/`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/` 5 lớp; nâng tổng danh mục lên **`166` Kỹ năng 5 Lớp Khối HO** (`137` kỹ năng HO + `29` kỹ năng quy trình HO) và lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.
+  - Cắt bỏ tuyệt đối `2` quy trình riêng của CEO (`rs-wf-exec-0730-morning-pulse`, `rs-wf-exec-2230-evening-wrap`) trên cả `skills/`, `workflows/` và `skills.json`.
   - Đồng bộ `workflows/run_rs_workflow.py`, `scripts/verify_rs_ho_ecosystem.py`, `scripts/rs_profile_loader.py` và `references/features/FEAT-13-rs-wf-orchestrator.md` trỏ trực tiếp tới `skills/<wid>/SKILL.md`.
 - **Trình Thiết Lập Lần Đầu 4 Bước (`scripts/rs_ho_setup_wizard.py` & `.env.ho.example`)**:
   - Xác thực 10 vai trò Khối HO/Điểm bán, cấp phát `.agent/.env` (`chmod 0600`) kèm `Token Scope Guard`, tự động đăng ký `8/8` Safe MCP Modules và tích hợp `./bin/rs-control setup | check-update | update`.
@@ -25,30 +25,6 @@
 - **`#151 rs-kb-notebooklm-cross-briefing`**: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), xuất bảng Excel (`.xlsx`), đồng bộ Google Docs/Sheets và `pipeline` tự động.
 - **Đồng Bộ Hệ Sinh Thái HO An Toàn (`189` hợp phần: `137` HO Skills + `28` HO Workflows + `24` Safe MCP Tools):**
   - Đồng bộ `core/rs_core_engine.py`, `skills/rs-auto/SKILL.md`, `rules/rs-ho-auto-router.md`, chặn cứng 4 công cụ xóa (`notebook_delete`, `source_delete`, `collection_delete`, `studio_delete`) và duy trì 0 đặc quyền CEO, 0 thao tác ghi/xóa trực tiếp Database gốc.
-
----
-
-  - `#147 rs-kb-notebooklm-video-studio`: Sản xuất Video Explainer/Brief `.mp4` tiêm sẵn `video_style_prompt` chuẩn Build Luxury Minimal v3.3 kèm Móc câu 3 giây đầu và chuyển đổi số sang chữ tiếng Việt.
-  - `#148 rs-kb-notebooklm-podcast-studio`: Sản xuất Podcast/Radio nội bộ 4 chế độ (`deep_dive`, `brief`, `critique`, `debate`) với khóa chuyển đổi 100% số viết bằng chữ tiếng Việt đọc tự nhiên.
-  - `#149 rs-kb-notebooklm-visual-quiz-pack`: Tổ hợp 4-trong-1 gồm `Infographic .png` (3 khổ × 11 phong cách), `Mind Map .json` biên dịch tự động sang sơ đồ `Mermaid`, `Flashcards` và ngân hàng `Quiz` chuẩn 4 bậc thang Bloom (`30/30/25/15`).
-  - `#150 rs-lms-notebooklm-course-builder`: Dây chuyền Liên thông Tự động 6 Mũi (`6-Modality Auto-Bridge`) gom trọn bộ học liệu từ NotebookLM và biên dịch khớp 100% schema `lms_upsert_curriculum_tree` và `lms_upsert_lesson_quiz` của MCP `rosier-lms`.
-  - `#151 rs-kb-notebooklm-cross-briefing`: Truy vấn đối chiếu liên sổ tay (`cross_notebook_query`), bóc tách tài liệu phi cấu trúc thành bảng Excel `.xlsx` (`data_table_xlsx`), xuất thẳng sang Google Docs/Sheets và lưu `pipeline` định kỳ.
-
-# Nhật Ký Phát Hành Hệ Sinh Thái Kỹ Năng Nội Bộ Rosier (`RS-OS 200`)
-
-Mọi thay đổi kiến trúc, danh mục kỹ năng và công cụ điều phối của Hệ sinh thái `RS-OS 200` đều được ghi nhận và kiểm chứng mã băm SHA-256 tại tài liệu này.
-
----
-
-## [v6.8.0] - 2026-11-03
-
-### Bổ sung & Nâng cấp Mới (`Added & Improved`)
-- **Cổng Khử Mơ Hồ Động 10 Sao & Cầu Dao Tự Động Thực Thi (`Adaptive Cognitive Router & Auto-Pass Gate` · `/rs-auto`):**
-  - **Tự động nhận diện Danh bạ Nhân sự Khối Văn phòng Hội sở (HO):** Bóc tách chính xác các nhân sự chủ chốt (`Lâm`, `Ân`, `Hưng`, `Yến`, `Phương Anh`, `Linh`, `Tân`, `Huy`, `Kế toán Tổng hợp`) bằng biểu thức chính quy ranh giới từ tiếng Việt (`word-boundary lookbehind/lookahead`), tự động khóa mô hình chủ thể `CHAIN_HEADQUARTERS_CTCP` và thỏa mãn Trục 1 (`axis_1_entity_clear = True`).
-  - **Mở rộng Động từ Hành động Thực thi (`ACTION_DELIVERABLE_RULES`):** Nhận diện các cặp hành động thường gặp (`chấm kpi`, `chấm lại kpi`, `tạo kpi mục tiêu`, `tính lương 3p`, `kiểm kê mù`, `đặt hàng b2b`, `dòng tiền 13 tuần`) để tự động định vị định dạng sản phẩm đầu ra và thỏa mãn Trục 3 (`axis_3_deliverable_clear = True`).
-  - **Cầu Dao Tự Động Thực Thi Độ Tin Cậy Cao (`High-Confidence Auto-Pass Gate`):** Khi độ tin cậy kỹ năng `>= 85.0%` và câu lệnh phi phá hủy, hệ thống tự động suy luận các tham số ngầm định hợp lý (`[DERIVED]`), bỏ qua popup hỏi lại và thực thi tất định ngay lập tức (`status: "EXECUTED_OK"` / `"DRY_RUN_OK"`), không làm gián đoạn trải nghiệm của người dùng.
-  - **Sinh Câu Hỏi Trắc Nghiệm ĐỘNG 100% Theo Chuyên Môn (`Dynamic Contextual Clarification`):** Khi câu lệnh thực sự thiếu dữ liệu cốt lõi (`< 85%`), các câu hỏi trắc nghiệm được sinh động chuẩn xác theo phân khu nghiệp vụ liên quan (ví dụ: HR/KPI hỏi về nhân sự HO vs Quán; Tài chính hỏi về tài khoản đối soát vs P&L; Vận hành hỏi về Kho Tổng vs Quán nhượng quyền; loại bỏ hoàn toàn các lựa chọn vô lý như Video LMS/SOP cho bài toán HR/Tài chính).
-- **Cập nhật Bộ Kiểm thử TDD Toàn diện:** Thêm các trường hợp kiểm thử tự động cho câu lệnh CEO thực tế, câu lệnh mơ hồ HR và Tài chính trong `self_test_all_divisions()`.
 
 ---
 

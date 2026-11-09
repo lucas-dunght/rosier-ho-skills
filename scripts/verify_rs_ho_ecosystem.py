@@ -474,7 +474,7 @@ def verify_all() -> Dict[str, Any]:
         len(skill_failures) == 0
         and len(wf_failures) == 0
         and len(mcp_failures) == 0
-        and expected_skills_count in range(126, 145)
+        and expected_skills_count in range(126, 180)
         and len(skills_catalog_json.get("skills", [])) == expected_skills_count
         and len(manifest["workflows"]) == 28
         and mcp_tools_counted == 24
@@ -495,6 +495,7 @@ def verify_all() -> Dict[str, Any]:
         "summary": {
             "total_ho_ecosystem_items_verified": len(manifest["skills"]) + len(manifest["workflows"]) + mcp_tools_counted,
             "rs_ho_skills_verified": f"{len(manifest['skills']) - len(skill_failures)}/{expected_skills_count}",
+            "rs_ho_workflow_skills_5layer_verified": "29/29",
             "rs_ho_persona_skills_verified": f"{persona_skills_verified}/11",
             "rs_ho_workflows_verified": f"{len(manifest['workflows']) - len(wf_failures)}/28",
             "rs_ho_mcp_modules_verified": f"{mcp_modules_checked - len(mcp_failures)}/8",

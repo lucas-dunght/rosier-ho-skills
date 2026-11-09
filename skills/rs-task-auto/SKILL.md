@@ -9,7 +9,7 @@ Khi người dùng gọi `/rs-task-auto` (hoặc yêu cầu tạo/giao việc ch
 
 1. **Bước 1 · Chạy Bộ Phân Loại 4 Cổng (`4-Gate Task Dispatch Classifier`):**
    ```bash
-   python3 .agent/skills/rs-exec-task-dispatch-auto/scripts/rs_exec_task_dispatch_auto_tool.py dispatch \
+   python3 .agent/skills/rs-task-auto/scripts/rs_task_auto_tool.py dispatch \
      --query "<nguyên văn yêu cầu giao việc của người dùng>" --json
    ```
 

@@ -1,6 +1,6 @@
 ---
 trigger: always_on
-description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.8.0-ho.1)
+description: Chế độ Auto Mặc Định (Zero-Command Auto Router) & Bảo vệ An toàn Database cho Nhân sự Khối HO Rosier (v6.8.0-ho.2)
 ---
 
 # Quy Tắc Điều Phối Tự Động Mặc Định & Cổng Hỏi Lại Khử Mơ Hồ Dành Cho Nhân Sự Khối HO (`rosier-ho-skills`)

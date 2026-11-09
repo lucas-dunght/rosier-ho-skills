@@ -1,136 +1,102 @@
-# Tutorial: Làm Chủ Bộ Kỹ Năng Khối Văn Phòng HO Rosier Trong 3 Bước (`v6.5.0-ho.1`)
+# Hướng Dẫn Bắt Đầu Nhanh Cho Nhân Sự Khối Văn Phòng HO (`v6.8.0-ho.2` · 3 Bước)
 
-Trong bài thực hành này, bạn sẽ xây dựng và chạy thành công một luồng xử lý công việc tự động của **Nhân sự Khối Văn Phòng HO Rosier** bằng chế độ **Zero-Command Auto (`/rs-auto`)**: từ lúc đặt một câu hỏi tiếng Việt chưa rõ ngữ cảnh, xem hệ thống tự động sinh câu hỏi trắc nghiệm làm rõ 3 trục, cho đến khi xuất ra biên lai thực thi 4 lớp (`Persona` + `Domain Skill` + `Workflow` + `Safe MCP`) và kiểm chứng chốt chặn bảo mật Database chỉ trong **3 bước**.
-
----
-
-## What you'll need
-
-- Đã mở Terminal tại thư mục kho kỹ năng `/Users/tuandunghoang/projects/rosier-ho-skills` (hoặc bản clone trên máy của bạn).
-- Đã cài đặt `python3` (`3.10+`).
-- Nếu chưa cài đặt vào Workspace, xem thêm [How to Install, Operate Zero-Command Auto, and Manage 24h Auto-Updates](howto-operations-and-auto-update.md).
+Tài liệu hướng dẫn từng bước (`Tutorial`) dành cho nhân sự mới hoặc trưởng bộ phận tại **Khối Văn Phòng HO Rosier (`Head Office`)** lần đầu cài đặt và sử dụng kho kỹ năng **`rosier-ho-skills` (`189` Hợp phần: `137` Kỹ năng HO + `28` Quy trình HO + `24` Công cụ Safe MCP)**.
 
 ---
 
-## Step 1: Chạy thử câu hỏi công việc đầu tiên và xem Cổng Hỏi Lại 3 Trục (`NEEDS_CLARIFICATION`)
+## Điều Kiện Tiên Quyết (`Prerequisites`)
 
-Khi nhân sự Khối HO đặt một câu hỏi tự nhiên còn rộng (chưa nói rõ áp dụng cho Khối phòng ban HO hay mô hình điểm bán nào và muốn nhận kết quả dưới định dạng gì), bộ định tuyến sẽ tự động phát hiện và sinh câu hỏi trắc nghiệm. Hãy chạy lệnh sau:
+- Máy tính sử dụng hệ điều hành **macOS** hoặc **Linux** có cài sẵn `git` và `python3` (`>= 3.10`).
+- Quyền đọc kho GitHub `rosier-ho-skills` (`https://github.com/Rosier-F-B/rosier-ho-skills.git`).
+- Trình soạn thảo AI Agent (**Antigravity IDE** hoặc **Claude Code**) đang mở tại thư mục làm việc của nhân sự HO.
+
+---
+
+## Bước 1: Cài Đặt Cô Lập Vào Workspace & Chạy Trình Thiết Lập Lần Đầu 4 Bước (`Setup Wizard`)
+
+Mở Terminal và chạy các lệnh sau để tải bộ kỹ năng Khối HO, cài đặt cô lập vào thư mục làm việc của bạn, khởi tạo `.agent/.env` (`chmod 0600` + `Token Scope Guard`), đăng ký `8/8` Safe MCP Modules và bật lịch tự động cập nhật định kỳ `24 giờ`:
+
+```bash
+# 1. Tải kho kỹ năng Khối HO về máy
+git clone https://github.com/Rosier-F-B/rosier-ho-skills.git ~/projects/rosier-ho-skills
+cd ~/projects/rosier-ho-skills
+
+# 2. Cài đặt vào Workspace làm việc, chạy Setup Wizard 4 bước & bật Auto-Update 24h
+./install.sh --workspace ~/work/rosier-ho-workspace --role ho_ops_supply --profile ho-all-126 --enable-auto-update
+
+# 3. Kiểm tra trạng thái cài đặt, cấu hình 8/8 Safe MCP và lịch cập nhật tự động
+./bin/rs-control status --workspace-dir ~/work/rosier-ho-workspace
+```
+
+Kết quả mong đợi (`Expected Output`):
+- `active_profile`: `ho-all-126` (`166` Kỹ năng 5 Lớp Khối HO = `137` kỹ năng HO + `29` kỹ năng quy trình HO `rs-task-auto` & `28` `rs-wf-*` được liên kết vào `.agent/skills/`).
+- `mcp_modules_registered`: `8/8` (`HO_SAFE_READ_AND_DRAFT`, `allow_db_mutation: false`).
+- `launchd_installed`: `true` (`com.rosier.ho-skills.autoupdate` tự động chạy mỗi `86400` giây).
+
+---
+
+## Bước 2: Trải Nghiệm Chế Độ Tự Động `/rs-auto` (`0-Click Auto-Pass` & `Cổng Hỏi Lại Động Theo Phòng Ban`)
+
+Trong kho `rosier-ho-skills`, quy tắc `.agent/rules/rs-ho-auto-router.md` luôn bật (`trigger: always_on`). Nhân sự HO **không cần nhớ tên bất kỳ skill nào**:
+
+### 2.1. Thử nghiệm câu hỏi còn mơ hồ (`Độ tin cậy < 85.0%` -> Hệ thống tự động hỏi lại theo chuyên môn phòng ban)
+
+Chạy lệnh sau trên Terminal (hoặc gõ thẳng câu hỏi vào khung chat AI):
 
 ```bash
 ./bin/rs-control rs-auto "Kiểm tra lại định mức và tồn kho tháng này" --json
 ```
 
-Bạn sẽ thấy ngay kết quả JSON trả về trạng thái `"NEEDS_CLARIFICATION"` kèm 2 câu hỏi trắc nghiệm dành riêng cho nhân sự Khối HO (tuyệt đối không xuất hiện tùy chọn đặc quyền CEO):
+Kết quả trả về (`status: "NEEDS_CLARIFICATION"`):
+- Hệ thống phát hiện câu hỏi thiếu thông tin trên 2 trục (`Bộ phận Khối HO phụ trách` và `Định dạng sản phẩm đầu ra`).
+- Mảng `clarifying_questions` trả về 2 câu hỏi trắc nghiệm **dành riêng cho các phòng ban Khối HO** (tuyệt đối **không** xuất hiện tùy chọn `CEO Toàn Chuỗi`):
+  1. *"Bạn đang thực hiện tác vụ này thuộc bộ phận chuyên môn nào tại Khối Văn Phòng HO?"*
+  2. *"Bạn muốn nhận kết quả đầu ra ở định dạng nào?"*
 
-```json
-{
-  "status": "NEEDS_CLARIFICATION",
-  "claim_label": "[OBSERVED: core/rs_core_engine.py]",
-  "mode": "rs-auto",
-  "needs_clarification": true,
-  "ambiguity_axes": {
-    "axis_1_entity_and_store_clear": false,
-    "axis_2_domain_intent_clear": true,
-    "axis_3_deliverable_format_clear": false
-  },
-  "clarifying_questions": [
-    {
-      "question": "Yêu cầu công việc này thuộc phạm vi phụ trách của Khối Phòng Ban HO hay Mô hình Điểm bán nào?",
-      "is_multi_select": false,
-      "options": [
-        "(Recommended) Khối Văn Phòng HO & Toàn Hệ Thống 25 Điểm Bán (Tổng hợp số liệu, lập kế hoạch, đối soát & soạn quy trình cấp Phòng ban HO)",
-        "Khối 22 Điểm Bán Nhượng Quyền (CHNQ · Mô hình Hộ Kinh Doanh · Dòng tiền hàng ngày, thuế HKD & đặt hàng Cổng B2B Nội Bộ)",
-        "Cụm 03 Điểm Bán Trực Thuộc Công Ty (CHH 38197, 46880, 87024 · Mô hình Cty TNHH, hóa đơn GTGT, BHXH & Phòng thí nghiệm vận hành)"
-      ]
-    },
-    {
-      "question": "Bạn muốn nhận kết quả đầu ra dưới định dạng nào?",
-      "is_multi_select": false,
-      "options": [
-        "(Recommended) Báo cáo Phân tích Số liệu, Bảng đối chiếu & Đề xuất Hành động (Executive / Ops Report)",
-        "Quy trình Chuẩn SOP, Checklist Kiểm tra & Biểu mẫu Vận hành (Notion / DOCX / HTML)",
-        "Học liệu Đào tạo LMS, Bài kiểm tra Quiz hoặc Kịch bản Video / Âm thanh (Academy & Media)",
-        "Chỉ liệt kê danh sách Kỹ năng (rs-*) & Quy trình (rs-wf-*) phù hợp để tôi tự chọn"
-      ]
-    }
-  ]
-}
+### 2.2. Xác nhận lựa chọn & Thực thi tự động Tổ hợp 4 Lớp (`status: "EXECUTED_OK"`)
+
+Sau khi chọn đáp án (ví dụ: **Khối Vận Hành Chuỗi & Cung Ứng Kho Tổng (`ho_ops_supply`)** và **Báo cáo phân tích số liệu (`report`)**), hệ thống khóa tổ hợp 4 lớp và thực thi ngay:
+
+```bash
+./bin/rs-control rs-auto "Kiểm tra lại định mức và tồn kho tháng này" \
+  --role ho_ops_supply \
+  --deliverable report \
+  --confirmed \
+  --json
+```
+
+### 2.3. Thử nghiệm câu hỏi rõ ràng (`Độ tin cậy >= 85.0%` -> `Cầu Dao 0-Click Auto-Pass`)
+
+Khi câu lệnh có động từ nghiệp vụ rõ ràng (`chấm kpi`, `tính lương 3p`, `kiểm kê mù`, `đặt hàng b2b`, `dòng tiền 13 tuần`), hệ thống tự động điền giả định hợp lý (`[DERIVED]`) và thực thi ngay mà không bật popup hỏi lại:
+
+```bash
+./bin/rs-control rs-auto "Chấm điểm KPI tháng 10 và tính lương 3P khối HO" --role ho_hr_legal --json
 ```
 
 ---
 
-## Step 2: Xác nhận lựa chọn và kích hoạt Tổ Hợp Thực Thi 4 Lớp (`EXECUTED_OK`)
+## Bước 3: Kiểm Chứng Chốt Chặn Bảo Mật Database & Đặc Quyền CEO (`HO Security Gate`)
 
-Bây giờ, giả sử bạn là chuyên viên **Khối Vận Hành & Cung Ứng HO (`--role ho_ops_supply`)** và chọn xuất **Báo cáo phân tích (`--deliverable report`)**. Hãy chạy lệnh kèm cờ `--confirmed`:
-
-```bash
-./bin/rs-control rs-auto "Kiểm tra lại định mức và tồn kho tháng này" --role ho_ops_supply --deliverable report --confirmed --json
-```
-
-Hệ thống lập tức khóa Tổ hợp 4 Lớp (`Persona` + `Domain Skill` + `Workflow` + `Safe MCP`), thực thi ở chế độ an toàn `allow_db_mutation: false` và trả về biên lai mã băm SHA-256:
-
-```json
-{
-  "status": "EXECUTED_OK",
-  "claim_label": "[OBSERVED: core/rs_core_engine.py]",
-  "mode": "rs-auto",
-  "needs_clarification": false,
-  "selected_profile": "ho-ops-supply",
-  "allow_db_mutation": false,
-  "execution_plan": [
-    {
-      "step": 1,
-      "layer": "Layer 1 · Persona Lens",
-      "id": "rs-persona-first-principles-truth"
-    },
-    {
-      "step": 2,
-      "layer": "Layer 2 · Primary Domain Skill",
-      "id": "rs-supply-pos-erp-blindcount"
-    },
-    {
-      "step": 3,
-      "layer": "Layer 3 · Cross-Skill Workflow",
-      "id": "rs-wf-ops-blindcount-blitz"
-    },
-    {
-      "step": 4,
-      "layer": "Layer 4 · Safe MCP Verification",
-      "id": "rs-mcp-supply-blind-count-diff"
-    }
-  ]
-}
-```
-
----
-
-## Step 3: Kiểm chứng Chốt Chặn Đặc Quyền CEO & Bảo Vệ Database (`Error Path Verification`)
-
-Một câu hỏi thường gặp của nhân sự mới là: *"Điều gì xảy ra nếu tôi vô tình gọi quyền CEO hoặc chạy lệnh xóa Database?"* Hãy thử chạy 2 lệnh dưới đây để tận mắt thấy chốt chặn bảo mật của bản Khối HO hoạt động:
+Kho `rosier-ho-skills` được thiết kế để nhân sự HO yên tâm thao tác mà **không bao giờ vô tình xóa hoặc làm hỏng cơ sở dữ liệu gốc**:
 
 ```bash
-# 1. Thử leo thang đặc quyền CEO Toàn Chuỗi (--role chain_ceo)
+# 1. Thử gọi lệnh xóa/khởi tạo lại Database -> Bị chặn cứng với mã HO_DB_MUTATION_FORBIDDEN
+./bin/rs-control reset-db --json
+
+# 2. Thử giả lập quyền CEO Toàn Chuỗi -> Bị chặn cứng với mã status = BLOCKED
 ./bin/rs-control rs-auto "Thực thi quyền điều hành" --role chain_ceo --json
 
-# 2. Thử gọi lệnh xóa/khởi tạo lại Database (reset-db)
-./bin/rs-control reset-db --json
+# 3. Chạy kiểm định tự động toàn bộ 166 Kỹ năng 5 Lớp Khối HO (137 HO Skills + 29 HO Workflow Skills) và 24 Safe MCP Tools
+python3 scripts/verify_rs_ho_ecosystem.py --self-test --json
 ```
 
-Cả hai lệnh đều bị chặn ngay lập tức mà không chạm vào bất kỳ dữ liệu nào:
-- Lệnh 1 trả về `"status": "BLOCKED"` với lý do `HO_PRIVILEGE_BOUNDARY_GUARD` và hướng dẫn chuyển sang các vai trò phòng ban HO.
-- Lệnh 2 trả về `"status": "ERROR"` với mã lỗi `HO_DB_MUTATION_FORBIDDEN`.
+Tất cả `166/166` kỹ năng 5 lớp Khối HO, `28/28` đặc tả DAG và `24/24` công cụ Safe MCP đều đạt `"status": "PASS"` và `"allow_db_mutation": false`.
 
 ---
 
-## What you built
+## Bước Tiếp Theo (`Next Steps`)
 
-Chỉ sau 3 bước, bạn đã nắm vững toàn bộ cơ chế hoạt động cốt lõi của `rosier-ho-skills` (`v6.5.0-ho.1`):
-1. **Hỏi tự nhiên không cần nhớ tên Skill (`Step 1`):** Hệ thống tự động kiểm tra 3 trục và sinh câu hỏi trắc nghiệm làm rõ thông qua `clarifying_questions`.
-2. **Thực thi Tổ hợp 4 Lớp tự động (`Step 2`):** Tự động ghép nối `Persona` + `Domain Skill` + `Workflow` + `Safe MCP` theo đúng phòng ban HO và định dạng đầu ra.
-3. **An toàn tuyệt đối trước rủi ro phân quyền & Database (`Step 3`):** Chặn cứng mọi thao tác leo thang quyền CEO (`chain_ceo`) hoặc ghi đè/xóa Database (`reset-db`).
-
-### Bước tiếp theo (`Next Steps`)
-- Xem hướng dẫn cài đặt tự động cập nhật định kỳ 24h tại [How to Install, Operate Zero-Command Auto, and Manage 24h Auto-Updates](howto-operations-and-auto-update.md).
-- Tra cứu toàn bộ 126 Kỹ năng và 28 Quy trình Khối HO tại [Tham Chiếu 126 Kỹ Năng, 28 Quy Trình & 8 Hồ Sơ Phòng Ban](reference-packages-and-skills.md).
-- Tra cứu chi tiết tham số CLI và 24 công cụ MCP tại [Tham Chiếu CLI & 24 Safe MCP Tools](reference-cli-and-api.md).
-- Tìm hiểu sâu về kiến trúc biên dịch khử đặc quyền tại [Kiến Trúc Tách Đặc Quyền CEO & Khóa An Toàn Database](explanation-architecture-and-guardrails.md).
+- Xem hướng dẫn tác vụ thực tế hàng ngày (KPI tháng `#143`, NotebookLM Studio `#144..#151`, đổi Profile phòng ban, cập nhật thủ công, khôi phục khi lỗi): [docs/howto-operations-and-auto-update.md](howto-operations-and-auto-update.md)
+- Tra cứu toàn bộ 137 Kỹ năng Khối HO, 28 Quy trình & 8 Hồ sơ phòng ban: [docs/reference-packages-and-skills.md](reference-packages-and-skills.md)
+- Tra cứu CLI & 24 Safe MCP Tools: [docs/reference-cli-and-api.md](reference-cli-and-api.md)
+- Tìm hiểu kiến trúc tách đặc quyền & bảo vệ Database: [docs/explanation-architecture-and-guardrails.md](explanation-architecture-and-guardrails.md)

@@ -6,7 +6,7 @@ source_files:
   - skills.json
 source_hashes:
   scripts/rs_profile_loader.py: sha256:86750ad1d5b95520
-  skills.json: sha256:7b95a200b43e72ec
+  skills.json: sha256:bb14997d379df097
 ---
 
 # FEAT-15-profile-loader · Trình Quản lý Gói Kỹ năng Theo Vai trò (core-35, persona-counsel, exec, all-140)

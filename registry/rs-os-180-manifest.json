@@ -4,10 +4,10 @@
   "version": "6.8.0-ho.2",
   "allow_db_mutation": false,
   "zero_command_auto_enabled": true,
-  "generated_at_utc": "2026-11-03T14:50:26.295484+00:00",
+  "generated_at_utc": "2026-11-04T00:06:47.694324+00:00",
   "counts": {
-    "total_items": 189,
-    "skills_count": 137,
+    "total_items": 218,
+    "skills_count": 166,
     "persona_skills_count": 11,
     "workflows_count": 28,
     "mcp_modules_count": 8,
@@ -1948,6 +1948,383 @@
       "bundled_engine_files": 1,
       "path": "skills/rs-kb-notebooklm-cross-briefing",
       "sha256_16": "3132e30c8ff349cb"
+    },
+    {
+      "index": 1400,
+      "id": "rs-task-auto",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "01-rs-exec",
+      "title_vi": "Quy Trình Lệnh Tắt /rs-task-auto: Điều Phối Giao Việc Tự Động 3 Phân Hệ (Todolist · Kế Hoạch · Quy Trình)",
+      "lineage": "migrate-workflows (WF-01)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-task-auto/scripts/rs_task_auto_tool.py",
+      "sha256_16": "5bb25f9085307933"
+    },
+    {
+      "index": 143,
+      "id": "rs-wf-exec-monday-l10-ids",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "01-rs-exec",
+      "title_vi": "Chu trình Sáng Thứ Hai 08:30: Họp Giao Ban Tuần Level 10, Chấm Scorecard & Giải quyết IDS",
+      "lineage": "migrate-workflows (WF-01)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-exec-monday-l10-ids/scripts/rs_wf_exec_monday_l10_ids_tool.py",
+      "sha256_16": "daa496c24b87ad28"
+    },
+    {
+      "index": 144,
+      "id": "rs-wf-exec-monthly-mbr-close",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "01-rs-exec",
+      "title_vi": "Chu trình Ngày 28-30 Cuối Tháng: Họp Nghiệm Thu MBR, Đánh giá DoD & Chốt Kế Hoạch Tháng Mới",
+      "lineage": "migrate-workflows (WF-01)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-exec-monthly-mbr-close/scripts/rs_wf_exec_monthly_mbr_close_tool.py",
+      "sha256_16": "0ece30f9df70b7a2"
+    },
+    {
+      "index": 145,
+      "id": "rs-wf-exec-quarterly-bigrocks",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "01-rs-exec",
+      "title_vi": "Chu trình Đầu Quý: Thiết lập OKR × Big Rocks 90 Ngày × KPR 25 Cửa hàng",
+      "lineage": "migrate-workflows (WF-01)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-exec-quarterly-bigrocks/scripts/rs_wf_exec_quarterly_bigrocks_tool.py",
+      "sha256_16": "4fd96b85984abb00"
+    },
+    {
+      "index": 146,
+      "id": "rs-wf-exec-crisis-command-cb03",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "01-rs-exec",
+      "title_vi": "Chu trình Khẩn cấp (<60s): Xử lý Khủng hoảng Khiếu nại/ATTP từ ROSIE bắn về HERMES",
+      "lineage": "migrate-workflows (WF-01)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-exec-crisis-command-cb03/scripts/rs_wf_exec_crisis_command_cb03_tool.py",
+      "sha256_16": "2d4be4d1ce492932"
+    },
+    {
+      "index": 147,
+      "id": "rs-wf-ops-daily-25store-health",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "03-rs-ops",
+      "title_vi": "Chu trình Chấm Điểm Sức Khỏe 25 Điểm Bán & Phát Lệnh Kiểm Tra Thực Địa Cho Giám Sát Vận Hành",
+      "lineage": "migrate-workflows (WF-02)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-ops-daily-25store-health/scripts/rs_wf_ops_daily_25store_health_tool.py",
+      "sha256_16": "bdddd25791021d0b"
+    },
+    {
+      "index": 148,
+      "id": "rs-wf-ops-focus12-weekly-sprint",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "03-rs-ops",
+      "title_vi": "Chu trình Vực Dậy 12 Cửa Hàng Trọng Điểm (Focus 12) Hàng Tuần",
+      "lineage": "migrate-workflows (WF-02)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-ops-focus12-weekly-sprint/scripts/rs_wf_ops_focus12_weekly_sprint_tool.py",
+      "sha256_16": "e0f5f2d7f51d19a1"
+    },
+    {
+      "index": 149,
+      "id": "rs-wf-ops-blindcount-blitz",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "03-rs-ops",
+      "title_vi": "Chu trình Kiểm Kê Mù Đột Xuất & Đối Chiếu Chéo Định Mức Hệ Thống POS × ERP Cung Ứng Trung Tâm",
+      "lineage": "migrate-workflows (WF-02)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-ops-blindcount-blitz/scripts/rs_wf_ops_blindcount_blitz_tool.py",
+      "sha256_16": "e70de754f521d959"
+    },
+    {
+      "index": 150,
+      "id": "rs-wf-ops-company3-pilot-test",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "03-rs-ops",
+      "title_vi": "Chu trình Thử Nghiệm Món Mới & Quy Trình Mới Tại 3 Cửa Hàng Mô Hình Công Ty (38197, 46880, 87024)",
+      "lineage": "migrate-workflows (WF-02)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-ops-company3-pilot-test/scripts/rs_wf_ops_company3_pilot_test_tool.py",
+      "sha256_16": "9153dadf0202e504"
+    },
+    {
+      "index": 151,
+      "id": "rs-wf-ops-new-store-48gates-launch",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "03-rs-ops",
+      "title_vi": "Chu trình Khai Trương Quán Mới Qua 48 Cổng Kiểm Duyệt Kỹ Thuật – Mặt Bằng CAD – Pháp Lý",
+      "lineage": "migrate-workflows (WF-02)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-ops-new-store-48gates-launch/scripts/rs_wf_ops_new_store_48gates_launch_tool.py",
+      "sha256_16": "39bf67ce01717921"
+    },
+    {
+      "index": 152,
+      "id": "rs-wf-ops-equipment-preventive-care",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "03-rs-ops",
+      "title_vi": "Chu trình Bảo Trì Định Kỳ & Xử Lý Sự Cố Thiết Bị Quầy Bar 25 Quán",
+      "lineage": "migrate-workflows (WF-02)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-ops-equipment-preventive-care/scripts/rs_wf_ops_equipment_preventive_care_tool.py",
+      "sha256_16": "fb52aaed84bc4abf"
+    },
+    {
+      "index": 153,
+      "id": "rs-wf-supply-b2b-order-to-cash",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "04-rs-supply",
+      "title_vi": "Chu trình Đặt Hàng Cổng B2B Nội Bộ -> Duyệt Khóa Nợ CB-01 -> Soạn Hàng Kho Tổng Trung Tâm -> Xuất Kho",
+      "lineage": "migrate-workflows (WF-03)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-supply-b2b-order-to-cash/scripts/rs_wf_supply_b2b_order_to_cash_tool.py",
+      "sha256_16": "99da356d73abb351"
+    },
+    {
+      "index": 154,
+      "id": "rs-wf-supply-central-warehouse-inbound",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "04-rs-supply",
+      "title_vi": "Chu trình Nhập Kho Tổng Trung Tâm: Kiểm Tra Chất Lượng (IQC), Dán Nhãn Hạn Dùng FEFO & Sắp Xếp 5S",
+      "lineage": "migrate-workflows (WF-03)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-supply-central-warehouse-inbound/scripts/rs_wf_supply_central_warehouse_inbound_tool.py",
+      "sha256_16": "eeb50b8cad4818fb"
+    },
+    {
+      "index": 155,
+      "id": "rs-wf-supply-outer-route-consolidation",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "04-rs-supply",
+      "title_vi": "Chu trình Gom Đơn & Điều Phối Vận Tải 4 Tuyến Ngoại Thành & Liên Tỉnh (67650, 57588, 99324, 100177)",
+      "lineage": "migrate-workflows (WF-03)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-supply-outer-route-consolidation/scripts/rs_wf_supply_outer_route_consolidation_tool.py",
+      "sha256_16": "a6d7306d0fc39312"
+    },
+    {
+      "index": 156,
+      "id": "rs-wf-fin-daily-3way-reconciliation",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "05-rs-fin",
+      "title_vi": "Chu trình Đối Soát 3 Chiều Hàng Ngày: Sao Kê Ngân Hàng Giao Dịch × Doanh Thu POS × Công Nợ Cung Ứng B2B",
+      "lineage": "migrate-workflows (WF-03)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-fin-daily-3way-reconciliation/scripts/rs_wf_fin_daily_3way_reconciliation_tool.py",
+      "sha256_16": "c637ac301dca97d4"
+    },
+    {
+      "index": 157,
+      "id": "rs-wf-fin-monthly-dual-entity-close",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "05-rs-fin",
+      "title_vi": "Chu trình Khóa Sổ Kế Toán Tháng (Trước Ngày 05) Tách Bạch Đa Mô Hình Pháp Nhân (CTCP · Cty TNHH · HKD)",
+      "lineage": "migrate-workflows (WF-03)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-fin-monthly-dual-entity-close/scripts/rs_wf_fin_monthly_dual_entity_close_tool.py",
+      "sha256_16": "9e9aa53629820d8e"
+    },
+    {
+      "index": 158,
+      "id": "rs-wf-fin-tax-audit-shield",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "05-rs-fin",
+      "title_vi": "Chu trình Rà Soát Hóa Đơn Điện Tử, Thuế HKD & Hồ Sơ Quyết Toán Thuế Cùng Đơn Vị Tư Vấn Thuế Độc Lập",
+      "lineage": "migrate-workflows (WF-03)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-fin-tax-audit-shield/scripts/rs_wf_fin_tax_audit_shield_tool.py",
+      "sha256_16": "983db5377da898ee"
+    },
+    {
+      "index": 159,
+      "id": "rs-wf-lms-slide-to-published-course",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "02-rs-kb-lms",
+      "title_vi": "Chu trình Chuyển Hóa Slide/SOP Đào Tạo Nội Bộ Thành Video 1080p + Wiki + Quiz Bloom Trên LMS",
+      "lineage": "migrate-workflows (WF-04)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-lms-slide-to-published-course/scripts/rs_wf_lms_slide_to_published_course_tool.py",
+      "sha256_16": "c4e178291a5e1763"
+    },
+    {
+      "index": 160,
+      "id": "rs-wf-lms-daily-1700-green-tick",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "02-rs-kb-lms",
+      "title_vi": "Chu trình Điểm Danh Học Tập Tự Động Lúc 15:00 & Chốt Tích Xanh 17:00 Hàng Ngày Toàn Chuỗi",
+      "lineage": "migrate-workflows (WF-04)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-lms-daily-1700-green-tick/scripts/rs_wf_lms_daily_1700_green_tick_tool.py",
+      "sha256_16": "d1d18e326d4989eb"
+    },
+    {
+      "index": 161,
+      "id": "rs-wf-kb-knowledge-2hub-sanitized-sync",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "02-rs-kb-lms",
+      "title_vi": "Chu trình Phê Duyệt SOP Tại ROSIER BUSINESS & Đẩy Bản Đã Lọc Giá Vốn Sang ROSIER STORE HUB",
+      "lineage": "migrate-workflows (WF-04)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-kb-knowledge-2hub-sanitized-sync/scripts/rs_wf_kb_knowledge_2hub_sanitized_sync_tool.py",
+      "sha256_16": "a705153d7eaaa8b3"
+    },
+    {
+      "index": 162,
+      "id": "rs-wf-hr-2round-hiring-to-lms",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "06-rs-hr-legal",
+      "title_vi": "Chu trình Tuyển Dụng 2 Vòng -> Gửi Offer -> Cấp Tài Khoản Học Hội Nhập Trên Rosier LMS",
+      "lineage": "migrate-workflows (WF-04)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-hr-2round-hiring-to-lms/scripts/rs_wf_hr_2round_hiring_to_lms_tool.py",
+      "sha256_16": "3fed646d377f72eb"
+    },
+    {
+      "index": 163,
+      "id": "rs-wf-hr-monthly-3p-payroll-run",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "06-rs-hr-legal",
+      "title_vi": "Chu trình Tính Lương 3P Cuối Tháng: Tổng Hợp Giờ Công POS + Điểm P2 LMS + Thưởng P3 KPR",
+      "lineage": "migrate-workflows (WF-04)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-hr-monthly-3p-payroll-run/scripts/rs_wf_hr_monthly_3p_payroll_run_tool.py",
+      "sha256_16": "f9aea370ef0ac9f8"
+    },
+    {
+      "index": 164,
+      "id": "rs-wf-hr-store-5role-quarterly-review",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "06-rs-hr-legal",
+      "title_vi": "Chu trình Đánh Giá Năng Lực & Xét Bậc Định Kỳ Cho 5 Vị Trí Tại Cửa Hàng",
+      "lineage": "migrate-workflows (WF-04)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-hr-store-5role-quarterly-review/scripts/rs_wf_hr_store_5role_quarterly_review_tool.py",
+      "sha256_16": "cf7b691371cb90b3"
+    },
+    {
+      "index": 165,
+      "id": "rs-wf-mkt-seasonal-campaign-rollout",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "07-rs-mkt-brand",
+      "title_vi": "Chu trình Tung Chiến Dịch Menu Mùa Vụ Qua Cổng 3 Hướng Thiết Kế & Kiểm Định v3.3",
+      "lineage": "migrate-workflows (WF-05)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-mkt-seasonal-campaign-rollout/scripts/rs_wf_mkt_seasonal_campaign_rollout_tool.py",
+      "sha256_16": "56d89d4477fe3622"
+    },
+    {
+      "index": 166,
+      "id": "rs-wf-mkt-group-can-sticker-b2b",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "07-rs-mkt-brand",
+      "title_vi": "Chu trình Chốt Đơn Nhóm Văn Phòng (>= 10 Lon) -> In Tem Lon Cá Nhân Hóa -> Giao Hàng Đúng Giờ",
+      "lineage": "migrate-workflows (WF-05)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-mkt-group-can-sticker-b2b/scripts/rs_wf_mkt_group_can_sticker_b2b_tool.py",
+      "sha256_16": "09b246cc5cfddf7c"
+    },
+    {
+      "index": 167,
+      "id": "rs-wf-mkt-delivery-platform-boost",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "07-rs-mkt-brand",
+      "title_vi": "Chu trình Tối Ưu Thực Đơn, Khung Giờ Flash Sale & Điểm Đánh Giá Trên Các Sàn Giao Đồ Ăn",
+      "lineage": "migrate-workflows (WF-05)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-mkt-delivery-platform-boost/scripts/rs_wf_mkt_delivery_platform_boost_tool.py",
+      "sha256_16": "b5f8d7be894e2961"
+    },
+    {
+      "index": 168,
+      "id": "rs-wf-media-raw-to-multi-platform",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "08-rs-media",
+      "title_vi": "Chu trình Mổ Xẻ Video 7 Chiều & Dựng 1 Video Ngang (16:9) + 3 Shorts Dọc (9:16)",
+      "lineage": "migrate-workflows (WF-05)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-media-raw-to-multi-platform/scripts/rs_wf_media_raw_to_multi_platform_tool.py",
+      "sha256_16": "c60e059ac3ef53d7"
+    },
+    {
+      "index": 169,
+      "id": "rs-wf-omni-franchise-lead-to-contract",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "09-rs-omni-dmz",
+      "title_vi": "Chu trình Sàng Lọc Đối Tác Nhượng Quyền -> Khảo Sát Mặt Bằng -> Ký Hợp Đồng Pháp Lý",
+      "lineage": "migrate-workflows (WF-05)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-omni-franchise-lead-to-contract/scripts/rs_wf_omni_franchise_lead_to_contract_tool.py",
+      "sha256_16": "5d558549aa038f78"
+    },
+    {
+      "index": 170,
+      "id": "rs-wf-omni-investor-weekly-care",
+      "type": "SKILL",
+      "layer": "workflow",
+      "division": "09-rs-omni-dmz",
+      "title_vi": "Chu trình Chăm Sóc Hàng Tuần & Giải Đáp Tự Động Cho 22 Chủ Cửa Hàng Nhượng Quyền",
+      "lineage": "migrate-workflows (WF-05)",
+      "bundled_engine_files_count": 0,
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "cli_tool": "skills/rs-wf-omni-investor-weekly-care/scripts/rs_wf_omni_investor_weekly_care_tool.py",
+      "sha256_16": "46dd1989d6ff2122"
     }
   ],
   "workflows": [
@@ -1968,8 +2345,10 @@
         "rs-mcp-work-task-dispatch",
         "rs-mcp-hub-business-query"
       ],
-      "path": "workflows/rs-wf-exec-monday-l10-ids.md",
-      "sha256_16": "daa496c24b87ad28"
+      "path": "skills/rs-wf-exec-monday-l10-ids/SKILL.md",
+      "sha256_16": "daa496c24b87ad28",
+      "cli_tool": "skills/rs-wf-exec-monday-l10-ids/scripts/rs_wf_exec_monday_l10_ids_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 144,
@@ -1987,8 +2366,10 @@
         "rs-mcp-finance-dual-pnl",
         "rs-mcp-work-plan-audit"
       ],
-      "path": "workflows/rs-wf-exec-monthly-mbr-close.md",
-      "sha256_16": "d8ba5c40695fbd25"
+      "path": "skills/rs-wf-exec-monthly-mbr-close/SKILL.md",
+      "sha256_16": "d8ba5c40695fbd25",
+      "cli_tool": "skills/rs-wf-exec-monthly-mbr-close/scripts/rs_wf_exec_monthly_mbr_close_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 145,
@@ -2007,8 +2388,10 @@
         "rs-mcp-hub-business-query",
         "rs-mcp-work-plan-audit"
       ],
-      "path": "workflows/rs-wf-exec-quarterly-bigrocks.md",
-      "sha256_16": "7d2edcf9a321a8f8"
+      "path": "skills/rs-wf-exec-quarterly-bigrocks/SKILL.md",
+      "sha256_16": "7d2edcf9a321a8f8",
+      "cli_tool": "skills/rs-wf-exec-quarterly-bigrocks/scripts/rs_wf_exec_quarterly_bigrocks_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 146,
@@ -2026,8 +2409,10 @@
         "rs-mcp-omni-messaging-dispatch",
         "rs-mcp-work-task-dispatch"
       ],
-      "path": "workflows/rs-wf-exec-crisis-command-cb03.md",
-      "sha256_16": "b2a432d2cf8f4822"
+      "path": "skills/rs-wf-exec-crisis-command-cb03/SKILL.md",
+      "sha256_16": "b2a432d2cf8f4822",
+      "cli_tool": "skills/rs-wf-exec-crisis-command-cb03/scripts/rs_wf_exec_crisis_command_cb03_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 147,
@@ -2046,8 +2431,10 @@
         "rs-mcp-pos-sales-sync",
         "rs-mcp-work-task-dispatch"
       ],
-      "path": "workflows/rs-wf-ops-daily-25store-health.md",
-      "sha256_16": "bdddd25791021d0b"
+      "path": "skills/rs-wf-ops-daily-25store-health/SKILL.md",
+      "sha256_16": "bdddd25791021d0b",
+      "cli_tool": "skills/rs-wf-ops-daily-25store-health/scripts/rs_wf_ops_daily_25store_health_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 148,
@@ -2066,8 +2453,10 @@
         "rs-mcp-pos-sales-sync",
         "rs-mcp-hub-business-query"
       ],
-      "path": "workflows/rs-wf-ops-focus12-weekly-sprint.md",
-      "sha256_16": "17a232ac1a943798"
+      "path": "skills/rs-wf-ops-focus12-weekly-sprint/SKILL.md",
+      "sha256_16": "17a232ac1a943798",
+      "cli_tool": "skills/rs-wf-ops-focus12-weekly-sprint/scripts/rs_wf_ops_focus12_weekly_sprint_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 149,
@@ -2085,8 +2474,10 @@
         "rs-mcp-pos-recipe-consumption",
         "rs-mcp-supply-blindcount-diff"
       ],
-      "path": "workflows/rs-wf-ops-blindcount-blitz.md",
-      "sha256_16": "e70de754f521d959"
+      "path": "skills/rs-wf-ops-blindcount-blitz/SKILL.md",
+      "sha256_16": "e70de754f521d959",
+      "cli_tool": "skills/rs-wf-ops-blindcount-blitz/scripts/rs_wf_ops_blindcount_blitz_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 150,
@@ -2105,8 +2496,10 @@
         "rs-mcp-pos-sales-sync",
         "rs-mcp-hub-business-query"
       ],
-      "path": "workflows/rs-wf-ops-company3-pilot-test.md",
-      "sha256_16": "b578a91fdd912db0"
+      "path": "skills/rs-wf-ops-company3-pilot-test/SKILL.md",
+      "sha256_16": "b578a91fdd912db0",
+      "cli_tool": "skills/rs-wf-ops-company3-pilot-test/scripts/rs_wf_ops_company3_pilot_test_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 151,
@@ -2125,8 +2518,10 @@
         "rs-mcp-work-dod-gate",
         "rs-mcp-hub-store-publish"
       ],
-      "path": "workflows/rs-wf-ops-new-store-48gates-launch.md",
-      "sha256_16": "39bf67ce01717921"
+      "path": "skills/rs-wf-ops-new-store-48gates-launch/SKILL.md",
+      "sha256_16": "39bf67ce01717921",
+      "cli_tool": "skills/rs-wf-ops-new-store-48gates-launch/scripts/rs_wf_ops_new_store_48gates_launch_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 152,
@@ -2143,8 +2538,10 @@
         "rs-mcp-work-task-dispatch",
         "rs-mcp-hub-business-query"
       ],
-      "path": "workflows/rs-wf-ops-equipment-preventive-care.md",
-      "sha256_16": "609750f1b1fe60a8"
+      "path": "skills/rs-wf-ops-equipment-preventive-care/SKILL.md",
+      "sha256_16": "609750f1b1fe60a8",
+      "cli_tool": "skills/rs-wf-ops-equipment-preventive-care/scripts/rs_wf_ops_equipment_preventive_care_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 153,
@@ -2163,8 +2560,10 @@
         "rs-mcp-supply-credit-gate-cb01",
         "rs-mcp-supply-warehouse-fifo"
       ],
-      "path": "workflows/rs-wf-supply-b2b-order-to-cash.md",
-      "sha256_16": "99da356d73abb351"
+      "path": "skills/rs-wf-supply-b2b-order-to-cash/SKILL.md",
+      "sha256_16": "99da356d73abb351",
+      "cli_tool": "skills/rs-wf-supply-b2b-order-to-cash/scripts/rs_wf_supply_b2b_order_to_cash_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 154,
@@ -2182,8 +2581,10 @@
         "rs-mcp-supply-warehouse-fifo",
         "rs-mcp-studio-ocr-extract"
       ],
-      "path": "workflows/rs-wf-supply-central-warehouse-inbound.md",
-      "sha256_16": "eeb50b8cad4818fb"
+      "path": "skills/rs-wf-supply-central-warehouse-inbound/SKILL.md",
+      "sha256_16": "eeb50b8cad4818fb",
+      "cli_tool": "skills/rs-wf-supply-central-warehouse-inbound/scripts/rs_wf_supply_central_warehouse_inbound_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 155,
@@ -2201,8 +2602,10 @@
         "rs-mcp-supply-order-sync",
         "rs-mcp-supply-warehouse-fifo"
       ],
-      "path": "workflows/rs-wf-supply-outer-route-consolidation.md",
-      "sha256_16": "a6d7306d0fc39312"
+      "path": "skills/rs-wf-supply-outer-route-consolidation/SKILL.md",
+      "sha256_16": "a6d7306d0fc39312",
+      "cli_tool": "skills/rs-wf-supply-outer-route-consolidation/scripts/rs_wf_supply_outer_route_consolidation_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 156,
@@ -2221,8 +2624,10 @@
         "rs-mcp-pos-sales-sync",
         "rs-mcp-supply-order-sync"
       ],
-      "path": "workflows/rs-wf-fin-daily-3way-reconciliation.md",
-      "sha256_16": "c637ac301dca97d4"
+      "path": "skills/rs-wf-fin-daily-3way-reconciliation/SKILL.md",
+      "sha256_16": "c637ac301dca97d4",
+      "cli_tool": "skills/rs-wf-fin-daily-3way-reconciliation/scripts/rs_wf_fin_daily_3way_reconciliation_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 157,
@@ -2240,8 +2645,10 @@
         "rs-mcp-finance-dual-pnl",
         "rs-mcp-finance-bank-reconcile"
       ],
-      "path": "workflows/rs-wf-fin-monthly-dual-entity-close.md",
-      "sha256_16": "9e9aa53629820d8e"
+      "path": "skills/rs-wf-fin-monthly-dual-entity-close/SKILL.md",
+      "sha256_16": "9e9aa53629820d8e",
+      "cli_tool": "skills/rs-wf-fin-monthly-dual-entity-close/scripts/rs_wf_fin_monthly_dual_entity_close_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 158,
@@ -2259,8 +2666,10 @@
         "rs-mcp-finance-dual-pnl",
         "rs-mcp-studio-ocr-extract"
       ],
-      "path": "workflows/rs-wf-fin-tax-audit-shield.md",
-      "sha256_16": "609a95721f2d219c"
+      "path": "skills/rs-wf-fin-tax-audit-shield/SKILL.md",
+      "sha256_16": "609a95721f2d219c",
+      "cli_tool": "skills/rs-wf-fin-tax-audit-shield/scripts/rs_wf_fin_tax_audit_shield_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 159,
@@ -2280,8 +2689,10 @@
         "rs-mcp-lms-course-publish",
         "rs-mcp-lms-quiz-bloom-upsert"
       ],
-      "path": "workflows/rs-wf-lms-slide-to-published-course.md",
-      "sha256_16": "c4e178291a5e1763"
+      "path": "skills/rs-wf-lms-slide-to-published-course/SKILL.md",
+      "sha256_16": "c4e178291a5e1763",
+      "cli_tool": "skills/rs-wf-lms-slide-to-published-course/scripts/rs_wf_lms_slide_to_published_course_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 160,
@@ -2298,8 +2709,10 @@
         "rs-mcp-lms-progress-1700-audit",
         "rs-mcp-work-task-dispatch"
       ],
-      "path": "workflows/rs-wf-lms-daily-1700-green-tick.md",
-      "sha256_16": "d1d18e326d4989eb"
+      "path": "skills/rs-wf-lms-daily-1700-green-tick/SKILL.md",
+      "sha256_16": "d1d18e326d4989eb",
+      "cli_tool": "skills/rs-wf-lms-daily-1700-green-tick/scripts/rs_wf_lms_daily_1700_green_tick_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 161,
@@ -2318,8 +2731,10 @@
         "rs-mcp-hub-2way-sanitize-sync",
         "rs-mcp-hub-store-publish"
       ],
-      "path": "workflows/rs-wf-kb-knowledge-2hub-sanitized-sync.md",
-      "sha256_16": "a705153d7eaaa8b3"
+      "path": "skills/rs-wf-kb-knowledge-2hub-sanitized-sync/SKILL.md",
+      "sha256_16": "a705153d7eaaa8b3",
+      "cli_tool": "skills/rs-wf-kb-knowledge-2hub-sanitized-sync/scripts/rs_wf_kb_knowledge_2hub_sanitized_sync_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 162,
@@ -2337,8 +2752,10 @@
         "rs-mcp-hub-business-query",
         "rs-mcp-lms-course-publish"
       ],
-      "path": "workflows/rs-wf-hr-2round-hiring-to-lms.md",
-      "sha256_16": "c87cb9251afab6e0"
+      "path": "skills/rs-wf-hr-2round-hiring-to-lms/SKILL.md",
+      "sha256_16": "c87cb9251afab6e0",
+      "cli_tool": "skills/rs-wf-hr-2round-hiring-to-lms/scripts/rs_wf_hr_2round_hiring_to_lms_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 163,
@@ -2358,8 +2775,10 @@
         "rs-mcp-lms-progress-1700-audit",
         "rs-mcp-finance-dual-pnl"
       ],
-      "path": "workflows/rs-wf-hr-monthly-3p-payroll-run.md",
-      "sha256_16": "f9aea370ef0ac9f8"
+      "path": "skills/rs-wf-hr-monthly-3p-payroll-run/SKILL.md",
+      "sha256_16": "f9aea370ef0ac9f8",
+      "cli_tool": "skills/rs-wf-hr-monthly-3p-payroll-run/scripts/rs_wf_hr_monthly_3p_payroll_run_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 164,
@@ -2378,8 +2797,10 @@
         "rs-mcp-lms-progress-1700-audit",
         "rs-mcp-hub-business-query"
       ],
-      "path": "workflows/rs-wf-hr-store-5role-quarterly-review.md",
-      "sha256_16": "93e6b8d0e79a6ce1"
+      "path": "skills/rs-wf-hr-store-5role-quarterly-review/SKILL.md",
+      "sha256_16": "93e6b8d0e79a6ce1",
+      "cli_tool": "skills/rs-wf-hr-store-5role-quarterly-review/scripts/rs_wf_hr_store_5role_quarterly_review_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 165,
@@ -2398,8 +2819,10 @@
         "rs-mcp-studio-video-render",
         "rs-mcp-hub-store-publish"
       ],
-      "path": "workflows/rs-wf-mkt-seasonal-campaign-rollout.md",
-      "sha256_16": "56d89d4477fe3622"
+      "path": "skills/rs-wf-mkt-seasonal-campaign-rollout/SKILL.md",
+      "sha256_16": "56d89d4477fe3622",
+      "cli_tool": "skills/rs-wf-mkt-seasonal-campaign-rollout/scripts/rs_wf_mkt_seasonal_campaign_rollout_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 166,
@@ -2417,8 +2840,10 @@
         "rs-mcp-omni-messaging-dispatch",
         "rs-mcp-pos-sales-sync"
       ],
-      "path": "workflows/rs-wf-mkt-group-can-sticker-b2b.md",
-      "sha256_16": "09b246cc5cfddf7c"
+      "path": "skills/rs-wf-mkt-group-can-sticker-b2b/SKILL.md",
+      "sha256_16": "09b246cc5cfddf7c",
+      "cli_tool": "skills/rs-wf-mkt-group-can-sticker-b2b/scripts/rs_wf_mkt_group_can_sticker_b2b_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 167,
@@ -2436,8 +2861,10 @@
         "rs-mcp-pos-sales-sync",
         "rs-mcp-omni-map-review-sync"
       ],
-      "path": "workflows/rs-wf-mkt-delivery-platform-boost.md",
-      "sha256_16": "b5f8d7be894e2961"
+      "path": "skills/rs-wf-mkt-delivery-platform-boost/SKILL.md",
+      "sha256_16": "b5f8d7be894e2961",
+      "cli_tool": "skills/rs-wf-mkt-delivery-platform-boost/scripts/rs_wf_mkt_delivery_platform_boost_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 168,
@@ -2456,8 +2883,10 @@
         "rs-mcp-studio-video-render",
         "rs-mcp-studio-brand-v33-gate"
       ],
-      "path": "workflows/rs-wf-media-raw-to-multi-platform.md",
-      "sha256_16": "c60e059ac3ef53d7"
+      "path": "skills/rs-wf-media-raw-to-multi-platform/SKILL.md",
+      "sha256_16": "c60e059ac3ef53d7",
+      "cli_tool": "skills/rs-wf-media-raw-to-multi-platform/scripts/rs_wf_media_raw_to_multi_platform_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 169,
@@ -2475,8 +2904,10 @@
         "rs-mcp-omni-messaging-dispatch",
         "rs-mcp-omni-map-review-sync"
       ],
-      "path": "workflows/rs-wf-omni-franchise-lead-to-contract.md",
-      "sha256_16": "2ba1d7b9c60e8dd4"
+      "path": "skills/rs-wf-omni-franchise-lead-to-contract/SKILL.md",
+      "sha256_16": "2ba1d7b9c60e8dd4",
+      "cli_tool": "skills/rs-wf-omni-franchise-lead-to-contract/scripts/rs_wf_omni_franchise_lead_to_contract_tool.py",
+      "five_layer_unified": true
     },
     {
       "index": 170,
@@ -2495,8 +2926,10 @@
         "rs-mcp-omni-owner-group-care",
         "rs-mcp-hub-store-publish"
       ],
-      "path": "workflows/rs-wf-omni-investor-weekly-care.md",
-      "sha256_16": "46dd1989d6ff2122"
+      "path": "skills/rs-wf-omni-investor-weekly-care/SKILL.md",
+      "sha256_16": "46dd1989d6ff2122",
+      "cli_tool": "skills/rs-wf-omni-investor-weekly-care/scripts/rs_wf_omni_investor_weekly_care_tool.py",
+      "five_layer_unified": true
     }
   ],
   "mcp_modules": [
