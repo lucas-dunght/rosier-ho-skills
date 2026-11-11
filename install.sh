@@ -135,6 +135,11 @@ if [[ -L "${WORKSPACE_DIR}/.agents" || ! -e "${WORKSPACE_DIR}/.agents" ]]; then
   ln -sfn ".agent" "${WORKSPACE_DIR}/.agents"
 fi
 
+mkdir -p "${WORKSPACE_DIR}/.claude"
+if [[ -L "${WORKSPACE_DIR}/.claude/skills" || ! -e "${WORKSPACE_DIR}/.claude/skills" ]]; then
+  ln -sfn "../.agent/skills" "${WORKSPACE_DIR}/.claude/skills"
+fi
+
 python3 "${WORKSPACE_DIR}/.agent/scripts/rs_profile_loader.py" activate "${PROFILE}" --target workspace --workspace-dir "${WORKSPACE_DIR}"
 
 if [[ -n "${IDE_MCP_CONFIG}" ]]; then

@@ -1,4 +1,13 @@
-# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.8.0-ho.2`)
+# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.9.0-ho.1`)
+
+## [6.9.0-ho.1] - 2026-11-09
+
+### Hệ Điều Hành R&D Đồ Uống 5 Cổng, Kiểm Toán BOM 2 Kích Cỡ & Sổ Cái Mẫu Hủy Bất Biến (`#152 rs-rnd-5gate-product-innovation` + `#015 rs-kb-recipe-rd-vault`)
+- **Bổ sung kỹ năng `#152 rs-rnd-5gate-product-innovation` và nâng cấp `#015 rs-kb-recipe-rd-vault` (`167` Kỹ năng 5 Lớp Khối HO = `138` HO Skills + `29` HO Workflow Skills):**
+  - Cho phép nhân sự R&D, Cung ứng, Đào tạo LMS và Vận hành chạy trọn vẹn 5 Cổng R&D (`idea-radar`, `lab-test`, `bom-costing`, `pilot-radar`, `rollout-factory`) cùng `kill-vault`, `pipeline-status` ở chế độ an toàn `HO_SAFE_READ_AND_DRAFT`.
+  - Khóa cứng quyền xóa lịch sử mẫu thử (`rnd-delete` -> `IMMUTABLE_RND_LEDGER_DELETE_FORBIDDEN`), bắt buộc nhập mã nguyên nhân chuẩn khi lưu mẫu thất bại vào `Kill Vault` (`MANDATORY_KILL_REASON_REQUIRED`) và yêu cầu mã chữ ký CEO (`HO_CEO_APPROVAL_REQUIRED`) trước khi chốt duyệt BOM chính thức hoặc kích hoạt phát hành 25 điểm bán.
+  - Hỗ trợ liên kết tự động `.agent/skills`, `.agents/skills` và `.claude/skills -> ../.agent/skills` để chạy trực tiếp trên cả Antigravity và Claude Code.
+- **Bộ Cẩm Nang Hướng Dẫn Thực Hành 7 Bộ Phận Khối Văn Phòng HO (`docs/cam-nang/`):** Đóng gói 7 cẩm nang nghiệp vụ (.md + .docx) cho Tài chính - Kế toán, Đào tạo LMS, Marketing & Growth, R&D, Vận hành QSC, HCNS và Cung ứng, hướng dẫn thao tác 3 bước đơn giản và lệnh vạn năng `/rs-auto`.
 
 ## [6.8.0-ho.2] - 2026-11-04
 

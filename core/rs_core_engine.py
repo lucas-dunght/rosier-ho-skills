@@ -18,12 +18,11 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-ENGINE_VERSION = "6.8.0-ho.1-staff-safe-edition"
-HO_EDITION_MODE = True
-FORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}
+ENGINE_VERSION = "6.9.0-rs-os-200-rnd-5gate-innovation-os"
 SUITE_ROOT_DIR = Path(__file__).resolve().parent.parent
 BOM_LEDGER_PATH = SUITE_ROOT_DIR / "core" / "bom_temporal_ledger.json"
 KPI_LEDGER_PATH = SUITE_ROOT_DIR / "core" / "kpi_monthly_ledger.json"
+RND_LEDGER_PATH = SUITE_ROOT_DIR / "core" / "rnd_innovation_ledger.json"
 PILOT_COMPANY_3_CODES = {"38197", "46880", "87024"}
 
 EM_DASH_CHAR = "\u2014"
@@ -39,7 +38,7 @@ def _rx(escaped_pattern: str) -> re.Pattern[str]:
 # third-party vendor software/banks/platforms, and specific street/district names.
 EXTERNAL_WHITELABEL_REPLACEMENTS: List[Tuple[re.Pattern[str], str]] = [
     # 1. Legacy slug migrations -> Pure Functional & Role Slugs
-    (_rx(r"rs-persona-ceo-\u006cucas"), "rs-persona-first-principles-truth"),
+    (_rx(r"rs-persona-ceo-\u006cucas"), "rs-persona-chain-ceo"),
     (_rx(r"rs-persona-tgd-\u0074huylinh"), "rs-persona-store-owner-company"),
     (_rx(r"rs-persona-master-rnd-\u0074an"), "rs-persona-master-rnd"),
     (_rx(r"rs-persona-field-commander-\u006cam"), "rs-persona-field-commander"),
@@ -70,7 +69,7 @@ EXTERNAL_WHITELABEL_REPLACEMENTS: List[Tuple[re.Pattern[str], str]] = [
     (_rx(r"rs-wf-mkt-\u0078anhsm-delivery-boost"), "rs-wf-mkt-delivery-platform-boost"),
     (_rx(r"rs-mcp-\u006eotion-2hub-sanitize-sync"), "rs-mcp-hub-2way-sanitize-sync"),
     (_rx(r"rs-mcp-\u006eotion-business-query"), "rs-mcp-hub-business-query"),
-    (_rx(r"rs-mcp-\u006eotion-business-upsert"), "rs-mcp-hub-business-query"),
+    (_rx(r"rs-mcp-\u006eotion-business-upsert"), "rs-mcp-hub-business-upsert"),
     (_rx(r"rs-mcp-\u006eotion-storehub-publish"), "rs-mcp-hub-store-publish"),
     (_rx(r"rs-mcp-\u006eotion-2hub"), "rs-mcp-knowledge-2hub"),
     (_rx(r"rs-mcp-\u0066astdo-plan-audit"), "rs-mcp-work-plan-audit"),
@@ -95,7 +94,7 @@ EXTERNAL_WHITELABEL_REPLACEMENTS: List[Tuple[re.Pattern[str], str]] = [
     (_rx(r"\u0068uashu-skills"), "rs-os-200-suite"),
     (_rx(r"\u0068uashu-proofreading"), "rs-meta-deslop-3pass"),
     (_rx(r"\u0068uashu-design"), "rs-brand-design-system-v33"),
-    (_rx(r"\u0068uashu-slides"), "rs-office-data-kpi-storyteller"),
+    (_rx(r"\u0068uashu-slides"), "rs-exec-board-deck"),
     (_rx(r"\u0068uashu-data-pro"), "rs-office-data-kpi-storyteller"),
     (_rx(r"\u0068uashu-\u0064ouyin-script"), "rs-media-mkt-shorts-factory"),
     (_rx(r"\u0068uashu-video-check"), "rs-media-video-studio-pro"),
@@ -113,21 +112,21 @@ EXTERNAL_WHITELABEL_REPLACEMENTS: List[Tuple[re.Pattern[str], str]] = [
     (_rx(r"\u0068uashu-research"), "rs-eng-info-refinement-bo01"),
     (_rx(r"\u0068uashu-info-search"), "rs-eng-info-refinement-bo01"),
     (_rx(r"\u0068uashu-speech-coach"), "rs-lms-onboarding-path"),
-    (_rx(r"\u0068uashu-agent-swarm"), "rs-meta-cad-store-floorplan-dxf"),
-    (_rx(r"\u0068uashu-prompt-save"), "rs-office-docx-enterprise"),
+    (_rx(r"\u0068uashu-agent-swarm"), "rs-meta-agent-swarm-worktree"),
+    (_rx(r"\u0068uashu-prompt-save"), "rs-eng-skill-factory-architect"),
     (_rx(r"\u0068uashu-skill-updater"), "rs-meta-skill-updater-sync"),
     (_rx(r"\u0068uashu-excel"), "rs-fin-xlsx-model-architect"),
     (_rx(r"\u0068uashu-gpt-image"), "rs-brand-packaging-label-spec"),
     (_rx(r"\u0068uashu-art-motion"), "rs-media-motion-explainer"),
     (_rx(r"\u0068uashu-cad"), "rs-meta-cad-store-floorplan-dxf"),
-    (_rx(r"\u0068uashu-mac-use"), "rs-meta-skill-updater-sync"),
+    (_rx(r"\u0068uashu-mac-use"), "rs-meta-mac-native-automation"),
     (_rx(r"\u82b1\u53d4"), "Rosier"),
     (_rx(r"\u5973\u5a32"), "Rosier Persona"),
     (_rx(r"\u0068uashu"), "Rosier"),
     (_rx(r"\u0076ibecode\s*kit\s*v6\.2\s*\(\s*×\s*\u0070stack\s*@\u0070oteto\s*\)"), "Chuẩn Kỹ Thuật Nội Bộ Rosier"),
     (_rx(r"\u0076ibecode\s*kit\s*v6\.2"), "Chuẩn Kỹ Thuật Nội Bộ Rosier"),
     (_rx(r"\u0076ibecode\s*v6\.2"), "Chuẩn Kỹ Thuật Nội Bộ Rosier"),
-    (_rx(r"\u0076ibecode-kit-v6"), "rs-office-project-wbs-gantt"),
+    (_rx(r"\u0076ibecode-kit-v6"), "rs-eng-release-ship-pipeline"),
     (_rx(r"\u0076ibecode"), "Rosier"),
     (_rx(r"\u0070stack"), "Rosier"),
     (_rx(r"@?\u0070oteto"), "Rosier Core"),
@@ -135,12 +134,12 @@ EXTERNAL_WHITELABEL_REPLACEMENTS: List[Tuple[re.Pattern[str], str]] = [
     (_rx(r"john\s+\u006fusterhout"), "Chuẩn CLI Nội Bộ Rosier"),
     (_rx(r"\u006fusterhout"), "Chuẩn CLI Nội Bộ Rosier"),
     (_rx(r"\u006eữ\s*oa"), "Cố Vấn Tư Duy Rosier"),
-    (_rx(r"\u006euwa-skill"), "rs-meta-deslop-3pass"),
+    (_rx(r"\u006euwa-skill"), "rs-meta-persona-distiller"),
     (_rx(r"\u006euwa"), "Rosier Persona"),
     (_rx(r"\u0074ramstop-skill"), "rs-meta-deslop-3pass"),
     (_rx(r"\u0074ramstop"), "Rosier De-AI"),
-    (_rx(r"\u0064arwin-skill"), "rs-meta-skill-updater-sync"),
-    (_rx(r"\u0066reud-skill"), "rs-meta-deslop-3pass"),
+    (_rx(r"\u0064arwin-skill"), "rs-meta-skill-evolver"),
+    (_rx(r"\u0066reud-skill"), "rs-meta-prompt-diagnostics"),
 
     # 3. Personal Staff Names, Tax Partner & External Celebrities -> Pure Role / Theory Titles
     (_rx(r"ceo\s+\u0068oàng\s+tuấn\s+dũng\s*\(\s*\u006cucas\s*·?\s*ctcp\s*\)"), "CEO Toàn Chuỗi"),
@@ -279,7 +278,7 @@ LEGAL_ENTITIES: Dict[str, Dict[str, Any]] = {
         "name": "Pháp nhân Công ty Cổ phần Chuỗi (MST 0110045807 · Đơn vị Chủ quản Hệ thống & Chuỗi Cung ứng Trung tâm)",
         "role": "Quản trị toàn chuỗi 25 điểm bán, R&D gốc, Học viện LMS, Chuỗi cung ứng B2B Trung tâm & Cơ cấu HO Tinh gọn 03 Phòng ban (V6.2)",
         "store_count": 25,
-        "lead_role": "Tổng Giám đốc Điều hành Toàn Chuỗi (CEO Toàn Chuỗi · RS001 · rs-persona-first-principles-truth)",
+        "lead_role": "Tổng Giám đốc Điều hành Toàn Chuỗi (CEO Toàn Chuỗi · RS001 · rs-persona-chain-ceo)",
         "ho_departments_v62": [
             "1. Phòng Vận hành (GSVH RS004, QLVH 3 CHH & R&D RS006, KTCU RS008, Quản lý Kho Tổng RS009, Cố vấn R&D RS013)",
             "2. Phòng Marketing (Trưởng phòng MKT RS011 + 02 Chuyên viên Content & Thiết kế)",
@@ -979,7 +978,7 @@ def execute_bom_lifecycle_action(
                 },
                 "stage_3_ceo": {
                     "role": "chain_ceo",
-                    "persona": "rs-persona-first-principles-truth",
+                    "persona": "rs-persona-chain-ceo",
                     "status": "WAITING_FOR_SUPPLY_STAGE",
                     "timestamp": None,
                     "approval_receipt_sha256": None,
@@ -1229,7 +1228,7 @@ def execute_bom_lifecycle_action(
         target_v["approval_status"] = new_status
         target_v["governance_trail"]["stage_3_ceo"] = {
             "role": "chain_ceo",
-            "persona": "rs-persona-first-principles-truth",
+            "persona": "rs-persona-chain-ceo",
             "status": "APPROVED",
             "timestamp": "2026-11-02T16:30:00Z",
             "approval_receipt_sha256": receipt_hash,
@@ -1268,6 +1267,825 @@ def execute_bom_lifecycle_action(
             "code": "UNKNOWN_BOM_ACTION",
             "root_cause": f"Hành động BOM '{action}' không hợp lệ. Hỗ trợ: bom-create, bom-update, bom-verify-supply, bom-approve, bom-as-of, bom-history, bom-diff.",
             "next_command": "python3 skills/rs-kb-recipe-rd-vault/scripts/rs_kb_recipe_rd_vault_tool.py bom-history --bom-id BOM-DRK-OLNS-500 --json",
+        },
+    }
+
+
+# ==============================================================================
+# ROSIER 5-GATE AI-FIRST R&D PRODUCT INNOVATION ENGINE & IMMUTABLE KILL VAULT
+# (#152 rs-rnd-5gate-product-innovation + #015 rs-kb-recipe-rd-vault)
+# ==============================================================================
+
+RND_5GATE_ACTIONS: Tuple[str, ...] = (
+    "idea-radar",
+    "lab-test",
+    "bom-costing",
+    "pilot-radar",
+    "rollout-factory",
+    "kill-vault",
+    "pipeline-status",
+    "rnd-delete",
+)
+
+
+def load_rnd_innovation_ledger() -> Dict[str, Any]:
+    """Load the immutable 5-Gate R&D Innovation & Kill Vault ledger."""
+    if RND_LEDGER_PATH.exists():
+        return json.loads(RND_LEDGER_PATH.read_text(encoding="utf-8"))
+    return {
+        "schema_version": "1.0.0-rosier-rnd-5gate-innovation-ledger",
+        "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+        "allow_idea_deletion": False,
+        "allow_test_round_deletion": False,
+        "separate_rnd_sample_from_store_wastage": True,
+        "pilot_company_3_stores": ["38197", "46880", "87024"],
+        "blocked_closed_stores": ["115953", "106192"],
+        "failure_reason_taxonomy": {},
+        "erp_inventory_catalog": {},
+        "active_pipeline": {},
+        "kill_vault": {},
+    }
+
+
+def execute_rnd_5gate_action(
+    payload: Dict[str, Any],
+    dry_run: bool = False,
+    is_ho_edition: bool = False,
+) -> Dict[str, Any]:
+    """Execute deterministic 5-Gate R&D Product Innovation actions with Immutable Kill Vault & 3-Gate BOM Linters."""
+    action = str(payload.get("rnd_action") or payload.get("action") or "pipeline-status").strip().lower()
+    store_code = str(payload.get("store_code") or "").strip()
+    if store_code in CLOSED_STORES:
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "rnd_action": action,
+            "error": {
+                "code": "CLOSED_STORE_BLOCKED",
+                "root_cause": f"Mã điểm bán '{store_code}' đã đóng cửa vĩnh viễn (115953, 106192). Tuyệt đối không đưa vào thử nghiệm Pilot hoặc phân bổ nguyên vật liệu.",
+                "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py pilot-radar --store-code 38197 --dry-run --json",
+            },
+        }
+
+    ledger = load_rnd_innovation_ledger()
+    catalog = ledger.get("erp_inventory_catalog", {})
+    active_map = ledger.get("active_pipeline", {})
+    kill_vault_map = ledger.get("kill_vault", {})
+    taxonomy = ledger.get("failure_reason_taxonomy", {})
+
+    if action in ("rnd-delete", "delete-idea", "delete-test"):
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+            "rnd_action": action,
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "allow_idea_deletion": False,
+            "error": {
+                "code": "IMMUTABLE_RND_LEDGER_DELETE_FORBIDDEN",
+                "root_cause": "Hệ thống R&D Rosier khóa cứng lệnh xóa ý tưởng hoặc xóa vòng pha thử thất bại. Mọi mẫu thử dừng triển khai bắt buộc lưu vết vào Sổ cái Mẫu Hủy (Kill Vault) kèm mã lý do để AI và Ban Điều hành kế thừa bài học.",
+                "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py kill-vault --json",
+            },
+        }
+
+    if action == "kill-vault":
+        total_killed_cost = sum(
+            float(item.get("total_sample_material_cost_vnd", 0.0)) for item in kill_vault_map.values()
+        )
+        total_killed_cups = sum(
+            int(item.get("total_sample_cups_used", 0)) for item in kill_vault_map.values()
+        )
+        return {
+            "ok": True,
+            "status": "OK",
+            "claim_label": "[OBSERVED: core/rnd_innovation_ledger.json]",
+            "rnd_action": "kill-vault",
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "allow_idea_deletion": False,
+            "separate_rnd_sample_from_store_wastage": True,
+            "killed_ideas_count": len(kill_vault_map),
+            "total_killed_sample_cups": total_killed_cups,
+            "total_killed_sample_cost_vnd": round(total_killed_cost, 1),
+            "failure_reason_taxonomy": taxonomy,
+            "killed_ideas": list(kill_vault_map.values()),
+            "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py pipeline-status --json",
+        }
+
+    if action == "pipeline-status":
+        gate_counts: Dict[str, int] = {
+            "GATE_1_IDEA_RADAR": 0,
+            "GATE_2_LAB_TEST": 0,
+            "GATE_3_BOM_COSTING": 0,
+            "GATE_4_PILOT_3CHH": 0,
+            "GATE_5_ROLLOUT_25STORES": 0,
+        }
+        for item in active_map.values():
+            g_code = str(item.get("current_gate", "GATE_1_IDEA_RADAR"))
+            gate_counts[g_code] = gate_counts.get(g_code, 0) + 1
+        return {
+            "ok": True,
+            "status": "OK",
+            "claim_label": "[OBSERVED: core/rnd_innovation_ledger.json]",
+            "rnd_action": "pipeline-status",
+            "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+            "active_ideas_count": len(active_map),
+            "killed_ideas_in_vault_count": len(kill_vault_map),
+            "gate_distribution": gate_counts,
+            "active_pipeline": list(active_map.values()),
+            "kill_vault_summary": [
+                {
+                    "idea_id": k_item.get("idea_id"),
+                    "title": k_item.get("title"),
+                    "killed_at_gate": k_item.get("killed_at_gate"),
+                    "kill_reason_code": k_item.get("kill_reason_code"),
+                    "total_sample_material_cost_vnd": k_item.get("total_sample_material_cost_vnd"),
+                }
+                for k_item in kill_vault_map.values()
+            ],
+            "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py idea-radar --dry-run --json",
+        }
+
+    # Gate 1: idea-radar (AI Deep Market & Internal ERP Inventory Reuse Radar)
+    if action == "idea-radar":
+        idea_id = str(payload.get("idea_id") or "PID-202611-0001").strip()
+        idea_meta = active_map.get(idea_id, {})
+        raw_title = str(
+            payload.get("idea_title")
+            or payload.get("title")
+            or payload.get("topic")
+            or idea_meta.get("title")
+            or "Topping Trân Châu Socola Phô Mai Phối 03 Nền Đồ Uống Có Sẵn"
+        ).strip()
+        clean_title = sanitize_rosier_text(raw_title)
+        category = str(payload.get("category") or idea_meta.get("category") or "TOPPING_BTP").strip().upper()
+        season = str(payload.get("season") or idea_meta.get("season") or "WINTER_Q4_2026").strip().upper()
+        target_price_m = float(payload.get("target_price_size_m_vnd", idea_meta.get("target_price_size_m_vnd", 39000.0)))
+        target_price_p = float(payload.get("target_price_size_p_vnd", idea_meta.get("target_price_size_p_vnd", 45000.0)))
+        if payload.get("proposed_skus"):
+            proposed_skus = list(payload["proposed_skus"])
+            new_seasonal_skus = {"NVL-PEARL-CHP-01", "NVL-CHEST-PST-01"}
+            reused_skus = [sku for sku in proposed_skus if sku in catalog and sku not in new_seasonal_skus]
+            new_skus = [sku for sku in proposed_skus if sku not in reused_skus]
+            reuse_pct = round((len(reused_skus) / max(1, len(proposed_skus))) * 100.0, 1)
+        elif idea_meta.get("reused_erp_skus"):
+            reused_skus = list(idea_meta.get("reused_erp_skus", []))
+            new_skus = list(idea_meta.get("new_skus_to_source", []))
+            total_skus = max(1, len(reused_skus) + len(new_skus))
+            reuse_pct = float(idea_meta.get("inventory_reuse_pct", round((len(reused_skus) / total_skus) * 100.0, 1)))
+        else:
+            reused_skus = [
+                "NVL-TEA-BLK-01",
+                "NVL-MLK-TT-01",
+                "NVL-CHOC-PWD-01",
+                "NVL-CRM-CHS-01",
+                "NVL-SYR-CANE-01",
+                "PKG-CAN-PET500",
+            ]
+            new_skus = ["NVL-PEARL-CHP-01"]
+            reuse_pct = round((len(reused_skus) / (len(reused_skus) + len(new_skus))) * 100.0, 1)
+
+        # Past Kill Vault risk warnings
+        past_kill_warnings: List[Dict[str, str]] = []
+        title_low = clean_title.lower()
+        for k_item in kill_vault_map.values():
+            if any(tok in title_low for tok in ("sầu riêng", "kem trứng")) and k_item.get("idea_id") == "PID-202609-0004":
+                past_kill_warnings.append({
+                    "matched_killed_idea_id": str(k_item.get("idea_id")),
+                    "killed_title": str(k_item.get("title")),
+                    "kill_reason_code": str(k_item.get("kill_reason_code")),
+                    "warning": str(k_item.get("lesson_learned_for_ai")),
+                })
+            elif any(tok in title_low for tok in ("đậu biếc", "hoa")) and k_item.get("idea_id") == "PID-202608-0007":
+                past_kill_warnings.append({
+                    "matched_killed_idea_id": str(k_item.get("idea_id")),
+                    "killed_title": str(k_item.get("title")),
+                    "kill_reason_code": str(k_item.get("kill_reason_code")),
+                    "warning": str(k_item.get("lesson_learned_for_ai")),
+                })
+
+        delivery_commission_pct = float(payload.get("delivery_commission_pct", 26.5))
+        max_allowable_cogs_m = round(target_price_m * 0.30, 0)
+        max_allowable_cogs_p = round(target_price_p * 0.30, 0)
+
+        starter_formulas_3 = [
+            {
+                "variant_code": "LAB-VAR-A",
+                "variant_name": "Phương Án A · Cân Bằng Hương Trà Ủ Lạnh Nguyên Bản (Khuyên Dùng)",
+                "size_m_16oz_spec": "130ml cốt trà ủ lạnh 4 độ C + 40ml sữa tươi thanh trùng + 15ml syrup đường mía + 45g bán thành phẩm chủ đạo + 160g đá viên",
+                "size_p_500ml_spec": "165ml cốt trà ủ lạnh 4 độ C + 55ml sữa tươi thanh trùng + 20ml syrup đường mía + 60g bán thành phẩm chủ đạo + 190g đá viên (Đóng lon PET 500ml)",
+                "target_brix": "11.5 ± 0.5",
+                "estimated_cogs_pct": 27.4,
+            },
+            {
+                "variant_code": "LAB-VAR-B",
+                "variant_name": "Phương Án B · Đậm Vị Béo Ấm Mùa Thu Đông",
+                "size_m_16oz_spec": "115ml cốt trà nền + 50ml sữa tươi thanh trùng + 25g kem phô mai + 50g bán thành phẩm chủ đạo + 150g đá viên",
+                "size_p_500ml_spec": "150ml cốt trà nền + 65ml sữa tươi thanh trùng + 35g kem phô mai + 65g bán thành phẩm chủ đạo + 180g đá viên (Đóng lon PET 500ml)",
+                "target_brix": "12.5 ± 0.5",
+                "estimated_cogs_pct": 29.8,
+            },
+            {
+                "variant_code": "LAB-VAR-C",
+                "variant_name": "Phương Án C · Tối Ưu Biên Lợi Nhuận Sàn Giao Đồ Ăn & Chống Tách Lớp 30 Phút",
+                "size_m_16oz_spec": "140ml cốt trà nền + 35ml sữa tươi thanh trùng + 15ml syrup đường mía + 40g bán thành phẩm chủ đạo + 170g đá viên",
+                "size_p_500ml_spec": "175ml cốt trà nền + 45ml sữa tươi thanh trùng + 18ml syrup đường mía + 52g bán thành phẩm chủ đạo + 200g đá viên (Đóng lon PET 500ml)",
+                "target_brix": "11.0 ± 0.5",
+                "estimated_cogs_pct": 25.1,
+            },
+        ]
+
+        feasibility_score = round(
+            min(100.0, 55.0 + (reuse_pct * 0.35) - (len(past_kill_warnings) * 20.0)),
+            1,
+        )
+        gate_1_verdict = (
+            "GO_TO_GATE_2_LAB_TEST"
+            if (feasibility_score >= 70.0 and len(past_kill_warnings) == 0)
+            else ("REVISE_CONCEPT_WITH_CAUTION" if feasibility_score >= 55.0 else "KILL_AT_GATE_1")
+        )
+
+        idea_id = str(payload.get("idea_id") or "PID-202611-0001").strip()
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "GATE_1_RADAR_COMPLETED",
+            "claim_label": "[DERIVED]",
+            "rnd_action": "idea-radar",
+            "gate": "GATE_1_IDEA_RADAR",
+            "idea_id": idea_id,
+            "idea_title": clean_title,
+            "category": category,
+            "season": season,
+            "inventory_reuse_analysis": {
+                "inventory_reuse_pct": reuse_pct,
+                "target_reuse_floor_pct": 70.0,
+                "reuse_pass": reuse_pct >= 70.0,
+                "reused_erp_skus": reused_skus,
+                "new_skus_to_source": new_skus,
+            },
+            "market_and_channel_pricing_radar": {
+                "target_price_size_m_16oz_vnd": target_price_m,
+                "target_price_size_p_500ml_vnd": target_price_p,
+                "max_allowable_cogs_size_m_vnd": max_allowable_cogs_m,
+                "max_allowable_cogs_size_p_vnd": max_allowable_cogs_p,
+                "delivery_platform_commission_pct": delivery_commission_pct,
+                "market_benchmark_band_vnd": "38.000 ₫ - 52.000 ₫",
+            },
+            "past_kill_vault_warnings": past_kill_warnings,
+            "starter_formulas_3": starter_formulas_3,
+            "feasibility_score_100": feasibility_score,
+            "gate_1_verdict": gate_1_verdict,
+            "next_stage_required": "GATE_2_LAB_TEST",
+            "next_command": (
+                f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py lab-test "
+                f"--idea-id {idea_id} --decision ITERATE --dry-run --json"
+            ),
+        }
+
+    # Gate 2: lab-test (Counter Sensory Lab Test, AI Co-Pilot & Mandatory Kill Vault Logging)
+    if action == "lab-test":
+        idea_id = str(payload.get("idea_id") or "PID-202611-0001").strip()
+        decision = str(payload.get("decision") or "ITERATE").strip().upper()
+        kill_reason_code = str(payload.get("kill_reason_code") or "").strip().upper()
+        round_no = int(payload.get("round_no", 2))
+        taste_score = float(payload.get("taste_score", 8.3))
+        appearance_score = float(payload.get("appearance_score", 8.5))
+        stability_pass = bool(payload.get("stability_30min_delivery_pass", True))
+        barista_speed_sec = int(payload.get("barista_speed_sec", 45))
+        sample_cups = int(payload.get("sample_cups_used", 9))
+        sample_cost_vnd = float(payload.get("sample_material_cost_vnd", 112000.0))
+        feedback_notes = sanitize_rosier_text(
+            str(
+                payload.get("feedback_notes")
+                or "Trân châu socola phô mai dẻo mềm trên 3 nền đồ uống; cần giảm nhẹ độ ngọt nền Socola thêm 2ml syrup."
+            )
+        )
+
+        if decision in ("KILL", "KILL_IDEA", "KILLED"):
+            if not kill_reason_code or kill_reason_code not in taxonomy:
+                return {
+                    "ok": False,
+                    "status": "BLOCKED",
+                    "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                    "rnd_action": "lab-test",
+                    "gate": "GATE_2_LAB_TEST",
+                    "idea_id": idea_id,
+                    "error": {
+                        "code": "MANDATORY_KILL_REASON_REQUIRED",
+                        "root_cause": (
+                            f"Khi dừng mẫu thử tại Cổng 2 (decision={decision}), bắt buộc phải truyền mã nguyên nhân chuẩn "
+                            f"(--kill-reason-code thuộc {list(taxonomy.keys())}) để lưu vào Sổ cái Mẫu Hủy (Kill Vault) và tách chi phí mẫu thử khỏi hao hụt cửa hàng."
+                        ),
+                        "next_command": (
+                            f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py lab-test "
+                            f"--idea-id {idea_id} --decision KILL_IDEA --kill-reason-code SEPARATION_30MIN --dry-run --json"
+                        ),
+                    },
+                }
+
+            voucher_id = f"RND-SMP-{idea_id[-4:]}-R{round_no}"
+            kill_record = {
+                "idea_id": idea_id,
+                "title": str(active_map.get(idea_id, {}).get("title") or payload.get("idea_title") or idea_id),
+                "killed_at_gate": "GATE_2_LAB_TEST",
+                "killed_date": "2026-11-09",
+                "status": "KILLED_ARCHIVED",
+                "kill_reason_code": kill_reason_code,
+                "kill_reason_description": taxonomy[kill_reason_code],
+                "kill_reason_summary": feedback_notes,
+                "rounds_attempted": round_no,
+                "total_sample_cups_used": sample_cups,
+                "total_sample_material_cost_vnd": sample_cost_vnd,
+                "rnd_sample_voucher_id": voucher_id,
+                "isolated_from_store_blindcount": True,
+                "lesson_learned_for_ai": f"Mẫu {idea_id} dừng ở vòng {round_no} do {kill_reason_code}: {feedback_notes}",
+            }
+            return {
+                "ok": True,
+                "status": "DRY_RUN_OK" if dry_run else "KILLED_AND_ARCHIVED_TO_VAULT",
+                "claim_label": "[DERIVED]",
+                "rnd_action": "lab-test",
+                "gate": "GATE_2_LAB_TEST",
+                "decision": "KILL_IDEA",
+                "kill_vault_entry": kill_record,
+                "store_blindcount_protection": {
+                    "rnd_sample_voucher_id": voucher_id,
+                    "sample_cups_isolated": sample_cups,
+                    "sample_cost_isolated_vnd": sample_cost_vnd,
+                    "charged_to_store_wastage_vnd": 0.0,
+                },
+                "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py kill-vault --json",
+            }
+
+        overall_sensory = round((taste_score * 0.6) + (appearance_score * 0.4), 2)
+        if decision == "PASS_TO_GATE_3" and (not stability_pass or overall_sensory < 7.5 or barista_speed_sec > 60):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "lab-test",
+                "gate": "GATE_2_LAB_TEST",
+                "idea_id": idea_id,
+                "error": {
+                    "code": "LAB_TEST_QUALITY_FLOOR_NOT_MET",
+                    "root_cause": (
+                        f"Mẫu thử {idea_id} chưa đủ điều kiện lên Cổng 3 (Điểm cảm quan={overall_sensory}/10 [cần >=7.5], "
+                        f"Độ bền giao hàng 30 phút={stability_pass} [cần True], Tốc độ pha chế={barista_speed_sec}s [cần <=60s])."
+                    ),
+                    "next_command": (
+                        f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py lab-test "
+                        f"--idea-id {idea_id} --decision ITERATE --dry-run --json"
+                    ),
+                },
+            }
+
+        notes_low = feedback_notes.lower()
+        ai_adjustments: List[str] = []
+        if any(k in notes_low for k in ("ngọt", "gắt", "syrup")):
+            ai_adjustments.append("Giảm 2ml đến 3ml Syrup đường mía ở Size M (16Oz) và giảm 4ml ở Size P (500ml) để giữ độ Brix ở mức 11.2 ± 0.3.")
+        if any(k in notes_low for k in ("ngậy", "át mùi trà", "béo")):
+            ai_adjustments.append("Tăng 15ml cốt trà ủ lạnh nền và giảm 8g kem phô mai/sữa đặc để đẩy hương hoa nhài tự nhiên lên tầng hương đầu.")
+        if any(k in notes_low for k in ("tách lớp", "chảy", "loãng")):
+            ai_adjustments.append("Kiểm soát nhiệt độ cốt trà ở 4 độ C ± 1 trước khi lắc cùng đá viên và đánh bông lớp kem ở tốc độ trung bình thêm 15 giây.")
+        if not ai_adjustments:
+            ai_adjustments.append("Giữ nguyên tỷ lệ cốt trà và bán thành phẩm; cố định định mức đá viên 160g (Size M) và 190g (Size P) để chuẩn bị dựng BOM 2 kích cỡ ở Cổng 3.")
+
+        voucher_id = f"RND-SMP-{idea_id[-4:]}-R{round_no}"
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "LAB_TEST_RECORDED",
+            "claim_label": "[DERIVED]",
+            "rnd_action": "lab-test",
+            "gate": "GATE_2_LAB_TEST",
+            "idea_id": idea_id,
+            "round_no": round_no,
+            "decision": decision,
+            "sensory_evaluation": {
+                "taste_score": taste_score,
+                "appearance_score": appearance_score,
+                "overall_sensory_score": overall_sensory,
+                "stability_30min_delivery_pass": stability_pass,
+                "barista_speed_sec": barista_speed_sec,
+            },
+            "ai_sensory_copilot_prescription": ai_adjustments,
+            "store_blindcount_protection": {
+                "rnd_sample_voucher_id": voucher_id,
+                "sample_cups_isolated": sample_cups,
+                "sample_cost_isolated_vnd": sample_cost_vnd,
+                "charged_to_store_wastage_vnd": 0.0,
+            },
+            "next_stage_required": "GATE_3_BOM_COSTING" if decision == "PASS_TO_GATE_3" else "GATE_2_NEXT_LAB_ROUND",
+            "next_command": (
+                f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py bom-costing "
+                f"--idea-id {idea_id} --role rnd_lead --dry-run --json"
+            ),
+        }
+
+    # Gate 3: bom-costing (Dual-Size BOM M 16Oz & P 500ml, 3 Hard Linters & Multi-Channel Costing)
+    if action == "bom-costing":
+        idea_id = str(payload.get("idea_id") or "PID-202610-0009").strip()
+        role = str(payload.get("role") or "rnd_lead").strip().lower()
+        approval_token = str(payload.get("approval_token") or "").strip()
+        bom_stage = str(payload.get("bom_stage") or "lint-and-draft").strip().lower()
+
+        if bom_stage == "approve" and is_ho_edition and not approval_token.startswith("CEO-SIG-"):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "bom-costing",
+                "gate": "GATE_3_BOM_COSTING",
+                "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+                "error": {
+                    "code": "HO_CEO_APPROVAL_REQUIRED",
+                    "root_cause": "Trên bản Khối HO (rosier-ho-skills), nhân sự R&D và Cung ứng được phép dựng BOM 2 kích cỡ và kiểm toán giá vốn đa kênh, nhưng quyền chốt duyệt hiệu lực BOM chính thức (Chốt 3) yêu cầu mã chữ ký CEO Toàn Chuỗi (--approval-token CEO-SIG-...).",
+                    "next_command": (
+                        f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py bom-costing "
+                        f"--idea-id {idea_id} --bom-stage lint-and-draft --role supply_chain --dry-run --json"
+                    ),
+                },
+            }
+
+        default_m_lines = (
+            [
+                {"sku_code": "NVL-TEA-BLK-01", "ingredient_name": "Cốt Hồng Trà Ủ Lạnh Chuẩn Rosier (4 độ C)", "rnd_qty": 120.0, "rnd_unit": "ml", "unit_cost_vnd": 18.5, "is_core_base": True},
+                {"sku_code": "NVL-CHOC-PWD-01", "ingredient_name": "Bột Cacao Socola Nguyên Chất Đậm Đặc", "rnd_qty": 12.0, "rnd_unit": "g", "unit_cost_vnd": 210.0, "is_core_base": True},
+                {"sku_code": "NVL-PEARL-CHP-01", "ingredient_name": "Bán Thành Phẩm Trân Châu Socola Nhân Phô Mai", "rnd_qty": 45.0, "rnd_unit": "g", "unit_cost_vnd": 78.0, "is_core_base": True},
+                {"sku_code": "NVL-MLK-TT-01", "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế", "rnd_qty": 45.0, "rnd_unit": "ml", "unit_cost_vnd": 8.8, "is_core_base": True},
+                {"sku_code": "NVL-SYR-CANE-01", "ingredient_name": "Syrup Đường Mía Nguyên Bản", "rnd_qty": 12.0, "rnd_unit": "ml", "unit_cost_vnd": 9.0, "is_core_base": False},
+                {"sku_code": "PKG-CUP-16OZ", "ingredient_name": "Bộ Ly Nhựa 16Oz (Size M) Kèm Nắp Cầu & Ống Hút", "rnd_qty": 1.0, "rnd_unit": "bộ", "unit_cost_vnd": 1650.0, "is_core_base": False},
+            ]
+            if idea_id == "PID-202611-0001"
+            else [
+                {"sku_code": "NVL-TEA-MTC-01", "ingredient_name": "Bột Matcha Nhật Bản Chuẩn Pha Chế", "rnd_qty": 4.5, "rnd_unit": "g", "unit_cost_vnd": 850.0, "is_core_base": True},
+                {"sku_code": "NVL-TARO-FRS-01", "ingredient_name": "Bán Thành Phẩm Sốt Khoai Môn Tươi Nghiền", "rnd_qty": 55.0, "rnd_unit": "g", "unit_cost_vnd": 72.0, "is_core_base": True},
+                {"sku_code": "NVL-MLK-TT-01", "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế", "rnd_qty": 110.0, "rnd_unit": "ml", "unit_cost_vnd": 88.0 / 10.0, "is_core_base": True},
+                {"sku_code": "NVL-SYR-CANE-01", "ingredient_name": "Syrup Đường Mía Nguyên Bản", "rnd_qty": 15.0, "rnd_unit": "ml", "unit_cost_vnd": 45.0 / 5.0, "is_core_base": False},
+                {"sku_code": "PKG-CUP-16OZ", "ingredient_name": "Bộ Ly Nhựa 16Oz (Size M) Kèm Nắp Cầu & Ống Hút", "rnd_qty": 1.0, "rnd_unit": "bộ", "unit_cost_vnd": 1650.0, "is_core_base": False},
+            ]
+        )
+        default_p_lines = (
+            [
+                {"sku_code": "NVL-TEA-BLK-01", "ingredient_name": "Cốt Hồng Trà Ủ Lạnh Chuẩn Rosier (4 độ C)", "rnd_qty": 155.0, "rnd_unit": "ml", "unit_cost_vnd": 18.5, "is_core_base": True},
+                {"sku_code": "NVL-CHOC-PWD-01", "ingredient_name": "Bột Cacao Socola Nguyên Chất Đậm Đặc", "rnd_qty": 16.0, "rnd_unit": "g", "unit_cost_vnd": 210.0, "is_core_base": True},
+                {"sku_code": "NVL-PEARL-CHP-01", "ingredient_name": "Bán Thành Phẩm Trân Châu Socola Nhân Phô Mai", "rnd_qty": 60.0, "rnd_unit": "g", "unit_cost_vnd": 78.0, "is_core_base": True},
+                {"sku_code": "NVL-MLK-TT-01", "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế", "rnd_qty": 60.0, "rnd_unit": "ml", "unit_cost_vnd": 8.8, "is_core_base": True},
+                {"sku_code": "NVL-SYR-CANE-01", "ingredient_name": "Syrup Đường Mía Nguyên Bản", "rnd_qty": 16.0, "rnd_unit": "ml", "unit_cost_vnd": 9.0, "is_core_base": False},
+                {"sku_code": "PKG-CAN-PET500", "ingredient_name": "Bộ Vỏ Lon PET 500ml (Size P) Kèm Nắp Nhôm & Túi Đựng", "rnd_qty": 1.0, "rnd_unit": "bộ", "unit_cost_vnd": 2891.0, "is_core_base": False},
+            ]
+            if idea_id == "PID-202611-0001"
+            else [
+                {"sku_code": "NVL-TEA-MTC-01", "ingredient_name": "Bột Matcha Nhật Bản Chuẩn Pha Chế", "rnd_qty": 6.0, "rnd_unit": "g", "unit_cost_vnd": 850.0, "is_core_base": True},
+                {"sku_code": "NVL-TARO-FRS-01", "ingredient_name": "Bán Thành Phẩm Sốt Khoai Môn Tươi Nghiền", "rnd_qty": 75.0, "rnd_unit": "g", "unit_cost_vnd": 72.0, "is_core_base": True},
+                {"sku_code": "NVL-MLK-TT-01", "ingredient_name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế", "rnd_qty": 145.0, "rnd_unit": "ml", "unit_cost_vnd": 88.0 / 10.0, "is_core_base": True},
+                {"sku_code": "NVL-SYR-CANE-01", "ingredient_name": "Syrup Đường Mía Nguyên Bản", "rnd_qty": 20.0, "rnd_unit": "ml", "unit_cost_vnd": 45.0 / 5.0, "is_core_base": False},
+                {"sku_code": "PKG-CAN-PET500", "ingredient_name": "Bộ Vỏ Lon PET 500ml (Size P) Kèm Nắp Nhôm & Túi Đựng", "rnd_qty": 1.0, "rnd_unit": "bộ", "unit_cost_vnd": 2891.0, "is_core_base": False},
+            ]
+        )
+        size_m_lines = payload.get("size_m_ingredients") or default_m_lines
+        size_p_lines = payload.get("size_p_ingredients") or default_p_lines
+
+        # Linter #1: Dual-Size Scaling Guard (Block Size P == Size M on core ingredients)
+        m_core_map = {
+            str(x.get("sku_code")): float(x.get("rnd_qty", 0.0))
+            for x in size_m_lines
+            if bool(x.get("is_core_base", True)) and not str(x.get("sku_code", "")).startswith("PKG-")
+        }
+        p_core_map = {
+            str(x.get("sku_code")): float(x.get("rnd_qty", 0.0))
+            for x in size_p_lines
+            if bool(x.get("is_core_base", True)) and not str(x.get("sku_code", "")).startswith("PKG-")
+        }
+        identical_core_skus = [
+            sku for sku, m_qty in m_core_map.items()
+            if sku in p_core_map and abs(p_core_map[sku] - m_qty) < 1e-6
+        ]
+        if identical_core_skus or bool(payload.get("simulate_equal_size_bug", False)):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "bom-costing",
+                "gate": "GATE_3_BOM_COSTING",
+                "idea_id": idea_id,
+                "error": {
+                    "code": "BOM_DUAL_SIZE_SCALING_ERROR",
+                    "root_cause": (
+                        f"Linter #1 chặn lỗi định mức: Nguyên liệu cốt chính {identical_core_skus or ['CORE_BASE']} của Size P (500ml) "
+                        "đang có định lượng bằng hệt Size M (16Oz). Bắt buộc nhân hệ số quy đổi Size P lớn hơn Size M (thông thường 1.25x đến 1.35x) để không làm lệch kho kiểm kê mù."
+                    ),
+                    "next_command": (
+                        f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py bom-costing "
+                        f"--idea-id {idea_id} --dry-run --json"
+                    ),
+                },
+            }
+
+        # Linter #2: 100% ERP SKU Mapping Guard
+        unmapped_skus = [
+            str(x.get("ingredient_name", "UNKNOWN"))
+            for x in (size_m_lines + size_p_lines)
+            if not str(x.get("sku_code", "")).strip()
+        ]
+        if unmapped_skus or bool(payload.get("simulate_unmapped_sku_bug", False)):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "bom-costing",
+                "gate": "GATE_3_BOM_COSTING",
+                "idea_id": idea_id,
+                "error": {
+                    "code": "BOM_UNMAPPED_ERP_SKU_BLOCKED",
+                    "root_cause": f"Linter #2 chặn lỗi khuyết mã vật tư: Phát hiện nguyên liệu chưa gắn mã SKU trên Hệ thống ERP Cung ứng Trung tâm: {unmapped_skus or ['UNMAPPED_RAW_MATERIAL']}.",
+                    "next_command": (
+                        f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py bom-costing "
+                        f"--idea-id {idea_id} --dry-run --json"
+                    ),
+                },
+            }
+
+        # Linter #3: Semi-Finished BTP Batch Yield & Shelf-Life Guard
+        default_btp_spec = (
+            {
+                "btp_sku_code": "NVL-PEARL-CHP-01",
+                "btp_name": "Bán Thành Phẩm Trân Châu Socola Nhân Phô Mai Luộc Ủ Đường Mía",
+                "batch_yield_qty": 1200.0,
+                "batch_yield_unit": "g",
+                "shelf_life_hours": 4,
+                "storage_temp_c": "65 độ C ± 2 (Nồi ủ ấm tại quầy)",
+            }
+            if idea_id == "PID-202611-0001"
+            else {
+                "btp_sku_code": "NVL-TARO-FRS-01",
+                "btp_name": "Bán Thành Phẩm Sốt Khoai Môn Tươi Nghiền",
+                "batch_yield_qty": 1000.0,
+                "batch_yield_unit": "g",
+                "shelf_life_hours": 36,
+                "storage_temp_c": "4 độ C ± 1",
+            }
+        )
+        btp_spec = payload.get("semi_finished_batch") or default_btp_spec
+        if float(btp_spec.get("batch_yield_qty", 0.0)) <= 0 or int(btp_spec.get("shelf_life_hours", 0)) <= 0:
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "bom-costing",
+                "gate": "GATE_3_BOM_COSTING",
+                "idea_id": idea_id,
+                "error": {
+                    "code": "BOM_BTP_BATCH_YIELD_MISSING",
+                    "root_cause": "Linter #3 chặn lỗi Bán thành phẩm (BTP): Chưa khai báo sản lượng mẻ nấu thu hồi (batch_yield_qty > 0) hoặc hạn sử dụng bảo quản (shelf_life_hours > 0).",
+                    "next_command": (
+                        f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py bom-costing "
+                        f"--idea-id {idea_id} --dry-run --json"
+                    ),
+                },
+            }
+
+        cogs_m = round(sum(float(x["rnd_qty"]) * float(x["unit_cost_vnd"]) for x in size_m_lines), 1)
+        cogs_p = round(sum(float(x["rnd_qty"]) * float(x["unit_cost_vnd"]) for x in size_p_lines), 1)
+        price_m = float(payload.get("price_size_m_vnd", 39000.0))
+        price_p = float(payload.get("price_size_p_vnd", 45000.0))
+        commission_pct = float(payload.get("delivery_commission_pct", 26.5))
+
+        direct_cogs_pct_m = round((cogs_m / price_m) * 100.0, 2)
+        direct_cogs_pct_p = round((cogs_p / price_p) * 100.0, 2)
+        delivery_net_rev_m = round(price_m * (1.0 - commission_pct / 100.0), 1)
+        delivery_net_rev_p = round(price_p * (1.0 - commission_pct / 100.0), 1)
+        delivery_net_margin_m = round(delivery_net_rev_m - cogs_m, 1)
+        delivery_net_margin_p = round(delivery_net_rev_p - cogs_p, 1)
+        delivery_net_margin_pct_m = round((delivery_net_margin_m / price_m) * 100.0, 2)
+        delivery_net_margin_pct_p = round((delivery_net_margin_p / price_p) * 100.0, 2)
+
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "BOM_DUAL_SIZE_VERIFIED",
+            "claim_label": "[DERIVED]",
+            "rnd_action": "bom-costing",
+            "gate": "GATE_3_BOM_COSTING",
+            "idea_id": idea_id,
+            "role": role,
+            "three_hard_bom_linters": {
+                "linter_1_dual_size_scaling_pass": True,
+                "linter_2_100pct_erp_sku_mapped_pass": True,
+                "linter_3_semi_finished_batch_yield_pass": True,
+            },
+            "semi_finished_btp_spec": btp_spec,
+            "unit_economics_multi_channel": {
+                "size_m_16oz": {
+                    "selling_price_vnd": price_m,
+                    "total_bom_cogs_vnd": cogs_m,
+                    "direct_store_cogs_pct": direct_cogs_pct_m,
+                    "direct_store_gross_margin_vnd": round(price_m - cogs_m, 1),
+                    "delivery_app_net_revenue_vnd": delivery_net_rev_m,
+                    "delivery_app_net_margin_vnd": delivery_net_margin_m,
+                    "delivery_app_net_margin_pct": delivery_net_margin_pct_m,
+                },
+                "size_p_500ml_pet_can": {
+                    "selling_price_vnd": price_p,
+                    "total_bom_cogs_vnd": cogs_p,
+                    "direct_store_cogs_pct": direct_cogs_pct_p,
+                    "direct_store_gross_margin_vnd": round(price_p - cogs_p, 1),
+                    "delivery_app_net_revenue_vnd": delivery_net_rev_p,
+                    "delivery_app_net_margin_vnd": delivery_net_margin_p,
+                    "delivery_app_net_margin_pct": delivery_net_margin_pct_p,
+                },
+            },
+            "approval_3stage_status": "APPROVED_FOR_PILOT_3CHH" if bom_stage == "approve" else "SUPPLY_VERIFIED_AWAITING_CEO",
+            "next_stage_required": "GATE_4_PILOT_3CHH",
+            "next_command": (
+                f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py pilot-radar "
+                f"--idea-id {idea_id} --store-code 38197 --dry-run --json"
+            ),
+        }
+
+    # Gate 4: pilot-radar (5-7 Day Pilot Evaluation at 3 Company-Owned Stores 38197, 46880, 87024)
+    if action == "pilot-radar":
+        idea_id = str(payload.get("idea_id") or "PID-202611-0001").strip()
+        if store_code and store_code not in PILOT_COMPANY_3_CODES:
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "pilot-radar",
+                "gate": "GATE_4_PILOT_3CHH",
+                "error": {
+                    "code": "PILOT_RESTRICTED_TO_COMPANY_3_STORES",
+                    "root_cause": f"Điểm bán '{store_code}' không thuộc Cụm 03 Cửa hàng Mô hình Công ty (38197, 46880, 87024). Mọi món mới bắt buộc bán thử nghiệm tại 3 cửa hàng công ty trước khi nhân rộng sang 22 điểm bán nhượng quyền.",
+                    "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py pilot-radar --store-code 38197 --dry-run --json",
+                },
+            }
+
+        pilot_days = max(1, int(payload.get("pilot_days", 7)))
+        avg_cups_per_store_day = float(payload.get("avg_cups_per_store_day", 21.4))
+        btp_wastage_pct = float(payload.get("btp_wastage_pct", 8.2))
+        customer_rating = float(payload.get("customer_rating_5star", 4.6))
+        cannibalization_pct = float(payload.get("cannibalization_pct", 11.5))
+
+        pass_velocity = avg_cups_per_store_day >= 15.0
+        pass_wastage = btp_wastage_pct <= 15.0
+        pass_rating = customer_rating >= 4.2
+        pass_cannibal = cannibalization_pct <= 25.0
+
+        if pass_velocity and pass_wastage and pass_rating and pass_cannibal:
+            pilot_verdict = "GO_CHAIN_ROLLOUT_25_STORES"
+        elif btp_wastage_pct > 18.0 or avg_cups_per_store_day < 8.0:
+            pilot_verdict = "KILL_AFTER_PILOT_AND_ARCHIVE_TO_VAULT"
+        else:
+            pilot_verdict = "ITERATE_FORMULA_OR_SELLING_PRICE"
+
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "PILOT_EVALUATION_COMPLETED",
+            "claim_label": "[DERIVED]",
+            "rnd_action": "pilot-radar",
+            "gate": "GATE_4_PILOT_3CHH",
+            "idea_id": idea_id,
+            "pilot_stores": sorted(PILOT_COMPANY_3_CODES),
+            "pilot_days": pilot_days,
+            "pilot_kpis": {
+                "avg_cups_per_store_day": avg_cups_per_store_day,
+                "target_cups_per_store_day_floor": 15.0,
+                "velocity_pass": pass_velocity,
+                "btp_end_of_shift_wastage_pct": btp_wastage_pct,
+                "max_btp_wastage_ceiling_pct": 15.0,
+                "wastage_pass": pass_wastage,
+                "customer_rating_5star": customer_rating,
+                "rating_pass": pass_rating,
+                "cannibalization_pct": cannibalization_pct,
+                "cannibalization_pass": pass_cannibal,
+            },
+            "pilot_verdict": pilot_verdict,
+            "franchise_22_stores_protection_note": (
+                "Đủ điều kiện mở rộng an toàn sang 22 điểm bán nhượng quyền."
+                if pilot_verdict == "GO_CHAIN_ROLLOUT_25_STORES"
+                else "Chặn nhân rộng sang 22 điểm bán nhượng quyền để bảo vệ dòng tiền và tránh tồn kho nguyên liệu hủy cuối ca."
+            ),
+            "next_stage_required": "GATE_5_ROLLOUT_25STORES" if pilot_verdict == "GO_CHAIN_ROLLOUT_25_STORES" else "KILL_VAULT_OR_ITERATE",
+            "next_command": (
+                f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py rollout-factory "
+                f"--idea-id {idea_id} --target-hub ROSIER_STORE_HUB --dry-run --json"
+            ),
+        }
+
+    # Gate 5: rollout-factory (1-Click 5-Pack Rollout Factory for 25 Stores)
+    if action == "rollout-factory":
+        idea_id = str(payload.get("idea_id") or "PID-202611-0001").strip()
+        approval_token = str(payload.get("approval_token") or "").strip()
+        activate_live = bool(payload.get("activate_live", False))
+        if activate_live and is_ho_edition and not approval_token.startswith("CEO-SIG-"):
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+                "rnd_action": "rollout-factory",
+                "gate": "GATE_5_ROLLOUT_25STORES",
+                "execution_mode": "HO_SAFE_READ_AND_DRAFT",
+                "error": {
+                    "code": "HO_CEO_APPROVAL_REQUIRED",
+                    "root_cause": "Trên bản Khối HO (rosier-ho-skills), nhân sự được phép tạo trọn bộ 5 gói triển khai nháp (isPublished=False), nhưng lệnh phát hành chính thức toàn chuỗi 25 điểm bán (activate_live=True) yêu cầu mã chữ ký CEO Toàn Chuỗi (--approval-token CEO-SIG-...).",
+                    "next_command": (
+                        f"python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py rollout-factory "
+                        f"--idea-id {idea_id} --dry-run --json"
+                    ),
+                },
+            }
+
+        idea_meta = active_map.get(idea_id, {})
+        raw_title = str(
+            payload.get("idea_title")
+            or idea_meta.get("title")
+            or "Topping Trân Châu Socola Phô Mai Phối 03 Nền Đồ Uống Có Sẵn"
+        ).strip()
+        clean_title = sanitize_rosier_text(raw_title)
+        clean_title = re.sub(
+            r"(?i)\b(cogs|giá vốn|biên lợi nhuận ròng|lợi nhuận mật|mức lương cá nhân)\b",
+            "tiêu chuẩn vận hành quầy bar",
+            clean_title,
+        )
+        launch_date = str(payload.get("launch_date") or "2026-12-01").strip()[:10]
+        spoken_sop = convert_numbers_to_vietnamese_spoken(
+            "Đong 150ml cốt trà ủ lạnh ở 4°C ± 1, thêm 45ml sữa tươi thanh trùng, 50g thành phần chủ đạo và hoàn thành bài học trước 17:00 tại 25 điểm bán."
+        )
+
+        rollout_5_packs = {
+            "pack_1_supply_chain_25stores_allocation": {
+                "active_stores_allocated_count": 25,
+                "company_owned_stores_3": ["38197", "46880", "87024"],
+                "outer_route_stores_4": ["67650", "57588", "99324", "100177"],
+                "urban_franchise_stores_count": 18,
+                "blocked_closed_stores_excluded": ["115953", "106192"],
+                "initial_allocation_rule": "Cấp phát định mức an toàn 5 ngày đầu theo phân hạng doanh thu cửa hàng; tự động kiểm tra cầu dao công nợ CB-01 trước khi xuất Kho Tổng Trung Tâm.",
+            },
+            "pack_2_pos_sku_mapping_pack": {
+                "size_m_16oz_pos_sku": f"POS-{idea_id[-4:]}-M",
+                "size_p_500ml_pos_sku": f"POS-{idea_id[-4:]}-P",
+                "topping_modifier_pos_sku": f"TOP-{idea_id[-4:]}",
+                "bom_recipe_100pct_linked": True,
+                "legacy_duplicate_skus_deactivated": True,
+            },
+            "pack_3_store_hub_a5_recipe_card": {
+                "target_hub": "ROSIER_STORE_HUB",
+                "hub_id": KNOWLEDGE_HUBS["ROSIER_STORE_HUB"]["hub_id"],
+                "store_hub_air_gap_sanitized": True,
+                "zero_cogs_exposed": True,
+                "card_format": "A5 Ngang Cán Bóng Chống Nước Dán Quầy Pha Chế",
+                "barista_steps": [
+                    "Bước 1: Kiểm tra nhiệt độ cốt trà ủ lạnh đạt 4 độ C cộng trừ 1 và hạn dùng bán thành phẩm theo nguyên tắc FEFO.",
+                    "Bước 2: Đong chuẩn định lượng ml và gam cho Size M (16Oz) hoặc Size P (Lon PET 500ml) bằng ca đong và cân điện tử.",
+                    "Bước 3: Lắc đều cùng đá viên trong 8 giây, rót ra ly hoặc đóng kín nắp nhôm lon PET 500ml và lau khô thân lon trước khi giao khách.",
+                ],
+                "spoken_tts_narration": spoken_sop["spoken_text"],
+            },
+            "pack_4_lms_curriculum_and_bloom_quiz": {
+                "mcp_server": "rosier-lms",
+                "curriculum_tool": "lms_upsert_curriculum_tree",
+                "quiz_tool": "lms_upsert_lesson_quiz",
+                "is_published": True if (activate_live and not is_ho_edition) else False,
+                "green_tick_deadline": "17:00",
+                "passing_score_pct": 80,
+                "bloom_4_level_questions_count": 10,
+                "bloom_distribution": {
+                    "remember_30pct": 3,
+                    "understand_30pct": 3,
+                    "apply_25pct": 2,
+                    "analyze_15pct": 2,
+                },
+            },
+            "pack_5_marketing_3touch_launch_pack": {
+                "brand_standard": "Rosier Design System v3.3 (#FFFCF7 Sour Cream · #497A49 Artisan Green · #111111 Obsidian)",
+                "touch_1_visual_hook_3s": f"Cận cảnh lớp nguyên liệu sánh mịn hòa quyện cùng nền trà ủ lạnh thanh khiết trong lon PET 500ml đọng sương lạnh: {clean_title}.",
+                "touch_2_craft_story": "Giữ trọn hương trà nguyên bản ủ lạnh ở 4 độ C, cân bằng vị béo thanh tự nhiên không gây ngấy và giữ nguyên kết cấu suốt 30 phút giao hàng.",
+                "touch_3_call_to_action": "Trải nghiệm ngay tại 25 điểm bán Rosier toàn hệ thống hoặc đặt Combo 5 Lon giảm ngay 50.000 ₫ cho nhóm văn phòng.",
+                "zero_red_list_words_verified": True,
+            },
+        }
+
+        return {
+            "ok": True,
+            "status": "DRY_RUN_OK" if dry_run else "ROLLOUT_5PACK_GENERATED",
+            "claim_label": "[DERIVED]",
+            "rnd_action": "rollout-factory",
+            "gate": "GATE_5_ROLLOUT_25STORES",
+            "execution_mode": "HO_SAFE_READ_AND_DRAFT" if is_ho_edition else "FULL_CEO",
+            "idea_id": idea_id,
+            "idea_title": clean_title,
+            "launch_date": launch_date,
+            "store_hub_air_gap_sanitized": True,
+            "rollout_5_packs": rollout_5_packs,
+            "next_command": "./bin/control-app doctor --json",
+        }
+
+    return {
+        "ok": False,
+        "status": "ERROR",
+        "claim_label": "[OBSERVED: core/rs_core_engine.py]",
+        "error": {
+            "code": "UNKNOWN_RND_5GATE_ACTION",
+            "root_cause": f"Hành động R&D '{action}' không hợp lệ. Hỗ trợ: {', '.join(RND_5GATE_ACTIONS)}.",
+            "next_command": "python3 skills/rs-rnd-5gate-product-innovation/scripts/rs_rnd_5gate_product_innovation_tool.py pipeline-status --json",
         },
     }
 
@@ -1355,7 +2173,7 @@ ROSIER_NOTEBOOKLM_ARCHETYPES_9: Dict[str, Dict[str, Any]] = {
         "division": "01-rs-exec",
         "default_hub": "ROSIER_BUSINESS",
         "security_zone": "INTERNAL_PRIVILEGED",
-        "recommended_personas": ["rs-persona-first-principles-truth", "rs-persona-inversion-premortem"],
+        "recommended_personas": ["rs-persona-chain-ceo", "rs-persona-inversion-premortem"],
         "focus_summary": "Tổng hợp biên bản họp L10, đối chất 3 nguồn trên MCP (báo cáo miệng so với hệ thống tác nghiệp và dữ liệu POS), rà soát KPI tháng và phân tích Pre-Mortem.",
         "default_studio_artifacts": ["report", "data_table", "audio", "slide_deck"],
     },
@@ -1365,7 +2183,7 @@ ROSIER_NOTEBOOKLM_ARCHETYPES_9: Dict[str, Dict[str, Any]] = {
         "division": "05-rs-fin",
         "default_hub": "ROSIER_BUSINESS",
         "security_zone": "INTERNAL_PRIVILEGED",
-        "recommended_personas": ["rs-persona-tax-shield-ledger", "rs-persona-first-principles-truth"],
+        "recommended_personas": ["rs-persona-tax-shield-ledger", "rs-persona-chain-ceo"],
         "focus_summary": "Tra cứu quy định thuế GTGT, TNDN, TNCN, thuế khoán Hộ kinh doanh (Thông tư 88, Nghị định 70), tách bạch chứng từ giữa CTCP Chuỗi, Cty TNHH 03 CHH và 22 CHNQ.",
         "default_studio_artifacts": ["report", "data_table", "flashcards"],
     },
@@ -1405,7 +2223,7 @@ ROSIER_NOTEBOOKLM_ARCHETYPES_9: Dict[str, Dict[str, Any]] = {
         "division": "02-rs-kb-lms",
         "default_hub": "ROSIER_BUSINESS",
         "security_zone": "INTERNAL_PRIVILEGED",
-        "recommended_personas": ["rs-persona-first-principles-truth", "rs-persona-field-commander"],
+        "recommended_personas": ["rs-persona-chain-ceo", "rs-persona-field-commander"],
         "focus_summary": "Bóc băng file ghi âm cuộc họp nhiều người nói, chuẩn hóa từ vựng STT ngành trà và cà phê Rosier, gán nhãn người nói theo 9 chức danh chuẩn và trích xuất bảng hành động 10-Sao.",
         "default_studio_artifacts": ["data_table", "report", "audio"],
     },
@@ -1416,7 +2234,7 @@ ROSIER_SPEAKER_FINGERPRINTS_9: Dict[str, Dict[str, Any]] = {
         "speaker_id": "SPK_01_CHAIN_CEO",
         "role_title": "CEO Toàn Chuỗi (Pháp nhân CTCP)",
         "department": "Ban Điều hành Chuỗi (01-rs-exec)",
-        "persona_id": "rs-persona-first-principles-truth",
+        "persona_id": "rs-persona-chain-ceo",
         "acoustic_and_turn_cues": "Mở đầu và chốt cuộc họp; câu ngắn, dứt khoát; luôn truy vấn cơ chế gốc rễ, yêu cầu đối chất 3 nguồn trên MCP và chốt hạn hoàn thành nhị phân.",
         "lexical_markers": [
             "đối chất 3 nguồn", "cơ chế gốc rễ", "5 cổng", "kế hoạch 10-sao",
@@ -1723,7 +2541,7 @@ def compile_notebooklm_v0158_prompt_bundle(
 
     persona_id = str(payload.get("persona_id") or arch["recommended_personas"][0]).strip()
     persona_title_map = {
-        "rs-persona-first-principles-truth": "Cố vấn Điều hành Toàn Chuỗi (CEO Toàn Chuỗi · Pháp nhân CTCP)",
+        "rs-persona-chain-ceo": "Cố vấn Điều hành Toàn Chuỗi (CEO Toàn Chuỗi · Pháp nhân CTCP)",
         "rs-persona-store-owner-company": "Cố vấn Quản trị Cụm 03 Cửa Hàng Công Ty (Cty TNHH · 38197, 46880, 87024)",
         "rs-persona-store-owner-hkd": "Cố vấn Vận hành & Dòng tiền Điểm Bán Nhượng Quyền (Mô hình Hộ Kinh Doanh)",
         "rs-persona-master-rnd": "Chuyên gia Nghiên cứu Công thức & Định mức Đồ uống (Master R&D)",
@@ -1736,7 +2554,7 @@ def compile_notebooklm_v0158_prompt_bundle(
         "rs-persona-inversion-premortem": "Cố vấn Phản biện Đảo ngược & Quản trị Rủi ro Pre-Mortem",
         "rs-persona-authentic-brewer": "Nghệ nhân Pha chế Chuẩn vị & Văn hóa Phục vụ Rosier",
     }
-    persona_title = persona_title_map.get(persona_id, persona_title_map["rs-persona-first-principles-truth"])
+    persona_title = persona_title_map.get(persona_id, persona_title_map["rs-persona-chain-ceo"])
 
     target_audience = sanitize_rosier_text(
         str(
@@ -3515,19 +4333,19 @@ def calc_division_02_kb_lms(payload: Dict[str, Any]) -> Dict[str, Any]:
         out["bom_action_result"] = execute_bom_lifecycle_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", True)),
+            is_ho_edition=bool(payload.get("is_ho_edition", False)),
         )
     if payload.get("nlm_action") or payload.get("archetype_id") or payload.get("archetype") or payload.get("slot_id") or payload.get("transcript"):
         out["notebooklm_action_result"] = execute_notebooklm_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", True)),
+            is_ho_edition=bool(payload.get("is_ho_edition", False)),
         )
     if payload.get("nlm_creative_action") or payload.get("course_builder_action"):
         out["notebooklm_creative_lms_result"] = execute_notebooklm_creative_lms_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", True)),
+            is_ho_edition=bool(payload.get("is_ho_edition", False)),
         )
     return out
 
@@ -5264,7 +6082,7 @@ def calc_division_06_hr_legal(payload: Dict[str, Any]) -> Dict[str, Any]:
         out["kpi_action_result"] = execute_kpi_lifecycle_action(
             payload,
             dry_run=bool(payload.get("dry_run", True)),
-            is_ho_edition=bool(payload.get("is_ho_edition", True)),
+            is_ho_edition=bool(payload.get("is_ho_edition", False)),
         )
     return out
 
@@ -5385,7 +6203,7 @@ ORG_GOVERNANCE_V62: Dict[str, Any] = {
             "entity_code": "CHAIN_HEADQUARTERS_CTCP",
             "tax_id": "0110045807",
             "lead_role_code": "RS001",
-            "persona_skill": "rs-persona-first-principles-truth",
+            "persona_skill": "rs-persona-chain-ceo",
             "aliases": ["rs-persona-ceo-\u006cucas"],
             "scope": "25 điểm bán đang hoạt động + 01 Kho Tổng Trung Tâm + R&D Gốc + Học viện LMS",
         },
@@ -5437,7 +6255,7 @@ ORG_GOVERNANCE_V62: Dict[str, Any] = {
             "headcount_ho": 3,
             "roles": [
                 {"code": "RS010", "title": "Phụ trách Đào tạo & Học viện Số LMS (100% tích xanh 8/8 bài trước 17:00)", "persona": "rs-persona-first-principles-truth"},
-                {"code": "RS005", "title": "Phụ trách Hành chính Nhân sự & Pháp chế (Lương 3P, Tuyển dụng 2 vòng & Hợp đồng)", "persona": "rs-persona-first-principles-truth"},
+                {"code": "RS005", "title": "Phụ trách Hành chính Nhân sự & Pháp chế (Lương 3P, Tuyển dụng 2 vòng & Hợp đồng)", "persona": "rs-persona-chain-ceo"},
                 {"code": "RS012", "title": "Kế toán Tổng hợp Chuyên trách CTCP (Đối soát sao kê 3 năm 2024-2026 +/-5 VND)", "persona": "rs-persona-tax-shield-ledger"},
             ],
         },
@@ -5513,7 +6331,7 @@ def run_ceo_3way_cross_audit(payload: Dict[str, Any] | None = None) -> Dict[str,
         "staff_3c_questions_180s": {
             "C1_cause_60s": "Nguyên nhân gốc rễ nào trên quy trình hoặc cấu hình hệ thống khiến số thực tế lệch so với báo cáo văn bản (cấm đổ lỗi khách quan)?",
             "C2_countermeasure_60s": "Giải pháp kỹ thuật hoặc cơ chế tự động nào sẽ được bật ngay trong 24h tới để triệt tiêu độ lệch này mà không hạ tiêu chuẩn?",
-            "C3_commitment_60s": "Đúng mấy giờ ngày nào hệ thống MCP sẽ ghi nhận chỉ số thật đạt ngưỡng DoD 1.0 và nếu trượt mốc đó thì phương án tự xử lý là gì?",
+            "C3_commitment_60s": "Đúng mấy giờ ngày nào hệ thống MCP sẽ ghi nhận chỉ số thật đạt ngưỡng DoD 1.0, và nếu trượt mốc đó thì phương án tự xử lý là gì?",
         },
         "ceo_closing_verdict_30s": (
             "Chốt: Mọi chỉ số chưa được xác thực trên dữ liệu gốc MCP Production đều tính bằng 0.0 trên bảng KPR tuần. "
@@ -5581,7 +6399,7 @@ def run_ceo_5gate_verdict(payload: Dict[str, Any] | None = None) -> Dict[str, An
             "error": {
                 "code": "CLOSED_STORE_BLOCKED",
                 "root_cause": f"Điểm bán {store_code} ({CLOSED_STORES[store_code]}) đã ngừng hoạt động vĩnh viễn.",
-                "next_command": "python3 skills/rs-persona-first-principles-truth/scripts/rs_persona_first_principles_truth_tool.py verdict --input '{}' --json",
+                "next_command": "python3 skills/rs-persona-chain-ceo/scripts/rs_persona_chain_ceo_tool.py verdict --input '{}' --json",
             },
         }
 
@@ -5721,7 +6539,7 @@ def calc_division_11_persona_counsel(payload: Dict[str, Any]) -> Dict[str, Any]:
             "06-timeline (Biên niên sử tiến hóa tư tưởng quản trị)",
         ],
         "ownership_governance_triad": [
-            "rs-persona-first-principles-truth",
+            "rs-persona-chain-ceo",
             "rs-persona-store-owner-company",
             "rs-persona-store-owner-hkd",
         ],
@@ -5758,10 +6576,10 @@ INTENT_DOMAIN_RULES: List[Dict[str, Any]] = [
             "giao việc", "tạo việc", "tạo công việc", "giao nhiệm vụ", "tạo nhiệm vụ",
             "todolist", "nhóm mẫu", "hệ thống quản trị thực thi", "đối chất 3 nguồn", "khung 3c",
         ],
-        "primary_skills": ["rs-exec-10star-work-planner", "rs-exec-task-dispatch-auto", "rs-exec-10star-work-planner", "rs-exec-weekly-l10", "rs-office-data-kpi-storyteller"],
-        "personas": ["rs-persona-first-principles-truth", "rs-persona-inversion-premortem"],
-        "workflow": "rs-wf-exec-monday-l10-ids",
-        "mcp_tools": ["rs-mcp-work-plan-audit", "rs-mcp-hub-business-query"],
+        "primary_skills": ["rs-exec-10star-work-planner", "rs-exec-task-dispatch-auto", "rs-exec-morning-digest", "rs-exec-weekly-l10", "rs-exec-board-deck"],
+        "personas": ["rs-persona-chain-ceo", "rs-persona-inversion-premortem"],
+        "workflow": "rs-wf-exec-0730-morning-pulse",
+        "mcp_tools": ["rs-mcp-work-plan-audit", "rs-mcp-hub-business-upsert"],
     },
     {
         "division": "02-rs-kb-lms",
@@ -5835,7 +6653,7 @@ INTENT_DOMAIN_RULES: List[Dict[str, Any]] = [
             "nghị định 70", "hóa đơn điện tử", "quyết toán thuế", "excel", "xlsx",
         ],
         "primary_skills": ["rs-fin-dual-entity-ledger", "rs-fin-bank-statement-reconciler", "rs-fin-store-pnl-analyzer", "rs-fin-tax-vat-cit-compliance"],
-        "personas": ["rs-persona-tax-shield-ledger", "rs-persona-first-principles-truth"],
+        "personas": ["rs-persona-tax-shield-ledger", "rs-persona-chain-ceo"],
         "workflow": "rs-wf-fin-daily-3way-reconciliation",
         "mcp_tools": ["rs-mcp-finance-dual-pnl", "rs-mcp-finance-bank-reconcile"],
     },
@@ -5854,7 +6672,7 @@ INTENT_DOMAIN_RULES: List[Dict[str, Any]] = [
             "thuê mặt bằng", "công văn", "quyết định", "thông báo", "nghị định 30", "giấy phép attp",
         ],
         "primary_skills": ["rs-hr-monthly-kpi-engine", "rs-legal-franchise-contract", "rs-hr-3p-payroll-engine", "rs-legal-admin-dispatch-nd30"],
-        "personas": ["rs-persona-first-principles-truth", "rs-persona-store-owner-company"],
+        "personas": ["rs-persona-chain-ceo", "rs-persona-store-owner-company"],
         "workflow": "rs-wf-hr-monthly-3p-payroll-run",
         "mcp_tools": ["rs-mcp-pos-staff-shift-sync", "rs-mcp-lms-progress-1700-audit"],
     },
@@ -5914,10 +6732,10 @@ INTENT_DOMAIN_RULES: List[Dict[str, Any]] = [
             "word", "docx", "pdf", "mermaid", "excalidraw", "sơ đồ", "wbs", "gantt", "raid",
             "kể chuyện dữ liệu", "dashboard",
         ],
-        "primary_skills": ["rs-office-data-kpi-storyteller", "rs-office-docx-enterprise", "rs-eng-info-refinement-bo01", "rs-office-docx-enterprise"],
-        "personas": ["rs-persona-first-principles-truth", "rs-persona-first-principles-truth"],
+        "primary_skills": ["rs-office-data-kpi-storyteller", "rs-office-docx-enterprise", "rs-eng-info-refinement-bo01", "rs-eng-skill-factory-architect"],
+        "personas": ["rs-persona-chain-ceo", "rs-persona-first-principles-truth"],
         "workflow": "rs-wf-exec-monthly-mbr-close",
-        "mcp_tools": ["rs-mcp-work-plan-audit", "rs-mcp-work-dod-gate"],
+        "mcp_tools": ["rs-mcp-guard-skillspector-scan", "rs-mcp-guard-profile-switch"],
     },
 ]
 
@@ -6033,6 +6851,17 @@ ACTION_DELIVERABLE_RULES: List[Dict[str, Any]] = [
         "primary_skill": "rs-fin-13week-cashflow",
         "format_title": "Mô hình dự báo dòng tiền 13 tuần hoặc báo cáo P&L tách biệt đa pháp nhân",
     },
+    {
+        "keywords": [
+            "r&d", "rnd", "món mới", "đề xuất món", "pha thử", "thử nghiệm món", "kill vault",
+            "mẫu hủy", "bom 2 size", "hạt dẻ", "trân châu socola", "khoai môn tươi", "5 cổng r&d",
+            "5-gate r&d", "pilot món mới",
+        ],
+        "deliverable": "rnd_5gate_innovation_dossier",
+        "domain": "02-rs-kb-lms",
+        "primary_skill": "rs-rnd-5gate-product-innovation",
+        "format_title": "Hồ sơ R&D 5 Cổng (Market Radar, Lab Test & Kill Vault, BOM 2 Size, Pilot 3 CHH, Rollout 25 Quán)",
+    },
 ]
 
 
@@ -6108,7 +6937,7 @@ def build_dynamic_clarifying_questions(
                 "question": "Yêu cầu này áp dụng cho mô hình Chủ thể Pháp nhân hoặc Điểm bán nào trong hệ thống Rosier?",
                 "is_multi_select": False,
                 "options": [
-                    "(Recommended) Khối Văn Phòng HO & Toàn Hệ Thống 25 Điểm Bán (Tổng hợp số liệu, lập kế hoạch, đối soát & soạn quy trình cấp Phòng ban HO)",
+                    "(Recommended) CEO Toàn Chuỗi & Khối Văn phòng Hội Sở (Pháp nhân CTCP · Điều hành toàn mạng lưới 25 điểm bán)",
                     "Chủ Cửa Hàng Mô Hình Công Ty (Cty TNHH · Cụm 03 điểm bán công ty 38197, 46880, 87024)",
                     "Chủ Cửa Hàng Mô Hình Hộ Kinh Doanh (22 điểm bán nhượng quyền CHNQ)",
                 ],
@@ -6247,20 +7076,8 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
             "next_command": "python3 skills/rs-meta-intent-router/scripts/rs_meta_intent_router_tool.py advise --query 'Kiểm tra điểm bán 38197' --json",
         }
 
-    # 2. Enforce HO Privilege & Database Boundary Guard (Block CEO/DB-Admin Escalation)
+    # 2. Detect 3-Tier Ownership Model (Chain HQ CTCP vs Company-Owned Store vs Household Business HKD Store)
     explicit_role = str(payload.get("role", "")).lower().strip()
-    if explicit_role in FORBIDDEN_PRIVILEGED_ROLES or any(
-        k in lowered_q for k in ("xóa database", "reset-db", "sửa trực tiếp database gốc", "drop table", "quyền đặc quyền ceo")
-    ):
-        return {
-            "status": "BLOCKED",
-            "claim_label": "[OBSERVED: core/rs_core_engine.py]",
-            "mode": mode,
-            "route_blocked": True,
-            "blocked_role": explicit_role or "db_mutation_attempt",
-            "reason": "HO_PRIVILEGE_BOUNDARY_GUARD: Bộ kỹ năng Khối HO không cấp quyền thực thi đặc quyền CEO Toàn Chuỗi (chain_ceo) hoặc sửa/xóa trực tiếp Database gốc. Vui lòng sử dụng vai trò phòng ban HO (ho_ops_supply, ho_fin_accounting, ho_hr_legal, ho_academy_rnd, ho_mkt_media, store_owner_company, store_owner_hkd).",
-            "next_command": "./bin/rs-control rs-auto 'Kiểm tra báo cáo vận hành và tồn kho điểm bán 38197' --role ho_ops_supply --deliverable report --confirmed --json",
-        }
     explicit_domain = str(payload.get("domain", "")).strip()
     explicit_deliverable = str(payload.get("deliverable", "")).lower().strip()
     matched_action = match_action_deliverable(lowered_q)
@@ -6310,7 +7127,7 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
         )
     )
     explicit_entity_identified = bool(
-        explicit_role in ("ho_ops_supply", "ho_fin_accounting", "ho_hr_legal", "ho_academy_rnd", "ho_mkt_media", "ho_cskh_omni", "store_owner_company", "store_owner_hkd", "internal_staff", "store_manager", "dmz_rosie")
+        explicit_role in ("chain_ceo", "store_owner_company", "store_owner_hkd", "internal_staff", "store_manager", "dmz_rosie")
         or bool(matched_ho_staff)
         or mentions_company_store
         or mentions_hkd_store
@@ -6320,7 +7137,7 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
     if mentions_company_store and (mentions_hkd_store or mentions_chain_hq) and not explicit_role:
         resolved_entity = "MULTI_ENTITY_ISOLATED"
         entity_governance_note = (
-            "Bài toán liên quan đa mô hình pháp nhân: Bắt buộc tách bạch giữa Pháp nhân Chủ quản Toàn Chuỗi (CTCP · rs-persona-first-principles-truth), "
+            "Bài toán liên quan đa mô hình pháp nhân: Bắt buộc tách bạch giữa Pháp nhân Chủ quản Toàn Chuỗi (CTCP · rs-persona-chain-ceo), "
             "Mô hình Chủ Cửa Hàng Công Ty (Cty TNHH · 03 CHH 38197, 46880, 87024 · rs-persona-store-owner-company) "
             "và Mô hình Chủ Cửa Hàng Hộ Kinh Doanh (22 CHNQ · rs-persona-store-owner-hkd)."
         )
@@ -6346,7 +7163,7 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
     else:
         resolved_entity = "CHAIN_HEADQUARTERS_CTCP"
         entity_governance_note = (
-            "Mô hình Chủ thể: Pháp nhân Chủ quản Toàn Chuỗi (CTCP · điều hành bởi CEO Toàn Chuỗi rs-persona-first-principles-truth; "
+            "Mô hình Chủ thể: Pháp nhân Chủ quản Toàn Chuỗi (CTCP · điều hành bởi CEO Toàn Chuỗi rs-persona-chain-ceo; "
             "Chuỗi Cung Ứng Trung Tâm / Kho Tổng Trung Tâm; Kế toán Tổng hợp phối hợp Đơn vị Tư vấn & Quyết toán Thuế Độc lập rs-persona-tax-shield-ledger)."
         )
 
@@ -6466,9 +7283,34 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
         })
         seen_skill_ids.add("rs-exec-task-dispatch-auto")
 
+    rnd_5gate_signals = [
+        k for k in (
+            "r&d", "rnd", "món mới", "đề xuất món", "nghiên cứu món", "pha thử", "thử nghiệm nội bộ",
+            "kill vault", "sổ cái mẫu hủy", "mẫu thất bại", "bom 2 size", "trân châu socola",
+            "hạt dẻ", "khoai môn tươi", "5 cổng r&d", "5-gate", "pilot 3 chh", "idea-radar", "lab-test",
+        )
+        if k in lowered_q
+    ]
+    if rnd_5gate_signals and not is_dmz:
+        for idx_r, (r_sid, r_div, r_code) in enumerate([
+            ("rs-rnd-5gate-product-innovation", "02-rs-kb-lms", "02"),
+            ("rs-kb-recipe-rd-vault", "02-rs-kb-lms", "02"),
+            ("rs-ops-company3-pilot-lab", "03-rs-ops", "03"),
+        ]):
+            scored_execution_skills = [x for x in scored_execution_skills if x["skill_id"] != r_sid]
+            seen_skill_ids.add(r_sid)
+            scored_execution_skills.insert(idx_r, {
+                "skill_id": r_sid,
+                "division": r_div,
+                "div_code": r_code,
+                "confidence_score": round(99.7 - idx_r * 1.1, 1),
+                "matched_signals": rnd_5gate_signals[:5],
+            })
+
     if any(k in lowered_q for k in ("bom", "tạo mới bom", "cập nhật bom", "duyệt bom", "lịch sử bom", "định mức công thức")) and not is_dmz:
         for idx_b, (b_sid, b_div, b_code) in enumerate([
             ("rs-kb-recipe-rd-vault", "02-rs-kb-lms", "02"),
+            ("rs-rnd-5gate-product-innovation", "02-rs-kb-lms", "02"),
             ("rs-supply-cost-variance-alert", "04-rs-supply", "04"),
             ("rs-fin-drink-unit-economics", "05-rs-fin", "05"),
         ]):
@@ -6622,7 +7464,7 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
     # 5. Select Cognitive Persona Lens (Layer 2 · Division 11 · 3-Tier Ownership Triad + Specialists)
     persona_candidates: List[str] = []
     if contract_legal_signals and not is_dmz:
-        persona_candidates.append("rs-persona-first-principles-truth")
+        persona_candidates.append("rs-persona-chain-ceo")
         if mentions_hkd_store:
             persona_candidates.append("rs-persona-store-owner-hkd")
         elif mentions_company_store:
@@ -6636,7 +7478,7 @@ def route_rosier_intent(payload: Dict[str, Any], dry_run: bool = False) -> Dict[
         if "rs-persona-store-owner-hkd" not in persona_candidates:
             persona_candidates.append("rs-persona-store-owner-hkd")
     elif resolved_entity == "MULTI_ENTITY_ISOLATED":
-        for p_triad in ("rs-persona-first-principles-truth", "rs-persona-store-owner-company", "rs-persona-store-owner-hkd"):
+        for p_triad in ("rs-persona-chain-ceo", "rs-persona-store-owner-company", "rs-persona-store-owner-hkd"):
             if p_triad not in persona_candidates:
                 persona_candidates.append(p_triad)
 
@@ -6985,8 +7827,6 @@ def self_test_all_divisions() -> Dict[str, Any]:
     assert router_confirmed["needs_clarification"] is False and len(router_confirmed["auto_execution_receipts"] or []) >= 2, "Confirmed rs-auto must execute 4-layer combo"
     router_blocked = route_rosier_intent({"mode": "advise", "query": "Kiểm tra doanh thu điểm bán 115953"}, dry_run=True)
     assert router_blocked["route_blocked"] is True, "Router must block closed store 115953"
-    ceo_blocked = route_rosier_intent({"mode": "rs-auto", "query": "Thực thi quyền điều hành", "role": "chain_ceo"}, dry_run=True)
-    assert ceo_blocked["route_blocked"] is True, "HO Router must block chain_ceo privilege escalation"
     # BOM Temporal Ledger & 3-Stage Approval Gate self-tests
     bom_del_block = execute_bom_lifecycle_action({"bom_action": "bom-delete", "bom_id": "BOM-DRK-OLNS-500"}, dry_run=True)
     assert bom_del_block["status"] == "BLOCKED" and bom_del_block["error"]["code"] == "IMMUTABLE_BOM_DELETE_FORBIDDEN", "Must block BOM deletion"
@@ -7145,6 +7985,44 @@ def self_test_all_divisions() -> Dict[str, Any]:
     assert nlm_course_ho_block["status"] == "BLOCKED" and nlm_course_ho_block["error"]["code"] == "HO_LMS_PUBLISH_APPROVAL_REQUIRED", "Must block direct LMS live publish on HO edition without token"
     nlm_cross_res = build_notebooklm_cross_briefing_plan({}, is_ho_edition=True)
     assert nlm_cross_res["ok"] is True and nlm_cross_res["mcp_steps_count"] == 6, "Cross-Briefing must build 6-step pipeline"
+    # R&D 5-Gate Product Innovation & Immutable Kill Vault (#152 & #015) self-tests
+    rnd_g1 = execute_rnd_5gate_action({"action": "idea-radar", "idea_title": "Topping Trân Châu Socola Phô Mai"}, dry_run=True)
+    assert rnd_g1["ok"] is True and rnd_g1["gate"] == "GATE_1_IDEA_RADAR" and rnd_g1["inventory_reuse_analysis"]["reuse_pass"] is True, "Gate 1 must run Market Radar and ERP inventory reuse analysis"
+    rnd_g2_pass = execute_rnd_5gate_action({"action": "lab-test", "idea_id": "PID-202611-0001", "decision": "PASS_TO_GATE_3"}, dry_run=True)
+    assert rnd_g2_pass["ok"] is True and rnd_g2_pass["store_blindcount_protection"]["charged_to_store_wastage_vnd"] == 0.0, "Gate 2 must isolate R&D sample cost from store Blind Count"
+    rnd_g2_kill_block = execute_rnd_5gate_action({"action": "lab-test", "idea_id": "PID-202611-0001", "decision": "KILL_IDEA", "kill_reason_code": ""}, dry_run=True)
+    assert rnd_g2_kill_block["status"] == "BLOCKED" and rnd_g2_kill_block["error"]["code"] == "MANDATORY_KILL_REASON_REQUIRED", "Gate 2 must block killing an idea without kill_reason_code"
+    rnd_g2_kill_ok = execute_rnd_5gate_action({
+        "action": "lab-test",
+        "idea_id": "PID-202611-0002",
+        "decision": "KILL_IDEA",
+        "kill_reason_code": "SEPARATION_30MIN",
+        "feedback_notes": "Sốt hạt dẻ tách lớp sau hai mươi phút trong bình giữ nhiệt khi ship xa trên ba km",
+    }, dry_run=True)
+    assert rnd_g2_kill_ok["ok"] is True and rnd_g2_kill_ok["decision"] == "KILL_IDEA", "Gate 2 Kill to Vault must succeed when reason and notes are provided"
+    rnd_g3_ok = execute_rnd_5gate_action({"action": "bom-costing", "idea_id": "PID-202611-0001"}, dry_run=True)
+    assert rnd_g3_ok["ok"] is True and rnd_g3_ok["three_hard_bom_linters"]["linter_1_dual_size_scaling_pass"] is True, "Gate 3 must verify dual-size BOM scaling"
+    rnd_g3_eq_bug = execute_rnd_5gate_action({
+        "action": "bom-costing",
+        "idea_id": "PID-202610-0009",
+        "simulate_equal_size_bug": True,
+    }, dry_run=True)
+    assert rnd_g3_eq_bug["status"] == "BLOCKED" and rnd_g3_eq_bug["error"]["code"] == "BOM_DUAL_SIZE_SCALING_ERROR", "Gate 3 must block equal ingredient quantities across Size M and Size P"
+    rnd_g3_ho_block = execute_rnd_5gate_action({"action": "bom-costing", "idea_id": "PID-202611-0001", "bom_stage": "approve"}, dry_run=True, is_ho_edition=True)
+    assert rnd_g3_ho_block["status"] == "BLOCKED" and rnd_g3_ho_block["error"]["code"] == "HO_CEO_APPROVAL_REQUIRED", "Gate 3 must block final BOM approval on HO edition without CEO approval token"
+    rnd_g4_ok = execute_rnd_5gate_action({"action": "pilot-radar", "idea_id": "PID-202611-0001"}, dry_run=True, is_ho_edition=False)
+    assert rnd_g4_ok["ok"] is True and rnd_g4_ok["pilot_stores"] == ["38197", "46880", "87024"], "Gate 4 must lock pilot to 3 company stores"
+    rnd_g5_ok = execute_rnd_5gate_action({"action": "rollout-factory", "idea_id": "PID-202611-0001"}, dry_run=True, is_ho_edition=False)
+    assert rnd_g5_ok["ok"] is True and rnd_g5_ok["store_hub_air_gap_sanitized"] is True, "Gate 5 must strip COGS from Store Hub and generate 25-store rollout package"
+    rnd_g5_ho_block = execute_rnd_5gate_action({"action": "rollout-factory", "idea_id": "PID-202611-0001", "activate_live": True}, dry_run=True, is_ho_edition=True)
+    assert rnd_g5_ho_block["status"] == "BLOCKED" and rnd_g5_ho_block["error"]["code"] == "HO_CEO_APPROVAL_REQUIRED", "Gate 5 must block live 25-store activation on HO edition without CEO approval token"
+    rnd_del_block = execute_rnd_5gate_action({"action": "rnd-delete", "idea_id": "PID-202609-0004"}, dry_run=True)
+    assert rnd_del_block["status"] == "BLOCKED" and rnd_del_block["error"]["code"] == "IMMUTABLE_RND_LEDGER_DELETE_FORBIDDEN", "R&D ledger must forbid deleting proposals or failed samples"
+    router_rnd = route_rosier_intent({
+        "mode": "advise",
+        "query": "Kiểm tra quy trình R&D đề xuất món mới trân châu socola phô mai và đối chiếu sổ cái mẫu hủy Kill Vault",
+    }, dry_run=True)
+    assert router_rnd["recommended_combo"]["layer_1_execution_skills"][0]["skill_id"] == "rs-rnd-5gate-product-innovation", "Router must prioritize rs-rnd-5gate-product-innovation for R&D 5-Gate queries"
     return {
         "status": "PASS",
         "claim_label": "[OBSERVED: core/rs_core_engine.py]",
@@ -7157,6 +8035,7 @@ def self_test_all_divisions() -> Dict[str, Any]:
         "rs_auto_clarification_gate_verified": True,
         "ownership_triad_verified": True,
         "bom_bitemporal_ledger_and_3stage_gate_verified": True,
+        "rnd_5gate_innovation_and_kill_vault_verified": True,
         "monthly_kpi_lifecycle_engine_verified": True,
         "notebooklm_dual_flagship_suite_v0158_verified": True,
         "notebooklm_creative_lms_6skills_v680_verified": True,

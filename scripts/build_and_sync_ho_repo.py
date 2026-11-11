@@ -33,7 +33,7 @@ from typing import Any, Dict, List
 
 HO_REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_UPSTREAM_DIR = Path("/Users/tuandunghoang/projects/rosier-skills")
-HO_VERSION = "6.8.0-ho.2"
+HO_VERSION = "6.9.0-ho.1"
 
 EXCLUDED_SKILLS = {
     # 1. CEO, Board & M&A Exclusive (6 skills)
@@ -251,7 +251,7 @@ def patch_core_engine_for_ho(core_text: str) -> str:
     text = sanitize_ho_references(core_text)
     text = re.sub(
         r'ENGINE_VERSION = "[^"]+"',
-        'ENGINE_VERSION = "6.8.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
+        'ENGINE_VERSION = "6.9.0-ho.1-staff-safe-edition"\nHO_EDITION_MODE = True\nFORBIDDEN_PRIVILEGED_ROLES = {"chain_ceo", "ceo", "board_admin", "db_admin"}',
         text,
         count=1,
     )
@@ -1135,6 +1135,12 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
     if not ws_agents_link.exists() and not ws_agents_link.is_symlink():
         ws_agents_link.symlink_to(".agent")
 
+    ws_claude_dir = workspace_dir / ".claude"
+    ws_claude_dir.mkdir(parents=True, exist_ok=True)
+    ws_claude_skills_link = ws_claude_dir / "skills"
+    if not ws_claude_skills_link.exists() and not ws_claude_skills_link.is_symlink():
+        ws_claude_skills_link.symlink_to("../.agent/skills")
+
     active_profile_meta = {
         "edition": "HO_STAFF_SAFE_EDITION",
         "active_profile": resolved_name,
@@ -1369,6 +1375,11 @@ rsync -a --delete \\
 
 if [[ -L "${WORKSPACE_DIR}/.agents" || ! -e "${WORKSPACE_DIR}/.agents" ]]; then
   ln -sfn ".agent" "${WORKSPACE_DIR}/.agents"
+fi
+
+mkdir -p "${WORKSPACE_DIR}/.claude"
+if [[ -L "${WORKSPACE_DIR}/.claude/skills" || ! -e "${WORKSPACE_DIR}/.claude/skills" ]]; then
+  ln -sfn "../.agent/skills" "${WORKSPACE_DIR}/.claude/skills"
 fi
 
 python3 "${WORKSPACE_DIR}/.agent/scripts/rs_profile_loader.py" activate "${PROFILE}" --target workspace --workspace-dir "${WORKSPACE_DIR}"
@@ -1714,7 +1725,7 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
     core_dst.mkdir(parents=True, exist_ok=True)
     ctx_lock_txt = sanitize_ho_references((upstream_dir / "core" / "rosier-context-lock.md").read_text(encoding="utf-8"))
     (core_dst / "rosier-context-lock.md").write_text(ctx_lock_txt, encoding="utf-8")
-    for json_ledger in ("bom_temporal_ledger.json", "kpi_monthly_ledger.json"):
+    for json_ledger in ("bom_temporal_ledger.json", "kpi_monthly_ledger.json", "rnd_innovation_ledger.json"):
         src_ledger = upstream_dir / "core" / json_ledger
         if src_ledger.exists():
             (core_dst / json_ledger).write_text(
@@ -1881,14 +1892,14 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                 clean_doc = sanitize_ho_references("\n".join(filtered_lines))
                 clean_doc = (
                     clean_doc.replace(
-                        "213 HỢP PHẦN (`RS-OS 200 v6.8.0`)",
-                        f"189 HỢP PHẦN KHỐI HO (`RS-OS HO Edition v{HO_VERSION}`)",
+                        "214 HỢP PHẦN (`RS-OS 200 v6.9.0`)",
+                        f"190 HỢP PHẦN KHỐI HO (`RS-OS HO Edition v{HO_VERSION}`)",
                     )
                     .replace(
-                        "`213 Hợp phần chuẩn mã rs-*` (`153 rs-* Skills` + `30 rs-wf-* Workflows` kèm `/rs-auto` & `/rs-task-auto` đã chuẩn hóa sang `skills/<name>/SKILL.md` + `30 rs-mcp-* Tools` trong `10 Mô-đun MCP`)",
-                        "`189 Hợp phần Khối HO chuẩn mã rs-*` (`137 rs-* HO Skills` + `28 rs-wf-* HO Workflows` kèm `/rs-auto` & `/rs-task-auto` đã chuẩn hóa sang `skills/<name>/SKILL.md` + `24 rs-mcp-* Safe Tools` trong `8 Mô-đun MCP`)",
+                        "`214 Hợp phần chuẩn mã rs-*` (`154 rs-* Skills` + `30 rs-wf-* Workflows` kèm `/rs-auto` & `/rs-task-auto` đã chuẩn hóa sang `skills/<name>/SKILL.md` + `30 rs-mcp-* Tools` trong `10 Mô-đun MCP`)",
+                        "`190 Hợp phần Khối HO chuẩn mã rs-*` (`138 rs-* HO Skills` + `28 rs-wf-* HO Workflows` kèm `/rs-auto` & `/rs-task-auto` đã chuẩn hóa sang `skills/<name>/SKILL.md` + `24 rs-mcp-* Safe Tools` trong `8 Mô-đun MCP`)",
                     )
-                    .replace("PHẦN I: 153 KỸ NĂNG ĐỘC QUYỀN", "PHẦN I: 137 KỸ NĂNG KHỐI HO")
+                    .replace("PHẦN I: 154 KỸ NĂNG ĐỘC QUYỀN", "PHẦN I: 138 KỸ NĂNG KHỐI HO")
                     .replace("PHẦN II: 30 QUY TRÌNH LIÊN PHÒNG BAN", "PHẦN II: 28 QUY TRÌNH KHỐI HO")
                     .replace("PHẦN III: 30 CÔNG CỤ KẾT NỐI DỮ LIỆU TRONG 10 MÔ-ĐUN MCP", "PHẦN III: 24 CÔNG CỤ KẾT NỐI DỮ LIỆU AN TOÀN TRONG 8 MÔ-ĐUN MCP")
                     + "\n"
@@ -1915,7 +1926,13 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
             elif doc_name == "CHANGELOG.md":
                 ho_changelog_header = (
                     f"# Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v{HO_VERSION}`)\n\n"
-                    f"## [{HO_VERSION}] - 2026-11-04\n\n"
+                    f"## [{HO_VERSION}] - 2026-11-09\n\n"
+                    "### Hệ Điều Hành R&D Đồ Uống 5 Cổng, Kiểm Toán BOM 2 Kích Cỡ & Sổ Cái Mẫu Hủy Bất Biến (`#152 rs-rnd-5gate-product-innovation` + `#015 rs-kb-recipe-rd-vault`)\n"
+                    "- **Bổ sung kỹ năng `#152 rs-rnd-5gate-product-innovation` và nâng cấp `#015 rs-kb-recipe-rd-vault` (`167` Kỹ năng 5 Lớp Khối HO = `138` HO Skills + `29` HO Workflow Skills):**\n"
+                    "  - Cho phép nhân sự R&D, Cung ứng, Đào tạo LMS và Vận hành chạy trọn vẹn 5 Cổng R&D (`idea-radar`, `lab-test`, `bom-costing`, `pilot-radar`, `rollout-factory`) cùng `kill-vault`, `pipeline-status` ở chế độ an toàn `HO_SAFE_READ_AND_DRAFT`.\n"
+                    "  - Khóa cứng quyền xóa lịch sử mẫu thử (`rnd-delete` -> `IMMUTABLE_RND_LEDGER_DELETE_FORBIDDEN`), bắt buộc nhập mã nguyên nhân chuẩn khi lưu mẫu thất bại vào `Kill Vault` (`MANDATORY_KILL_REASON_REQUIRED`) và yêu cầu mã chữ ký CEO (`HO_CEO_APPROVAL_REQUIRED`) trước khi chốt duyệt BOM chính thức hoặc kích hoạt phát hành 25 điểm bán.\n"
+                    "  - Hỗ trợ liên kết tự động `.agent/skills`, `.agents/skills` và `.claude/skills -> ../.agent/skills` để chạy trực tiếp trên cả Antigravity và Claude Code.\n\n"
+                    "## [6.8.0-ho.2] - 2026-11-04\n\n"
                     "### Hợp Nhất 100% Quy Trình Khối HO Thành Kỹ Năng 5 Lớp (`166 5-Layer HO Skills`) & Trình Thiết Lập Lần Đầu MCP/Token (`v6.8.0-ho.2`)\n"
                     "- **Hợp nhất `30` HO Workflows thành Kỹ năng 5 Lớp (`Unified 5-Layer Workflow-as-Skill` · `/migrate-workflows`)**:\n"
                     "  - Nâng cấp toàn bộ `29` quy trình Khối HO (`skills/rs-task-auto/` + `28` `skills/rs-wf-*/`) lên **Hợp đồng Kỹ năng 5 Lớp đầy đủ** (có `SKILL.md`, `.rs-skill-meta.json`, CLI độc lập `scripts/<snake>_tool.py --self-test`, `references/`, `assets/`, `evals/`) ở chế độ `HO_SAFE_READ_AND_DRAFT` và bảo toàn `01` `skills/rs-auto/` 5 lớp; nâng tổng danh mục lên **`166` Kỹ năng 5 Lớp Khối HO** (`137` kỹ năng HO + `29` kỹ năng quy trình HO) và lưu trữ an toàn `30` file gốc thành `workflows/<name>.md.bak`.\n"
@@ -1967,6 +1984,8 @@ def compile_ho_repository(upstream_dir: Path, target_dir: Path, dry_run: bool = 
                 "maintain-features",
                 "--features-dir",
                 str(feat_dst),
+                "--repo-root",
+                str(target_dir),
                 "--update",
                 "--json",
             ],

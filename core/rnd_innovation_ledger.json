@@ -1,0 +1,311 @@
+{
+  "schema_version": "1.0.0-rosier-rnd-5gate-innovation-ledger",
+  "ledger_mode": "APPEND_ONLY_IMMUTABLE_HISTORY",
+  "allow_idea_deletion": false,
+  "allow_test_round_deletion": false,
+  "separate_rnd_sample_from_store_wastage": true,
+  "pilot_company_3_stores": [
+    "38197",
+    "46880",
+    "87024"
+  ],
+  "blocked_closed_stores": [
+    "115953",
+    "106192"
+  ],
+  "five_gates_pipeline": [
+    {
+      "gate": 1,
+      "code": "GATE_1_IDEA_RADAR",
+      "action": "idea-radar",
+      "owner_role": "rnd_lead",
+      "persona_skill": "rs-persona-master-rnd",
+      "description": "Đề xuất ý tưởng 1 dòng, kích hoạt AI quét thị trường đồ uống, tính tỷ lệ tái sử dụng nguyên vật liệu sẵn có tại Kho Tổng Trung Tâm, đối chiếu kho mẫu hủy trong quá khứ và sinh 03 phương án công thức pha thử khởi đầu."
+    },
+    {
+      "gate": 2,
+      "code": "GATE_2_LAB_TEST",
+      "action": "lab-test",
+      "owner_role": "rnd_lead",
+      "persona_skill": "rs-persona-master-rnd",
+      "description": "Pha thử tại quầy, chấm điểm cảm quan và độ bền giao hàng 30 phút, nhận phác đồ điều chỉnh định lượng ml/gram từ AI hoặc lưu vết bắt buộc vào Sổ cái Mẫu Hủy (Kill Vault) kèm phiếu tách chi phí nguyên liệu mẫu thử R&D khỏi hao hụt cửa hàng."
+    },
+    {
+      "gate": 3,
+      "code": "GATE_3_BOM_COSTING",
+      "action": "bom-costing",
+      "owner_role": "supply_chain",
+      "persona_skill": "rs-persona-antifragile-supply",
+      "description": "Tự dựng BOM 2 kích cỡ (Size M 16Oz và Size P 500ml), chạy 3 bộ kiểm toán chặn lỗi kỹ thuật (Size P khác Size M, khớp 100% mã SKU ERP, kiểm tra định mức mẻ nấu BTP), tính biên lợi nhuận đa kênh và phê duyệt 3 chốt (R&D -> Cung Ứng -> CEO Toàn Chuỗi)."
+    },
+    {
+      "gate": 4,
+      "code": "GATE_4_PILOT_3CHH",
+      "action": "pilot-radar",
+      "owner_role": "store_owner_company",
+      "persona_skill": "rs-persona-store-owner-company",
+      "description": "Bán thử nghiệm 5 đến 7 ngày tại Cụm 03 Cửa hàng Mô hình Công ty (38197, 46880, 87024), đánh giá tốc độ bán, tỷ lệ hủy cốt cuối ca (<= 15%), điểm hài lòng khách hàng và tỷ lệ ăn mòn món cũ."
+    },
+    {
+      "gate": 5,
+      "code": "GATE_5_ROLLOUT_25STORES",
+      "action": "rollout-factory",
+      "owner_role": "chain_ceo",
+      "persona_skill": "rs-persona-first-principles-truth",
+      "description": "Nhà máy tự động hóa triển khai toàn chuỗi 25 điểm bán: sinh bảng phân bổ nguyên vật liệu đợt đầu, bảng mã món Hệ thống POS, thẻ công thức A5 đã lọc 100% giá vốn cho ROSIER STORE HUB, cây khóa học + 10 câu hỏi Bloom trên Học viện LMS và bộ bài viết truyền thông 3 điểm chạm."
+    }
+  ],
+  "failure_reason_taxonomy": {
+    "SEPARATION_30MIN": "Tách lớp, chảy nước hoặc biến đổi kết cấu sau 20 đến 30 phút vận chuyển đường xa hoặc giao qua Sàn Giao Đồ Ăn.",
+    "FLAVOR_MISMATCH": "Hương vị không đạt chuẩn vị trà ủ lạnh nguyên bản (quá ngọt gắt, nguyên liệu phụ lấn át hương trà nền hoặc hậu vị chát).",
+    "COGS_TOO_HIGH": "Tỷ lệ giá vốn vượt trần cho phép (COGS trực tiếp > 32% hoặc biên lợi nhuận ròng trên Sàn Giao Đồ Ăn sau chiết khấu < 35%).",
+    "SHELF_LIFE_TOO_SHORT": "Bán thành phẩm nhanh hỏng trong ca hoặc tỷ lệ hủy cốt cuối ca tại 3 điểm bán thử nghiệm vượt ngưỡng 15%.",
+    "BARISTA_OP_TOO_COMPLEX": "Thao tác pha chế vượt quá 60 giây mỗi ly vào giờ cao điểm hoặc đòi hỏi thiết bị chuyên biệt không có sẵn tại 22 điểm bán nhượng quyền.",
+    "SUPPLIER_MOQ_RISK": "Nguyên liệu mới có sản lượng đặt hàng tối thiểu (MOQ) quá lớn, nguồn cung đứt gãy hoặc rủi ro tồn kho chết."
+  },
+  "erp_inventory_catalog": {
+    "NVL-TEA-OLN-01": {
+      "sku_code": "NVL-TEA-OLN-01",
+      "name": "Cốt Trà Ô Long Nhài Ủ Lạnh",
+      "unit": "ml",
+      "unit_cost_vnd": 22.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-TEA-BLK-01": {
+      "sku_code": "NVL-TEA-BLK-01",
+      "name": "Cốt Hồng Trà Ủ Lạnh Nguyên Bản",
+      "unit": "ml",
+      "unit_cost_vnd": 19.5,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-TEA-MTC-01": {
+      "sku_code": "NVL-TEA-MTC-01",
+      "name": "Bột Matcha Nhật Bản Chuẩn Pha Chế",
+      "unit": "g",
+      "unit_cost_vnd": 850.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-MLK-TT-01": {
+      "sku_code": "NVL-MLK-TT-01",
+      "name": "Sữa Tươi Thanh Trùng Chuẩn Pha Chế",
+      "unit": "ml",
+      "unit_cost_vnd": 88.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-CRM-CHS-01": {
+      "sku_code": "NVL-CRM-CHS-01",
+      "name": "Bán Thành Phẩm Kem Phô Mai Đánh Bông",
+      "unit": "g",
+      "unit_cost_vnd": 115.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-CHOC-PWD-01": {
+      "sku_code": "NVL-CHOC-PWD-01",
+      "name": "Nền Cacao Socola Nguyên Chất",
+      "unit": "g",
+      "unit_cost_vnd": 195.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-TARO-FRS-01": {
+      "sku_code": "NVL-TARO-FRS-01",
+      "name": "Bán Thành Phẩm Sốt Khoai Môn Tươi Nghiền",
+      "unit": "g",
+      "unit_cost_vnd": 72.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-CHEST-PST-01": {
+      "sku_code": "NVL-CHEST-PST-01",
+      "name": "Bán Thành Phẩm Sốt Hạt Dẻ Nướng Mùa Đông",
+      "unit": "g",
+      "unit_cost_vnd": 94.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-PEARL-CHP-01": {
+      "sku_code": "NVL-PEARL-CHP-01",
+      "name": "Bán Thành Phẩm Trân Châu Socola Nhân Phô Mai",
+      "unit": "g",
+      "unit_cost_vnd": 68.0,
+      "in_stock_central_warehouse": true
+    },
+    "NVL-SYR-CANE-01": {
+      "sku_code": "NVL-SYR-CANE-01",
+      "name": "Syrup Đường Mía Nguyên Bản",
+      "unit": "ml",
+      "unit_cost_vnd": 45.0,
+      "in_stock_central_warehouse": true
+    },
+    "PKG-CUP-16OZ": {
+      "sku_code": "PKG-CUP-16OZ",
+      "name": "Bộ Ly Nhựa 16Oz (Size M) Kèm Nắp Cầu & Ống Hút",
+      "unit": "bộ",
+      "unit_cost_vnd": 1650.0,
+      "in_stock_central_warehouse": true
+    },
+    "PKG-CAN-PET500": {
+      "sku_code": "PKG-CAN-PET500",
+      "name": "Bộ Vỏ Lon PET 500ml (Size P) Kèm Nắp Nhôm & Túi Đựng",
+      "unit": "bộ",
+      "unit_cost_vnd": 2891.0,
+      "in_stock_central_warehouse": true
+    }
+  },
+  "active_pipeline": {
+    "PID-202611-0001": {
+      "idea_id": "PID-202611-0001",
+      "title": "Topping Trân Châu Socola Phô Mai Phối 03 Nền Đồ Uống Có Sẵn",
+      "category": "TOPPING_BTP",
+      "season": "WINTER_Q4_2026",
+      "current_gate": "GATE_2_LAB_TEST",
+      "status": "IN_LAB_TESTING",
+      "proposer_role": "rnd_lead",
+      "target_launch_month": "2026-12",
+      "target_price_size_m_vnd": 39000,
+      "target_price_size_p_vnd": 45000,
+      "inventory_reuse_pct": 85.7,
+      "reused_erp_skus": [
+        "NVL-TEA-BLK-01",
+        "NVL-MLK-TT-01",
+        "NVL-CHOC-PWD-01",
+        "NVL-CRM-CHS-01",
+        "NVL-SYR-CANE-01",
+        "PKG-CAN-PET500"
+      ],
+      "new_skus_to_source": [
+        "NVL-PEARL-CHP-01"
+      ],
+      "base_drinks_paired": [
+        "Trà Sữa Socola",
+        "Trà Sữa Truyền Thống",
+        "Socola Nguyên Bản"
+      ],
+      "test_rounds": [
+        {
+          "round_no": 1,
+          "tested_at": "2026-11-06",
+          "taste_score": 8.1,
+          "appearance_score": 8.4,
+          "stability_30min_delivery_pass": true,
+          "barista_speed_sec": 42,
+          "sample_cups_used": 9,
+          "sample_material_cost_vnd": 108000,
+          "rnd_sample_voucher_id": "RND-SMP-202611-001",
+          "feedback_notes": "Trân châu socola phô mai dẻo mềm khi phối trên 3 nền Trà sữa Socola, Trà sữa truyền thống và Socola; cần giảm 3ml syrup đường mía ở nền Socola để hậu vị thanh hơn.",
+          "decision": "ITERATE"
+        }
+      ]
+    },
+    "PID-202611-0002": {
+      "idea_id": "PID-202611-0002",
+      "title": "Bộ Sưu Tập 03 Món Hạt Dẻ Mùa Đông (Trà Sữa Hạt Dẻ · Matcha Hạt Dẻ · Cacao Hạt Dẻ)",
+      "category": "SEASONAL_COLLECTION",
+      "season": "WINTER_Q4_2026",
+      "current_gate": "GATE_3_BOM_COSTING",
+      "status": "PENDING_BOM_AND_COSTING_LOCK",
+      "proposer_role": "rnd_lead",
+      "target_launch_month": "2026-12",
+      "target_price_size_m_vnd": 42000,
+      "target_price_size_p_vnd": 49000,
+      "inventory_reuse_pct": 87.5,
+      "reused_erp_skus": [
+        "NVL-TEA-OLN-01",
+        "NVL-TEA-MTC-01",
+        "NVL-CHOC-PWD-01",
+        "NVL-MLK-TT-01",
+        "NVL-CRM-CHS-01",
+        "NVL-SYR-CANE-01",
+        "PKG-CAN-PET500"
+      ],
+      "new_skus_to_source": [
+        "NVL-CHEST-PST-01"
+      ],
+      "retest_schedule_date": "2026-11-14",
+      "costing_deadline_date": "2026-11-18",
+      "test_rounds": [
+        {
+          "round_no": 1,
+          "tested_at": "2026-11-05",
+          "taste_score": 8.4,
+          "appearance_score": 8.6,
+          "stability_30min_delivery_pass": true,
+          "barista_speed_sec": 48,
+          "sample_cups_used": 12,
+          "sample_material_cost_vnd": 162000,
+          "rnd_sample_voucher_id": "RND-SMP-202611-002",
+          "feedback_notes": "Hương hạt dẻ nướng quyện tốt với cốt trà Ô Long Nhài và nền Matcha; lịch pha thử vòng 2 ngày 14/11 để khóa bảng Costing 2 kích cỡ trước 18/11.",
+          "decision": "PASS_TO_GATE_3"
+        }
+      ]
+    },
+    "PID-202610-0009": {
+      "idea_id": "PID-202610-0009",
+      "title": "Matcha Khoai Môn Tươi (Chuẩn Hóa Định Mức BOM 2 Kích Cỡ SUT002M 16Oz & SUT002P 500ml)",
+      "category": "MILK_TEA",
+      "season": "ALL_YEAR_CORE",
+      "current_gate": "GATE_5_ROLLOUT_25STORES",
+      "status": "ACTIVE_MENU_BOM_STANDARDIZED",
+      "proposer_role": "rnd_lead",
+      "target_launch_month": "2026-10",
+      "target_price_size_m_vnd": 39000,
+      "target_price_size_p_vnd": 45000,
+      "inventory_reuse_pct": 100.0,
+      "reused_erp_skus": [
+        "NVL-TEA-MTC-01",
+        "NVL-TARO-FRS-01",
+        "NVL-MLK-TT-01",
+        "NVL-SYR-CANE-01",
+        "PKG-CUP-16OZ",
+        "PKG-CAN-PET500"
+      ],
+      "new_skus_to_source": [],
+      "test_rounds": [
+        {
+          "round_no": 1,
+          "tested_at": "2026-10-12",
+          "taste_score": 8.8,
+          "appearance_score": 9.0,
+          "stability_30min_delivery_pass": true,
+          "barista_speed_sec": 45,
+          "sample_cups_used": 6,
+          "sample_material_cost_vnd": 78000,
+          "rnd_sample_voucher_id": "RND-SMP-202610-009",
+          "feedback_notes": "Đã khắc phục triệt để lỗi định mức Size P (500ml) trùng Size M (16Oz) và gắn đủ công thức mẻ nấu Bán thành phẩm Sốt Khoai Môn Tươi Nghiền.",
+          "decision": "PASS_TO_GATE_3"
+        }
+      ]
+    }
+  },
+  "kill_vault": {
+    "PID-202609-0004": {
+      "idea_id": "PID-202609-0004",
+      "title": "Trà Sữa Sầu Riêng Kem Trứng Nướng",
+      "category": "SEASONAL_COLLECTION",
+      "killed_at_gate": "GATE_2_LAB_TEST",
+      "killed_date": "2026-09-19",
+      "status": "KILLED_ARCHIVED",
+      "kill_reason_code": "SEPARATION_30MIN",
+      "kill_reason_summary": "Lớp kem trứng sầu riêng bị tách nước sau 22 phút vận chuyển trong lon PET và gây ám mùi sang các khay nguyên liệu trà hoa quả khác trong tủ mát 4 độ C.",
+      "rounds_attempted": 2,
+      "total_sample_cups_used": 14,
+      "total_sample_material_cost_vnd": 420000,
+      "rnd_sample_voucher_id": "RND-SMP-202609-004",
+      "isolated_from_store_blindcount": true,
+      "lesson_learned_for_ai": "Không đưa nguyên liệu sầu riêng tươi vào tủ mát bảo quản chung với cốt trà Ô Long Nhài ủ lạnh; mọi lớp kem phủ đóng lon PET bắt buộc vượt qua bài kiểm tra rung lắc 30 phút."
+    },
+    "PID-202608-0007": {
+      "idea_id": "PID-202608-0007",
+      "title": "Lục Trà Hoa Đậu Biếc Chanh Vàng Tươi",
+      "category": "FRUIT_TEA",
+      "killed_at_gate": "GATE_4_PILOT_3CHH",
+      "killed_date": "2026-08-26",
+      "status": "KILLED_ARCHIVED",
+      "kill_reason_code": "SHELF_LIFE_TOO_SHORT",
+      "kill_reason_summary": "Sau 7 ngày bán thử tại Cụm 03 Cửa hàng Mô hình Công ty (38197, 46880, 87024), cốt hoa đậu biếc đổi màu và giảm hương sau 4 giờ, dẫn tới tỷ lệ hủy cốt cuối ca trung bình 19.4% (vượt trần cho phép 15.0%) và tốc độ bán chỉ đạt 7.2 ly/ngày/quán.",
+      "rounds_attempted": 3,
+      "total_sample_cups_used": 18,
+      "total_sample_material_cost_vnd": 310000,
+      "rnd_sample_voucher_id": "RND-SMP-202608-007",
+      "isolated_from_store_blindcount": true,
+      "lesson_learned_for_ai": "Chặn nhân rộng ra 22 điểm bán nhượng quyền đối với mọi bán thành phẩm có hạn dùng trong ca dưới 6 giờ hoặc có tỷ lệ hủy cốt cuối ca tại 3 điểm bán thử nghiệm vượt 15%."
+    }
+  }
+}

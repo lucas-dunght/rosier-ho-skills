@@ -138,6 +138,12 @@ def activate_workspace_profile(profile_name: str, workspace_dir: Path) -> dict:
     if not ws_agents_link.exists() and not ws_agents_link.is_symlink():
         ws_agents_link.symlink_to(".agent")
 
+    ws_claude_dir = workspace_dir / ".claude"
+    ws_claude_dir.mkdir(parents=True, exist_ok=True)
+    ws_claude_skills_link = ws_claude_dir / "skills"
+    if not ws_claude_skills_link.exists() and not ws_claude_skills_link.is_symlink():
+        ws_claude_skills_link.symlink_to("../.agent/skills")
+
     active_profile_meta = {
         "edition": "HO_STAFF_SAFE_EDITION",
         "active_profile": resolved_name,

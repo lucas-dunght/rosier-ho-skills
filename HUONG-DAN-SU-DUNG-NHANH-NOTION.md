@@ -1,4 +1,4 @@
-# 🌿 Cẩm Nang Tổng Hợp & Hướng Dẫn Sử Dụng Nhanh Hệ Sinh Thái 189 Hợp Phần Khối Văn Phòng HO Rosier (RS-OS HO Edition v6.8.0-ho.2)
+# 🌿 Cẩm Nang Tổng Hợp & Hướng Dẫn Sử Dụng Nhanh Hệ Sinh Thái 189 Hợp Phần Khối Văn Phòng HO Rosier (RS-OS HO Edition v6.9.0-ho.1)
 
 - **Mã Tài Liệu Tri Thức:** `4084ffbe-44fc-8106-8a9a-fe1fb7db4f2e`
 - **Trang Cha (Parent):** `Kho Biểu Mẫu, SOP & Tài Nguyên` (`02a4ffbe44fc82cb9bdf016f1b729447`) thuộc Hub 1 `ROSIER BUSINESS` (`15e4ffbe44fc8390be0601a8074420d9`)

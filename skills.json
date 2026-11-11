@@ -1,11 +1,11 @@
 {
   "_readme": "Machine-readable catalog of Rosier HO Skills Suite (RS-OS HO Edition · Khối Văn Phòng HO). Zero CEO privilege, Zero DB mutation, Zero-Command Auto Skill Router enabled.",
-  "updated": "2026-11-03",
+  "updated": "2026-11-09",
   "owner": "Ban Điều Hành Toàn Chuỗi · Rosier Fresh Tea & Coffee",
-  "ecosystem_version": "6.8.0-ho.2",
+  "ecosystem_version": "6.9.0-ho.1",
   "counts": {
-    "total_items": 218,
-    "skills": 166,
+    "total_items": 219,
+    "skills": 167,
     "workflows": 28,
     "mcp_tools": 24
   },
@@ -3868,6 +3868,34 @@
       "version": "6.8.0"
     },
     {
+      "index": 152,
+      "name": "rs-rnd-5gate-product-innovation",
+      "layer": "flagship",
+      "category": "Phân khu 02: Kho Tri Thức 2-Hub, Công Thức R&D & Học Viện Số LMS (rs-kb-* & rs-lms-*)",
+      "repo": "rs-os-180-suite",
+      "subdir": "skills/rs-rnd-5gate-product-innovation",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "summary": "Hệ Điều Hành R&D Đồ Uống 5 Cổng, Trợ Lý AI Pha Thử Tại Quầy, Kiểm Toán BOM 2 Kích Cỡ (Size M 16Oz & Size P 500ml) & Sổ Cái Mẫu Hủy Bất Biến (Kill Vault)",
+      "lineage": "rs_rnd_5gate_engine.py + core/rnd_innovation_ledger.json + core/bom_temporal_ledger.json",
+      "bundled_engine_files": 1,
+      "bilingual_dual_brain": true,
+      "rosier_3pass_de_ai": true,
+      "rosier_cli_standard": true,
+      "keywords": [
+        "rs-rnd-5gate-product-innovation",
+        "02-rs-kb-lms",
+        "rnd",
+        "r&d",
+        "món",
+        "mới",
+        "kill",
+        "vault",
+        "bom",
+        "pilot"
+      ],
+      "version": "6.9.0"
+    },
+    {
       "index": 1400,
       "name": "rs-task-auto",
       "layer": "workflow",
@@ -5500,7 +5528,7 @@
       "sha256_16": "c7b199994bc13cc8"
     }
   ],
-  "version": "6.8.0",
+  "version": "6.9.0",
   "edition": "HO_STAFF_SAFE_EDITION",
   "allow_db_mutation": false
 }

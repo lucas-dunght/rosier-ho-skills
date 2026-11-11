@@ -1,11 +1,11 @@
-# 🏛️ DANH MỤC TỔNG THỂ HỆ SINH THÁI KỸ NĂNG ĐỘC QUYỀN NỘI BỘ ROSIER 189 HỢP PHẦN KHỐI HO (`RS-OS HO Edition v6.8.0-ho.2`)
+# 🏛️ DANH MỤC TỔNG THỂ HỆ SINH THÁI KỸ NĂNG ĐỘC QUYỀN NỘI BỘ ROSIER 190 HỢP PHẦN KHỐI HO (`RS-OS HO Edition v6.9.0-ho.1`)
 
-> **Tổng quy mô:** `189 Hợp phần Khối HO chuẩn mã rs-*` (`137 rs-* HO Skills` + `28 rs-wf-* HO Workflows` kèm `/rs-auto` & `/rs-task-auto` đã chuẩn hóa sang `skills/<name>/SKILL.md` + `24 rs-mcp-* Safe Tools` trong `8 Mô-đun MCP`)
+> **Tổng quy mô:** `190 Hợp phần Khối HO chuẩn mã rs-*` (`138 rs-* HO Skills` + `28 rs-wf-* HO Workflows` kèm `/rs-auto` & `/rs-task-auto` đã chuẩn hóa sang `skills/<name>/SKILL.md` + `24 rs-mcp-* Safe Tools` trong `8 Mô-đun MCP`)
 > **Kiến trúc nội bộ:** Chuẩn 5 Lớp Kép Rosier (`./bin/control-app`, `./bin/rs-control`, `Feature Map 16/16`, `Kỷ Luật Kiểm Chứng 4 Nhãn`, `Khử Mùi AI 3 Vòng`, `0 Constraint Violations`)
 
 ---
 
-## PHẦN I: 137 KỸ NĂNG KHỐI HO (`000` + `000A` + `001..151` · `rs-*` SKILLS · 12 PHÂN KHU)
+## PHẦN I: 138 KỸ NĂNG KHỐI HO (`000` + `000A` + `001..152` · `rs-*` SKILLS · 12 PHÂN KHU)
 
 | Mã số | Mã Skill (`rs-*`) | Tầng | Phân khu | Tên & Công năng thực chiến | Nguồn gốc nội bộ | Vùng bảo mật |
 | :-: | :--- | :---: | :--- | :--- | :--- | :---: |
@@ -37,6 +37,7 @@
 | `149` | [`rs-kb-notebooklm-visual-quiz-pack`](skills/rs-kb-notebooklm-visual-quiz-pack/SKILL.md) | `flagship` | `02-rs-kb-lms` | Xưởng Học Liệu Trực Quan & Khảo Thí 4-Trong-1 Bằng NotebookLM (`Infographic .png` + `Mind Map Mermaid` + `Flashcards` + `Bloom Quiz`) | rs_nlm_creative_studio_engine.py (`+1 files`) | `INTERNAL_PRIVILEGED` |
 | `150` | [`rs-lms-notebooklm-course-builder`](skills/rs-lms-notebooklm-course-builder/SKILL.md) | `flagship` | `02-rs-kb-lms` | Nhà Máy Đóng Gói & Xuất Bản Khóa Học Đa Phương Tiện 6 Mũi Từ NotebookLM Lên `Rosier LMS` (`lms_upsert_curriculum_tree`) | rs_nlm_creative_studio_engine.py (`+1 files`) | `INTERNAL_PRIVILEGED` |
 | `151` | [`rs-kb-notebooklm-cross-briefing`](skills/rs-kb-notebooklm-cross-briefing/SKILL.md) | `flagship` | `02-rs-kb-lms` | Tổ Hợp Truy Vấn Liên Sổ Tay (`cross_notebook_query`), Xuất Bảng Excel (`.xlsx`) & Đồng Bộ Google Docs/Sheets | rs_nlm_creative_studio_engine.py (`+1 files`) | `INTERNAL_PRIVILEGED` |
+| `152` | [`rs-rnd-5gate-product-innovation`](skills/rs-rnd-5gate-product-innovation/SKILL.md) | `flagship` | `02-rs-kb-lms` | Hệ Điều Hành R&D Đồ Uống 5 Cổng, Trợ Lý AI Pha Thử, Kiểm Toán BOM 2 Kích Cỡ (`Size M 16Oz` & `Size P 500ml`) & Sổ Cái Mẫu Hủy Bất Biến (`Kill Vault`) | rs_rnd_5gate_engine.py (`+1 files`) | `INTERNAL_PRIVILEGED` |
 | `025` | [`rs-ops-store-risk-scorer`](skills/rs-ops-store-risk-scorer/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Chấm Điểm Sức Khỏe & Rủi Ro 25 Điểm Bán Chính Thức (Thang 100 Điểm) | Xây mới (G-203) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `026` | [`rs-ops-focus12-turnaround`](skills/rs-ops-focus12-turnaround/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Kịch Bản Vực Dậy Chuyên Sâu Nhóm 12 Cửa Hàng Trọng Điểm | Xây mới (G-203) (`+0 files`) | `INTERNAL_PRIVILEGED` |
 | `027` | [`rs-ops-company3-pilot-lab`](skills/rs-ops-company3-pilot-lab/SKILL.md) | `bundled_tactical` | `03-rs-ops` | Quản Trị Thử Nghiệm Vận Hành Tại 3 Cửa Hàng Mô Hình Công Ty (38197, 46880, 87024) | Xây mới (3 CHH Pilot) (`+0 files`) | `INTERNAL_PRIVILEGED` |

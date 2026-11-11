@@ -275,6 +275,34 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
     sw_data = json.loads(sw_proc.stdout) if sw_proc.stdout.strip() else {}
     setup_wizard_verified = sw_proc.returncode == 0 and sw_data.get("status") == "PASS"
 
+    # 9. Verify 5-Gate R&D Innovation & Immutable Kill Vault (#152 rs-rnd-5gate-product-innovation) in HO Repository
+    rnd_cli = SUITE_ROOT / "skills" / "rs-rnd-5gate-product-innovation" / "scripts" / "rs_rnd_5gate_product_innovation_tool.py"
+    rnd_del_proc = subprocess.run(
+        [sys.executable, str(rnd_cli), "rnd-delete", "--idea-id", "PID-202609-0004", "--json"],
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    rnd_del_data = json.loads(rnd_del_proc.stdout) if rnd_del_proc.stdout.strip() else {}
+    rnd_delete_blocked = (
+        rnd_del_proc.returncode != 0
+        and rnd_del_data.get("status") == "BLOCKED"
+        and rnd_del_data.get("error", {}).get("code") == "IMMUTABLE_RND_LEDGER_DELETE_FORBIDDEN"
+    )
+
+    rnd_ho_live_proc = subprocess.run(
+        [sys.executable, str(rnd_cli), "rollout-factory", "--idea-id", "PID-202611-0001", "--activate-live", "--dry-run", "--json"],
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    rnd_ho_live_data = json.loads(rnd_ho_live_proc.stdout) if rnd_ho_live_proc.stdout.strip() else {}
+    rnd_ho_live_blocked = (
+        rnd_ho_live_proc.returncode != 0
+        and rnd_ho_live_data.get("status") == "BLOCKED"
+        and rnd_ho_live_data.get("error", {}).get("code") == "HO_CEO_APPROVAL_REQUIRED"
+    )
+
     passed = (
         len(leaked_skills) == 0
         and len(leaked_workflows) == 0
@@ -288,6 +316,8 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         and auto_updater_verified
         and bom_delete_blocked
         and bom_ho_ceo_approval_blocked
+        and rnd_delete_blocked
+        and rnd_ho_live_blocked
         and setup_wizard_verified
         and migrated_workflows_verified
     )
@@ -305,6 +335,8 @@ def verify_ho_security_and_auto_gates(manifest: Dict[str, Any]) -> Dict[str, Any
         "periodic_auto_updater_verified": auto_updater_verified,
         "bom_immutable_delete_blocked": bom_delete_blocked,
         "bom_ho_ceo_approval_blocked": bom_ho_ceo_approval_blocked,
+        "rnd_5gate_immutable_delete_blocked": rnd_delete_blocked,
+        "rnd_5gate_ho_ceo_approval_blocked": rnd_ho_live_blocked,
         "ho_setup_wizard_verified": setup_wizard_verified,
         "migrated_ho_workflow_skills_verified": f"{len(migrated_wf_skills_found)}/30",
         "archived_workflow_bak_files_verified": f"{len(archived_wf_bak_found)}/30",

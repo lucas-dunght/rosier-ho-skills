@@ -6,7 +6,7 @@ source_files:
   - skills/rs-kb-knowledge-2hub-router/SKILL.md
   - skills/rs-kb-knowledge-2hub-router/scripts/rs_kb_knowledge_2hub_router_tool.py
 source_hashes:
-  core/rs_core_engine.py: sha256:67c71678521b60cc
+  core/rs_core_engine.py: sha256:3d238ab644e4874f
   skills/rs-kb-knowledge-2hub-router/SKILL.md: sha256:cb7aac3cc293cce6
   skills/rs-kb-knowledge-2hub-router/scripts/rs_kb_knowledge_2hub_router_tool.py: sha256:4ae81f4b4c5a35f7
 ---

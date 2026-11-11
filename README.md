@@ -1,4 +1,4 @@
-# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.8.0-ho.2`)
+# 🌿 HỆ SINH THÁI KỸ NĂNG NỘI BỘ ROSIER DÀNH CHO KHỐI VĂN PHÒNG HO (`rosier-ho-skills` · `v6.9.0-ho.1`)
 
 Hệ sinh thái **`166` Kỹ năng 5 Lớp Hợp nhất & `24` Công cụ Safe MCP chuẩn mã `rs-*` dành riêng cho Nhân sự & Trưởng bộ phận Khối Văn Phòng HO (`Head Office`)** của **Rosier Fresh Tea & Coffee**:
 - **`137` Kỹ năng Chuyên môn Khối HO (`rs-* Skills`)**: Phủ kín 6 Khối Phòng Ban HO (`Vận hành 25 quán`, `Cung ứng & Kho Tổng 5S`, `Tài chính - Kế toán`, `Nhân sự 3P - Pháp chế`, `Đào tạo LMS & R&D`, `Marketing - Thương hiệu v3.3 - Media & CSKH`), kèm **Sổ cái BOM bất biến theo ngày tháng & Phê duyệt 3 Chốt (`R&D -> Cung Ứng -> CEO`)**, **Động cơ KPI Tháng (`rs-hr-monthly-kpi-engine`)** và **Hệ sinh thái 8 Kỹ năng Sáng tạo Học liệu & Nhà máy Khóa học NotebookLM MCP (`#144..#151`)**. Đã cắt bỏ triệt để `16` kỹ năng đặc quyền riêng của CEO Toàn Chuỗi/HĐQT/M&A và các công cụ can thiệp hệ thống lõi.

@@ -16,7 +16,9 @@ if str(SUITE_ROOT) not in sys.path:
     sys.path.insert(0, str(SUITE_ROOT))
 
 from core.rs_core_engine import (  # noqa: E402
+    RND_5GATE_ACTIONS,
     execute_bom_lifecycle_action,
+    execute_rnd_5gate_action,
     route_rosier_intent,
     run_rs_3pass_de_ai_audit,
     run_skill_calculation,
@@ -78,6 +80,18 @@ def cmd_bom(action: str, payload: dict, dry_run: bool = False) -> dict:
     return res
 
 
+def cmd_rnd_5gate(action: str, payload: dict, dry_run: bool = False) -> dict:
+    merged = dict(payload)
+    merged["rnd_action"] = action
+    is_ho = is_ho_repository() or bool(merged.get("is_ho_edition", False))
+    res = execute_rnd_5gate_action(merged, dry_run=dry_run, is_ho_edition=is_ho)
+    res["skill_id"] = SKILL_ID
+    res["division_code"] = DIVISION_CODE
+    res["security_zone"] = SECURITY_ZONE
+    res["is_ho_edition"] = is_ho
+    return res
+
+
 def cmd_route(mode: str, query: str, store_code: str, payload: dict, dry_run: bool = False) -> dict:
     merged = dict(payload)
     merged["mode"] = mode
@@ -109,6 +123,8 @@ def cmd_self_test() -> dict:
         {"bom_action": "bom-as-of", "bom_id": "BOM-DRK-OLNS-500", "as_of_date": "2026-08-15", "store_code": "38197"},
         dry_run=True,
     )
+    rnd_kv = execute_rnd_5gate_action({"rnd_action": "kill-vault"}, dry_run=True)
+    rnd_del_block = execute_rnd_5gate_action({"rnd_action": "rnd-delete", "idea_id": "PID-202609-0004"}, dry_run=True)
     passed = (
         sample.get("status") in ("OK", "DRY_RUN_OK")
         and audit.get("status") == "PASS"
@@ -117,6 +133,8 @@ def cmd_self_test() -> dict:
         and bool(hist_ok.get("ok"))
         and asof_pilot.get("resolved_version_id") == "BOM-DRK-OLNS-500@2026-10-20.v3"
         and asof_summer.get("resolved_version_id") == "BOM-DRK-OLNS-500@2026-06-01.v1"
+        and bool(rnd_kv.get("ok"))
+        and rnd_del_block.get("status") == "BLOCKED"
     )
     return {
         "ok": passed,
@@ -131,18 +149,19 @@ def cmd_self_test() -> dict:
         "rosier_constraint_loop_verified": audit.get("text_no_em_dash_pass", False),
         "bom_immutable_history_verified": del_block.get("status") == "BLOCKED",
         "bom_3stage_approval_gate_verified": True,
+        "rnd_5gate_and_kill_vault_verified": bool(rnd_kv.get("ok")) and rnd_del_block.get("status") == "BLOCKED",
         "sample_metrics": sample.get("metrics"),
         "next_command": "./bin/control-app doctor --json",
     }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="rs-kb-recipe-rd-vault deterministic CLI tool (with Temporal BOM Ledger & 3-Stage Approval Gate)")
+    parser = argparse.ArgumentParser(description="rs-kb-recipe-rd-vault deterministic CLI tool (with Temporal BOM Ledger, 3-Stage Approval Gate & 5-Gate R&D Kill Vault)")
     parser.add_argument(
         "action",
         nargs="?",
         default="self-test",
-        choices=["calc", "audit", "advise", "auto", "self-test", *BOM_ACTIONS],
+        choices=["calc", "audit", "advise", "auto", "self-test", *BOM_ACTIONS, *RND_5GATE_ACTIONS],
     )
     parser.add_argument("--input", "-i", help="Path to input JSON file or inline JSON string", default="{}")
     parser.add_argument("--query", "-q", help="Natural-language task or content for advise/auto routing", default="")
@@ -153,6 +172,10 @@ def main() -> int:
     parser.add_argument("--to-version-id", help="Target BOM version ID for bom-diff", default="")
     parser.add_argument("--effective-from", help="Effective start date (YYYY-MM-DD) for new/updated BOM version", default="")
     parser.add_argument("--as-of-date", help="Point-in-time date (YYYY-MM-DD) for bom-as-of resolution", default="")
+    parser.add_argument("--idea-id", help="R&D Proposal ID (e.g., PID-202611-0001)", default="")
+    parser.add_argument("--idea-title", help="R&D Proposal title for Gate 1 Idea Radar", default="")
+    parser.add_argument("--decision", help="Gate 2 decision: ITERATE, PASS_TO_GATE_3, KILL_IDEA", default="")
+    parser.add_argument("--kill-reason-code", help="Kill Vault reason code when killing an idea", default="")
     parser.add_argument("--role", help="Execution role: rnd_lead, supply_chain, chain_ceo, ho_lms_rnd, ho_ops_supply", default="")
     parser.add_argument("--store-scope", help="Store scope: PILOT_COMPANY_3 (38197, 46880, 87024) or CHAIN_25_STORES", default="")
     parser.add_argument("--change-reason", help="Reason for creating or updating the BOM version", default="")
@@ -190,6 +213,14 @@ def main() -> int:
             payload["effective_from"] = args.effective_from
         if args.as_of_date:
             payload["as_of_date"] = args.as_of_date
+        if args.idea_id:
+            payload["idea_id"] = args.idea_id
+        if args.idea_title:
+            payload["idea_title"] = args.idea_title
+        if args.decision:
+            payload["decision"] = args.decision
+        if args.kill_reason_code:
+            payload["kill_reason_code"] = args.kill_reason_code
         if args.role:
             payload["role"] = args.role
         if args.store_code:
@@ -205,6 +236,11 @@ def main() -> int:
 
         if args.action in BOM_ACTIONS:
             res = cmd_bom(args.action, payload, dry_run=bool(args.dry_run))
+            print(json.dumps(res, ensure_ascii=False, indent=2))
+            return 0 if res.get("ok") else 1
+
+        if args.action in RND_5GATE_ACTIONS:
+            res = cmd_rnd_5gate(args.action, payload, dry_run=bool(args.dry_run))
             print(json.dumps(res, ensure_ascii=False, indent=2))
             return 0 if res.get("ok") else 1
 

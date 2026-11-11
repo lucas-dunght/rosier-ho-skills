@@ -1,13 +1,13 @@
 {
   "ecosystem_name": "RS-OS HO Edition · Hệ Sinh Thái Kỹ Năng Nội Bộ Rosier Dành Cho Khối Văn Phòng HO",
   "edition": "HO_STAFF_SAFE_EDITION",
-  "version": "6.8.0-ho.2",
+  "version": "6.9.0-ho.1",
   "allow_db_mutation": false,
   "zero_command_auto_enabled": true,
-  "generated_at_utc": "2026-11-04T00:06:47.694324+00:00",
+  "generated_at_utc": "2026-11-09T06:48:13.977010+00:00",
   "counts": {
-    "total_items": 218,
-    "skills_count": 166,
+    "total_items": 219,
+    "skills_count": 167,
     "persona_skills_count": 11,
     "workflows_count": 28,
     "mcp_modules_count": 8,
@@ -124,7 +124,8 @@
         "rs-meta-deslop-3pass",
         "rs-hr-monthly-kpi-engine",
         "rs-kb-notebooklm-research-studio",
-        "rs-kb-notebooklm-prompt-architect"
+        "rs-kb-notebooklm-prompt-architect",
+        "rs-rnd-5gate-product-innovation"
       ]
     },
     "ho-ops-supply": {
@@ -1948,6 +1949,19 @@
       "bundled_engine_files": 1,
       "path": "skills/rs-kb-notebooklm-cross-briefing",
       "sha256_16": "3132e30c8ff349cb"
+    },
+    {
+      "index": 152,
+      "type": "SKILL",
+      "layer": "flagship",
+      "id": "rs-rnd-5gate-product-innovation",
+      "division": "02-rs-kb-lms",
+      "title": "Hệ Điều Hành R&D Đồ Uống 5 Cổng, Trợ Lý AI Pha Thử Tại Quầy, Kiểm Toán BOM 2 Kích Cỡ (Size M 16Oz & Size P 500ml) & Sổ Cái Mẫu Hủy Bất Biến (Kill Vault)",
+      "lineage": "rs_rnd_5gate_engine.py + core/rnd_innovation_ledger.json + core/bom_temporal_ledger.json",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "bundled_engine_files": 1,
+      "path": "skills/rs-rnd-5gate-product-innovation",
+      "sha256_16": "dafead4c1bc44b1e"
     },
     {
       "index": 1400,

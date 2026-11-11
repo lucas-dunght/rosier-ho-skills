@@ -1,7 +1,7 @@
 ---
 name: rs-kb-recipe-rd-vault
-description: "Chuẩn Hóa Công Thức Đồ Uống R&D, Sổ Cái BOM Bất Biến Theo Ngày Tháng & Phê Duyệt 3 Chốt (R&D -> Cung Ứng -> CEO Toàn Chuỗi). Kỹ năng độc quyền chuẩn 5 Lớp Kép thuộc hệ sinh thái nội bộ RS-OS 200 của Rosier Fresh Tea & Coffee. Hỗ trợ song song Nhân sự HO/Cửa hàng (Mode A: Human Co-Pilot) và Hệ thống AI Agent 4 Tầng (Mode B: Autonomous Agent). Tích hợp công cụ CLI tất định scripts/rs_kb_recipe_rd_vault_tool.py (--dry-run, --json, Actionable Error, Sổ cái BOM bất biến theo ngày effective_from -> effective_to, khóa cứng xóa BOM cũ), Kỷ luật Kiểm chứng 4 Nhãn ([OBSERVED]/[DERIVED]/[PRIOR]/[ASSUMED]), bộ lọc khử mùi AI 3 vòng nội bộ và khóa ngữ cảnh sống 25 điểm bán / 3 mô hình chủ thể pháp nhân / 2 Kho Tri Thức Nội Bộ của Rosier Fresh Tea & Coffee."
-version: "6.5.0"
+description: "Chuẩn Hóa Công Thức Đồ Uống R&D, Sổ Cái BOM Bất Biến Theo Ngày Tháng, Phê Duyệt 3 Chốt & Phễu 5 Cổng Đổi Mới Sản Phẩm (Kill Vault). Kỹ năng độc quyền chuẩn 5 Lớp Kép thuộc hệ sinh thái nội bộ RS-OS 200 của Rosier Fresh Tea & Coffee. Hỗ trợ song song Nhân sự HO/Cửa hàng (Mode A: Human Co-Pilot) và Hệ thống AI Agent 4 Tầng (Mode B: Autonomous Agent). Tích hợp công cụ CLI tất định scripts/rs_kb_recipe_rd_vault_tool.py (--dry-run, --json, Actionable Error, Sổ cái BOM bất biến theo ngày effective_from -> effective_to, Sổ cái Mẫu Hủy Kill Vault core/rnd_innovation_ledger.json, 3 Linter kiểm toán BOM 2 kích cỡ Size M 16Oz & Size P 500ml), Kỷ luật Kiểm chứng 4 Nhãn ([OBSERVED]/[DERIVED]/[PRIOR]/[ASSUMED]), bộ lọc khử mùi AI 3 vòng nội bộ và khóa ngữ cảnh sống 25 điểm bán / 3 mô hình chủ thể pháp nhân / 2 Kho Tri Thức Nội Bộ của Rosier Fresh Tea & Coffee."
+version: "6.9.0"
 layer: "flagship"
 division: "02-rs-kb-lms"
 security_zone: "INTERNAL_PRIVILEGED"
