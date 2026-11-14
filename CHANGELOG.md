@@ -3,6 +3,7 @@
 ## [Unreleased] - Live Bridge v7.0
 
 ### Bổ sung (`Added`)
+- Đồng bộ chuẩn bố cục in ấn A4 (`cantSplit`, `tblHeader`, `keep_with_next`, `tab_stops` chữ ký/footer, `<w:updateFields w:val="true"/>`) & quy chuẩn ngôn ngữ bảng lương `3P` (cột `Ghi chú` phổ quát, cấm cụm từ đối phó Thuế/BHXH) cho 4 skill: `rs-office-docx-enterprise`, `rs-hr-3p-payroll-engine`, `rs-hr-jd-offer-composer`, `rs-legal-admin-dispatch-nd30`.
 - `skills/rs-meta-chot-huong` (`/chot-huong` · Bản an toàn HO): Cổng tiền-kế hoạch 5 lớp giúp nhân sự HO chốt Hợp đồng đầu ra 4 trụ cột và so sánh tối đa 3 phương án theo điểm gãy đầu tiên; chỉ đọc và tạo bản nháp, gắn `[CẦN CEO PHÊ DUYỆT]` với hạng mục vượt thẩm quyền. Hỗ trợ CLI `scripts/rs_meta_chot_huong_tool.py`. Cập nhật đồng bộ `skills.json` (168 skills) và `registry/rs-os-180-manifest.json`.
 - Phần `Live Bridge v7.0` trong 7 skill: `rs-wf-hr-2round-hiring-to-lms`, `rs-hr-jd-offer-composer`, `rs-wf-fin-daily-3way-reconciliation`, `rs-fin-bank-statement-reconciler`, `rs-media-omni-ocr-invoice`, `rs-wf-lms-daily-1700-green-tick`, `rs-lms-onboarding-path`. Dùng công cụ Google Workspace, nhân sự và LMS hiện có trong lúc chờ hệ thống hợp nhất. Phiên bản HO chỉ đọc và tạo bản nháp, không tự gửi, không tạo lịch hay việc.
 - `rs-lms-onboarding-path/scripts/identity_quarantine.py`: đối soát danh tính nhân sự và LMS, chỉ khớp email tuyệt đối, ca lệch vào tab Quarantine, không ghép mờ theo tên, không tự cấp `person_id`.

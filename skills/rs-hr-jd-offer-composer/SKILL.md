@@ -28,8 +28,9 @@ metadata:
    - **Chiều 1 · Bảo vệ Bí mật Kinh doanh & Sở hữu Trí tuệ của Công ty:** Bảo mật vô thời hạn đối với công thức pha chế, định mức nguyên vật liệu (`BOM`), quy trình vận hành chuẩn (`SOP`), danh sách nhà cung cấp và dữ liệu đối tác nhượng quyền.
    - **Chiều 2 · Bảo mật Chéo 360 Độ giữa Toàn thể Nhân sự:** Nghiêm cấm tự ý tiết lộ, so sánh, bàn tán mức lương thưởng `3P` (`P1`, `P2`, `P3`) của bản thân hoặc tìm hiểu, chụp ảnh, tiết lộ thu nhập và hồ sơ cá nhân của đồng nghiệp. Vi phạm là căn cứ giảm trừ thưởng hiệu suất `P3-3(-)` và xử lý kỷ luật.
    - **Chiều 3 · Cam kết Bảo vệ Dữ liệu Cá nhân Song phương:** Công ty cam kết bảo mật hồ sơ cá nhân, tài khoản ngân hàng, mã số thuế, BHXH và kết quả `KPI` của Người lao động theo `Luật số 91/2025/QH15` và `Điều 38 Bộ luật Dân sự 2015`; đồng thời ghi nhận sự đồng thuận của Người lao động cho phép xử lý dữ liệu phục vụ quản trị nội bộ, cơ quan Thuế, BHXH, ngân hàng chi lương và lưu trữ tối thiểu `10` năm theo Luật Kế toán.
-3. **Quy chuẩn Chế bản `.docx` (`100% Times New Roman` & `0 Errors`):**
-   - Phối hợp cùng `rs-office-docx-enterprise` ép `100%` phông chữ `Times New Roman` (`w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs`) và kiểm định bằng `officecli validate` (`0 errors`).
+3. **Quy chuẩn Chế bản `.docx` (`100% Times New Roman`, Bố cục In ấn A4 & Ngôn ngữ Bảng lương 3P):**
+   - Phối hợp cùng `rs-office-docx-enterprise` ép `100%` phông chữ `Times New Roman` (`w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs`), áp dụng chuẩn bố cục in ấn A4 (lề đóng gáy Trái `0.95"`, Phải `0.75"`, Trên/Dưới `0.70"`, `cantSplit`, `tblHeader`, `keep_with_next`, chữ ký/footer `tab_stops`, `<w:updateFields w:val="true"/>`) và kiểm định bằng `officecli validate` (`0 errors`).
+   - Trong bảng cơ cấu lương `3P`, cột 3 đặt tên là **`Ghi chú`** với văn phong phổ quát, trung tính cho cả Người lao động và Cơ quan Thuế/BHXH; cấm các cụm từ đối phó/viện dẫn luật (*"trên mức sàn tối thiểu Vùng I"*, *"Luật BHXH 2024"*, *"Miễn BHXH"*, *"Miễn thuế TNCN"*, *"loại trừ hợp pháp"*, *"Zero Shock"*, *"Thuế TNCN (= 0đ)"*).
 
 ## 3. Công cụ Thực thi Độc lập (`CLI & Verification`)
 ```bash

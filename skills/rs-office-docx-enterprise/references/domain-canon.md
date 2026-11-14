@@ -66,7 +66,10 @@ def enforce_100pct_times_new_roman_xml(docx_path: str):
 ```
 
 ## 2. Quy Chuẩn Trình Bày Trang In Hợp Đồng Pháp Lý (`.docx`)
-- **Khổ giấy:** `A4` (`210mm x 297mm`).
-- **Định lề chuẩn Nghị định 30/2020/NĐ-CP:** Lề trên `2,0 cm` · Lề dưới `2,0 cm` · Lề trái `2,8 cm` (chừa gáy đóng dấu giáp lai) · Lề phải `1,8 cm`.
-- **Phông chữ:** `100% Times New Roman`, cỡ chữ chính văn `11,5 pt` (hoặc `12 pt`), giãn dòng `1,18x` - `1,20x`, căn đều hai bên (`JUSTIFY`).
-- **Bảng chữ ký đại diện các bên:** Bắt buộc chừa khoảng trống ký đóng dấu tối thiểu `5` dòng trắng và kèm câu khóa trang cuối: *"Các Bên xác nhận đã đọc, hiểu rõ và thống nhất toàn bộ các điều khoản của Hợp đồng cùng Phụ lục kèm theo, đồng thời ký tên, đóng dấu dưới đây và ký nháy/đóng dấu giáp lai vào từng trang của Hợp đồng."*
+- **Khổ giấy:** `A4` (`8.27" x 11.69"` / `210mm x 297mm`).
+- **Định lề chuẩn in ấn & đóng gáy (NĐ 30/2020/NĐ-CP):** Lề trên `0.70"` · Lề dưới `0.70"` · Lề trái `0.95"` (~2.4 cm chừa gáy đóng dấu giáp lai/bấm lỗ) · Lề phải `0.75"` (vùng in chuẩn `6.57"`). Bật `<w:updateFields w:val="true"/>` trong `doc.settings.element`.
+- **Phông chữ:** `100% Times New Roman`, cỡ chữ chính văn `10 pt` – `11,5 pt`, giãn dòng `1,18x` – `1,20x`.
+- **Chống vỡ bảng & mồ côi tiêu đề:**
+  - Mọi bảng dữ liệu phải gọi `set_row_cant_split(row)` trên từng hàng, `set_row_header(table.rows[0])` cho hàng tiêu đề, và khóa cột bằng `tblW` (chèn đầu `<w:tblPr>`) + `tblLayout="fixed"` + `tblGrid` + `tcW`.
+  - Tiêu đề Điều khoản tách paragraph riêng với `keep_with_next = True`.
+- **Khối chữ ký 2 bên & Footer 3 cột (`Tab-Stop Immune Layout`):** Dùng `tab_stops` (`1.64"` & `4.93"` `CENTER` cho chữ ký kèm `keep_with_next=True`; `3.285"` `CENTER` & `6.57"` `RIGHT` + `w:pBdr` top cho Footer) để đảm bảo không bao giờ bị co dính sang mép trái trên Apple QuickLook, Word hay LibreOffice. Kiểm tra trực quan bằng `qlmanage -t -s 1600` (macOS) hoặc xuất PDF trước khi phát hành hàng loạt.
