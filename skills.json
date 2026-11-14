@@ -4,10 +4,11 @@
   "owner": "Ban Điều Hành Toàn Chuỗi · Rosier Fresh Tea & Coffee",
   "ecosystem_version": "6.9.0-ho.1",
   "counts": {
-    "total_items": 219,
-    "skills": 167,
+    "total_items": 192,
+    "skills": 168,
     "workflows": 28,
-    "mcp_tools": 24
+    "mcp_tools": 24,
+    "domain_and_persona_skills": 139
   },
   "layers": {
     "flagship": "Flagship Systems · Các hệ thống chủ lực đầu-cuối (Điều hành, Học viện LMS, Tài chính Đa Mô hình Pháp nhân, Thiết kế v3.3, Studio Video/OCR & Meta-Engines)",
@@ -4590,6 +4591,31 @@
         "trình"
       ],
       "path": "skills/rs-wf-omni-investor-weekly-care/SKILL.md"
+    },
+    {
+      "index": 1401,
+      "name": "rs-meta-chot-huong",
+      "layer": "flagship",
+      "category": "Phân khu 12: Động Cơ Siêu Tiến Hóa, Định Tuyến Ý Định & Tự Động Hóa Cấp Hệ Thống Rosier (rs-meta-*)",
+      "repo": "rs-os-180-suite",
+      "subdir": "skills/rs-meta-chot-huong",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "summary": "Chốt Hướng Trước Khi Làm (/chot-huong · Bản an toàn HO): Biến yêu cầu mơ hồ thành Bản chốt đầu ra 4 trụ cột và so sánh phương án (chỉ đọc & nháp)",
+      "lineage": "ak-brainstorm",
+      "bundled_engine_files": 0,
+      "bilingual_dual_brain": true,
+      "rosier_3pass_de_ai": true,
+      "rosier_cli_standard": true,
+      "keywords": [
+        "rs-meta-chot-huong",
+        "chot-huong",
+        "12-rs-meta",
+        "brainstorm",
+        "chốt hướng",
+        "phương án",
+        "rủi ro"
+      ],
+      "version": "7.0.0"
     }
   ],
   "workflows": [

@@ -2339,6 +2339,19 @@
       "security_zone": "INTERNAL_PRIVILEGED",
       "cli_tool": "skills/rs-wf-omni-investor-weekly-care/scripts/rs_wf_omni_investor_weekly_care_tool.py",
       "sha256_16": "46dd1989d6ff2122"
+    },
+    {
+      "index": 1401,
+      "type": "SKILL",
+      "layer": "flagship",
+      "id": "rs-meta-chot-huong",
+      "division": "12-rs-meta",
+      "title": "Chốt Hướng Trước Khi Làm (/chot-huong · Bản an toàn HO)",
+      "lineage": "ak-brainstorm",
+      "security_zone": "INTERNAL_PRIVILEGED",
+      "bundled_engine_files": 0,
+      "path": "skills/rs-meta-chot-huong",
+      "sha256_16": "8947632476f32dd7"
     }
   ],
   "workflows": [
