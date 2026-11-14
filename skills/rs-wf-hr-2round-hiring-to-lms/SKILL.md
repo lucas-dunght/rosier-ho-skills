@@ -36,3 +36,13 @@ version: "6.2.0"
 
 ## 3. Tiêu Chí Hoàn Thành (`Definition of Done · DoD`)
 - **Kết quả bắt buộc:** Ứng viên trúng tuyển hoàn thành 100% học phần hội nhập trước khi đứng quầy chính thức.
+
+---
+
+## Live Bridge v7.0 (HO: chi doc va ban nhap)
+Hang doi: Google Sheet tuyen dung (Trang thai Mail: Cho tao -> Da tao Draft -> Da gui).
+1. Doc cac dong `Cho tao`.
+2. Soan noi dung thu theo mau Rosier v3.3 qua `rs-meta-deslop-3pass` va tao **Gmail Draft** de nhan su HCNS doc, sua va tu bam gui. Phien ban HO khong tu gui thu.
+3. Lich phong van: de xuat khung gio va noi dung, chi tao lich khi nhan su HCNS xac nhan.
+4. SLA tach rieng: he thong tao Draft (muc tieu < 30 giay, can do thuc te), nguoi duyet trong 60 phut gio lam viec. Loi AI bi bat ghi vao `AI_Error_Caught`.
+Rang buoc: khong gui thu, khong tao viec tren he thong khac, khong dua du lieu ung vien ra ngoai pham vi duoc phep.

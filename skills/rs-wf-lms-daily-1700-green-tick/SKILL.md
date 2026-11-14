@@ -35,3 +35,8 @@ version: "6.2.0"
 
 ## 3. Tiêu Chí Hoàn Thành (`Definition of Done · DoD`)
 - **Kết quả bắt buộc:** 100% nhân sự trong ca hoàn thành bài học có tích xanh trước 17:00; đồng bộ sang bảng lương P2.
+
+---
+
+## Live Bridge v7.0
+15:00 va 17:00: doi chieu tien do LMS voi danh sach nhan su dang hoat dong, loai hoc vien ngoai va tai khoan chuc nang (dung `rs-lms-onboarding-path/scripts/identity_quarantine.py`). Phien ban HO chi xuat danh sach de quan ly xem, khong tu nhan tin. Luu y: chi mot phan nho hoc vien da lien ket kenh nhan tin; can kiem tra truoc khi hua nhac tu dong.

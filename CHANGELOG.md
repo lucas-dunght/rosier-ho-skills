@@ -1,5 +1,18 @@
 # Nhật Ký Phát Hành Kho Kỹ Năng Khối Văn Phòng HO Rosier (`RS-OS HO Edition` · `v6.9.0-ho.1`)
 
+## [Unreleased] - Live Bridge v7.0
+
+### Bổ sung (`Added`)
+- Phần `Live Bridge v7.0` trong 7 skill: `rs-wf-hr-2round-hiring-to-lms`, `rs-hr-jd-offer-composer`, `rs-wf-fin-daily-3way-reconciliation`, `rs-fin-bank-statement-reconciler`, `rs-media-omni-ocr-invoice`, `rs-wf-lms-daily-1700-green-tick`, `rs-lms-onboarding-path`. Dùng công cụ Google Workspace, nhân sự và LMS hiện có trong lúc chờ hệ thống hợp nhất. Phiên bản HO chỉ đọc và tạo bản nháp, không tự gửi, không tạo lịch hay việc.
+- `rs-lms-onboarding-path/scripts/identity_quarantine.py`: đối soát danh tính nhân sự và LMS, chỉ khớp email tuyệt đối, ca lệch vào tab Quarantine, không ghép mờ theo tên, không tự cấp `person_id`.
+- `rs-fin-bank-statement-reconciler/scripts/misa_export_bridge.py`: bảng kê doanh thu 3 quán Cty TNHH, loại Hộ kinh doanh, chặn mã quán đã đóng, từ chối ghi khi dữ liệu lỗi. Là bảng kê trung gian, chưa phải mẫu nạp chính thức.
+
+### Lưu ý
+- Không thêm skill mới vào danh mục; không đổi `VERSION`, `skills.json` hay manifest.
+- Kiểm tra `verify_rs_ho_ecosystem.py` trên `main` đã báo FAIL từ trước (một số cổng HO); thay đổi này không thêm lỗi nào trong `skills/` hay `scripts/`.
+
+---
+
 ## [6.9.0-ho.1] - 2026-11-09
 
 ### Hệ Điều Hành R&D Đồ Uống 5 Cổng, Kiểm Toán BOM 2 Kích Cỡ & Sổ Cái Mẫu Hủy Bất Biến (`#152 rs-rnd-5gate-product-innovation` + `#015 rs-kb-recipe-rd-vault`)

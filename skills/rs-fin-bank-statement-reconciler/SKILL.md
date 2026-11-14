@@ -56,3 +56,8 @@ security_zone: "INTERNAL_PRIVILEGED"
 
 ## 3. Bundled Reference Playbooks & Internal Engines
   - `references/domain-canon.md` & `references/rosier-context-lock.md`
+
+---
+
+## Live Bridge v7.0: Bang ke doanh thu theo phap nhan
+`scripts/misa_export_bridge.py --pos-csv pos.csv [--dry-run] [--out-dir DIR]`. CSV cot: date, store_code, net_revenue, vat, cash, transfer, app_held. Chi gom 3 quan Cty TNHH; Ho kinh doanh bi loai; ma quan da dong bi chan; du lieu loi thi tu choi ghi file. Ket qua la bang ke trung gian, chua phai mau nap chinh thuc.
