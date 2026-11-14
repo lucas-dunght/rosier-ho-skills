@@ -38,6 +38,10 @@ Khi can thiệp cây XML (`lxml` / `oxml`) trong `python-docx`, trình sinh bắ
    - Trong thuộc tính ô bảng `<w:tcPr>`, trình tự bắt buộc là: `<w:tcW>` -> `<w:tcBorders>` -> `<w:shd>` -> `<w:tcMar>` -> `<w:vAlign>`. Thẻ `<w:vAlign>` bắt buộc phải nằm **sau** `<w:tcMar>`.
 4. **Quy tắc 4 · Vị trí thẻ `<w:tblBorders>` và `<w:tblCellMar>` trong `<w:tblPr>`:**
    - Trong thuộc tính bảng `<w:tblPr>`, thẻ `<w:tblBorders>` và `<w:tblCellMar>` bắt buộc phải chèn **trước** thẻ `<w:tblLook>` (sử dụng `tblLook.addprevious(...)` nếu `<w:tblLook>` đã tồn tại).
+5. **Quy chuẩn Bố cục In ấn A4 & Chống Vỡ Trang (`Print Layout Gate`):**
+   - **Lề đóng gáy A4 chuẩn:** Trái `0.95"` (~2.4 cm), Phải `0.75"` (~1.9 cm), Trên/Dưới `0.70"` (~1.8 cm), vùng in `6.57"`; bật `<w:updateFields w:val="true"/>` trong `word/settings.xml`.
+   - **Khóa bảng cố định & chống cắt dòng:** Đặt `w:tblW` ở đầu `<w:tblPr>`, `w:tblLayout w:type="fixed"`, `w:tblGrid` và `w:tcW`; bật `<w:cantSplit/>` cho mọi hàng bảng và `<w:tblHeader/>` cho hàng tiêu đề bảng dữ liệu.
+   - **Phân trang sạch & Khối chữ ký/Footer chuẩn:** Tách tiêu đề Điều khoản thành paragraph riêng với `keep_with_next = True`. Khối chữ ký 2 bên (`1.64"` & `4.93"` center tab) và Footer 3 cột (`3.285"` center tab, `6.57"` right tab + top border) dùng `tab_stops` thay vì bảng không viền để không bị sụp cột trên Apple QuickLook/Word.
 
 ## 4. Cổng Kiểm Định 4 Bước Bắt Buộc Trước Khi Nghiệm Thu Tệp `.docx`
 Mọi tệp `.docx` sinh ra chỉ được phép bàn giao khi vượt qua đủ `4` bước kiểm chứng sống:
