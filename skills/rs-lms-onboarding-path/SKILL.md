@@ -57,3 +57,8 @@ security_zone: "INTERNAL_PRIVILEGED"
 ## 3. Bundled Reference Playbooks & Internal Engines
   - `references/rosier_engine_speech_coach/patrick-winston-how-to-speak.md`
   - `references/rosier-playbook-speech-coach.md`
+
+---
+
+## Live Bridge v7.0: Lien ket tai khoan
+Truoc khi cap tai khoan LMS hay gan lo trinh, chay `references/identity-quarantine.md` + `scripts/identity_quarantine.py` de bao dam mot nguoi mot tai khoan, khong ghep mo theo ten.

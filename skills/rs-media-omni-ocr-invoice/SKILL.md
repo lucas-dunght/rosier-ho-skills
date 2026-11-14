@@ -56,3 +56,8 @@ security_zone: "INTERNAL_PRIVILEGED"
 
 ## 3. Bundled Reference Playbooks & Internal Engines
   - `references/domain-canon.md` & `references/rosier-context-lock.md`
+
+---
+
+## Live Bridge v7.0: OCR hoa don dau vao
+Doc anh/PDF/XML trong thu muc hoa don, trich: ngay HD, ky hieu, so HD, ten NCC, MST, tien chua thue, thue suat, tien thue, tong. Tu kiem so hoc (chua thue + thue = tong), gan co `MISSING_MST`, `ARITHMETIC_MISMATCH`. Xac thuc MST tren cong Tong cuc Thue la buoc cua ke toan. Ban OCR luon la DRAFT cho ke toan duyet.

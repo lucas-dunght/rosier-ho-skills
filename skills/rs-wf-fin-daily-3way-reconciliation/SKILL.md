@@ -37,3 +37,11 @@ version: "6.2.0"
 
 ## 3. Tiêu Chí Hoàn Thành (`Definition of Done · DoD`)
 - **Kết quả bắt buộc:** Chênh lệch đối soát ngân hàng <= 5 VND; báo cáo công nợ cập nhật trước 10:00 sáng.
+
+---
+
+## Live Bridge v7.0: Doi soat theo chu ky thuc te
+- Tach 4 dong tien: tien mat ket, tien dang chuyen 48h (TK 113), chuyen khoan ngan hang, tien nen tang giao hang dang giu (T+N, tru phi theo hop dong). Khong so thang POS = Ngan hang = Ket.
+- Chi canh bao do khi lech ket cuoi ca hoac qua han nop 48h ma tien chua ve.
+- Phap nhan: 3 quan Cty TNHH (38197, 46880, 87024) di `rs-fin-bank-statement-reconciler/scripts/misa_export_bridge.py`; 22 quan Ho kinh doanh KHONG vao so Cty TNHH hay CTCP. Ban buon B2B cua CTCP lay tu he thong kho, chua co ket noi trong ban cau noi nay.
+- Dau ra cua script la bang ke trung gian. Ke toan map sang mau nap cua phan mem ke toan roi moi nap.

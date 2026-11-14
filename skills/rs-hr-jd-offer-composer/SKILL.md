@@ -36,3 +36,8 @@ metadata:
 python3 .agent/skills/rs-hr-jd-offer-composer/scripts/rs_hr_jd_offer_composer_tool.py --self-test --json
 python3 .agent/skills/rs-hr-jd-offer-composer/scripts/rs_hr_jd_offer_composer_tool.py calc --input '{"store_code": "38197"}' --dry-run --json
 ```
+
+---
+
+## Live Bridge v7.0: Mau thu tuyen dung
+Moi thu (moi phong van, thu nhan viec, tu choi, offer) di qua `rs-meta-deslop-3pass` va Rosier v3.3 truoc khi tao Gmail Draft. Khong dung cum AI-ism trong Red List, khong em-dash. Muc luong, ca, cua hang chi lay tu o Sheet, khong tu dien.
